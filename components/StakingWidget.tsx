@@ -73,7 +73,7 @@ export default function StakingWidget() {
             
             <Center gap={2}>
                         <Button bg="poktLime" onClick={() => console.log("Pressed it")} isDisabled={false}>
-                            Unwrap
+                            Stake
                         </Button>
                         <Button bg="darkBlue" borderColor={"poktLime"} color={"white"}  onClick={() => console.log("Pressed it")} isDisabled={false}>
                             Withdraw Stake
