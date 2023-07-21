@@ -26,7 +26,7 @@ const config = createConfig({
   webSocketPublicClient
 })
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps | any) {
   return (
     <>
       <Head>
