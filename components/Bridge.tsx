@@ -1,16 +1,15 @@
-import { Box, Button, Center, Container, Flex, HStack, Input, Link, Text, VStack, useDisclosure } from "@chakra-ui/react";
-import { EthIcon } from "./icons/eth";
-import { PoktIcon } from "./icons/pokt";
-import { useState } from "react";
-import { CustomAddressModal } from "./modal/CustomAddressModal";
-import { ProgressModal } from "./modal/ProgressModal";
-import { CloseIcon, InfoIcon } from "./icons/misc";
 import { useGlobalContext } from "@/context/Globals";
-import { TimeInfoModal } from "./modal/TimeInfoModal";
-import { useAccount, useBalance } from "wagmi";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { formatPokt } from "@/utils/pokt";
 import { WPOKT_ADDRESS } from "@/utils/constants";
+import { formatPokt } from "@/utils/pokt";
+import { Box, Button, Center, Container, Flex, HStack, Input, Text, VStack, useDisclosure } from "@chakra-ui/react";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useState } from "react";
+import { useAccount, useBalance } from "wagmi";
+import { EthIcon } from "./icons/eth";
+import { CloseIcon, InfoIcon } from "./icons/misc";
+import { PoktIcon } from "./icons/pokt";
+import { ProgressModal } from "./modal/ProgressModal";
+import { TimeInfoModal } from "./modal/TimeInfoModal";
 
 export function Bridge() {
     const [customAddress, setCustomAddress] = useState<string>("")

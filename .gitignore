@@ -127,3 +127,4 @@ dist
 .pnp.*
 .vercel
 components/Bridge.tsx
+components/Bridge.tsx

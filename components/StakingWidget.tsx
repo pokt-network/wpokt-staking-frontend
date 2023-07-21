@@ -1,9 +1,8 @@
-import {Center, Flex, Button, VStack, Text, Heading, HStack, Divider, Input } from "@chakra-ui/react";
 import { useGlobalContext } from "@/context/Globals";
-import { useAccount } from "wagmi";
+import { Button, Center, Divider, HStack, Heading, Input, Text, VStack } from "@chakra-ui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 import { EthIcon } from "./icons/eth";
-import { CloseIcon } from "./icons/misc";
 export default function StakingWidget() {
     const {mobile} = useGlobalContext()
     const {address} = useAccount();
