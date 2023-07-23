@@ -7,7 +7,7 @@ import {
   Heading,
   Input,
   Text,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
@@ -36,8 +36,10 @@ export default function UnstakeWidget() {
     setUnstakeAmount(balance?.formatted as string);
   };
 
-  const isWithdrawButtonDisabled = newTotal < 0;
-  const isInvalidUnstakeAmount = Number(unstakeAmount) > Number(balance?.formatted);
+  const isInvalidUnstakeAmount =
+    Number(unstakeAmount) < 0 ||
+    newTotal < 0 ||
+    newTotal > Number(balance?.formatted);
 
   const renderWithdrawButton = () => {
     if (!address) {
@@ -59,7 +61,7 @@ export default function UnstakeWidget() {
       <Button
         bg="poktLime"
         onClick={handleWithdrawButtonClick}
-        isDisabled={isWithdrawButtonDisabled}
+        isDisabled={isInvalidUnstakeAmount}
       >
         Withdraw
       </Button>
@@ -82,14 +84,16 @@ export default function UnstakeWidget() {
           value={unstakeAmount}
           onChange={(e) => setUnstakeAmount(e.target.value)}
           isInvalid={isInvalidUnstakeAmount}
+          min={0}
+          max={balance?.formatted}
         />
         <Button
           bg="poktLime"
           onClick={handleAllButtonClick}
-          isDisabled={isWithdrawButtonDisabled}
           position="absolute"
           right={1}
           float="right"
+          zIndex={10}
         >
           All
         </Button>
@@ -114,9 +118,17 @@ export default function UnstakeWidget() {
       <Heading>Withdraw LP tokens</Heading>
       <HStack justify="space-between" maxWidth="80%">
         <Text>Amount to withdraw:</Text>
-        {!address ? <Text>No wallet connected</Text> : <Text>{balance?.formatted} LP Staked</Text>}
+        {!address ? (
+          <Text>No wallet connected</Text>
+        ) : (
+          <Text>{balance?.formatted} LP Staked</Text>
+        )}
       </HStack>
-      {address ? renderUnstakeInput() : <Center>{renderWithdrawButton()}</Center>}
+      {address ? (
+        renderUnstakeInput()
+      ) : (
+        <Center>{renderWithdrawButton()}</Center>
+      )}
 
       <Divider borderColor="poktLime" marginX={20} />
 
@@ -126,8 +138,14 @@ export default function UnstakeWidget() {
       </Center>
       <Center flexDirection="column">
         <Text>New Total Staked:</Text>
-        <Text color={newTotal > 0 ? "white" : "red"}>
-          {address ? (newTotal > 0 ? newTotal : "Withdraw Amount can't be more than staked!") : "No wallet connected"}
+        <Text color={!isInvalidUnstakeAmount ? "white" : "red"}>
+          {address
+            ? Number(unstakeAmount) < 0
+              ? "Can't Input Negative number"
+              : !isInvalidUnstakeAmount
+              ? newTotal
+              : "Withdraw Amount can't be more than staked!"
+            : "No wallet connected"}
         </Text>
       </Center>
       <Center flexDirection="column">

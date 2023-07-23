@@ -7,13 +7,12 @@ import {
   Heading,
   Input,
   Text,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 import { EthIcon } from "./icons/eth";
-
 
 export default function StakingWidget() {
   const { mobile } = useGlobalContext();
@@ -27,7 +26,7 @@ export default function StakingWidget() {
     token: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
   });
 
-  const newTotal = Number(balance?.formatted) - Number(stakeAmount);
+  const newTotal = Number(balance?.formatted) + Number(stakeAmount);
 
   const handleStakeButtonClick = () => {
     console.log("Pressed it");
@@ -37,8 +36,10 @@ export default function StakingWidget() {
     setStakeAmount(balance?.formatted as string);
   };
 
-  const isStakeButtonDisabled = newTotal < 0;
-  const isInvalidStakeAmount = Number(stakeAmount) > Number(balance?.formatted);
+  const isInvalidStakeAmount =
+    Number(stakeAmount) < 0 ||
+    newTotal < 0 ||
+    Number(stakeAmount) > Number(balance?.formatted);
 
   const renderStakeButton = () => {
     if (!address) {
@@ -60,7 +61,7 @@ export default function StakingWidget() {
       <Button
         bg="poktLime"
         onClick={handleStakeButtonClick}
-        isDisabled={isStakeButtonDisabled}
+        isDisabled={isInvalidStakeAmount || Number(stakeAmount) == 0}
       >
         Stake
       </Button>
@@ -83,14 +84,16 @@ export default function StakingWidget() {
           value={stakeAmount}
           onChange={(e) => setStakeAmount(e.target.value)}
           isInvalid={isInvalidStakeAmount}
+          min={0}
+          max={balance?.formatted}
         />
         <Button
           bg="poktLime"
           onClick={handleAllButtonClick}
-          isDisabled={isStakeButtonDisabled}
           position="absolute"
           right={1}
           float="right"
+          zIndex={5}
         >
           All
         </Button>
@@ -115,7 +118,11 @@ export default function StakingWidget() {
       <Heading>Stake LP tokens</Heading>
       <HStack justify="space-between" maxWidth="80%">
         <Text>Amount to Stake:</Text>
-        {!address ? <Text>No wallet connected</Text> : <Text>{balance?.formatted} LP Tokens in wallet</Text>}
+        {!address ? (
+          <Text>No wallet connected</Text>
+        ) : (
+          <Text>{balance?.formatted} LP Tokens in wallet</Text>
+        )}
       </HStack>
       {address ? renderStakeInput() : <Center>{renderStakeButton()}</Center>}
 
@@ -127,8 +134,14 @@ export default function StakingWidget() {
       </Center>
       <Center flexDirection="column">
         <Text>New Total Staked:</Text>
-        <Text color={newTotal > 0 ? "white" : "red"}>
-          {address ? (newTotal > 0 ? newTotal : "Stake Amount can't be more than staked!") : "No wallet connected"}
+        <Text color={!isInvalidStakeAmount ? "white" : "red"}>
+          {address
+            ? Number(stakeAmount) < 0
+              ? "Can't Input Negative number"
+              : !isInvalidStakeAmount
+              ? newTotal
+              : "Not Enough LP tokens in Wallet!"
+            : "No wallet connected"}
         </Text>
       </Center>
       <Center flexDirection="column">
