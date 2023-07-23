@@ -1,13 +1,7 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { GlobalContextProvider } from "@/context/Globals";
-import {
-  Center,
-  Divider,
-  Flex,
-  Heading,
-  Spacer
-} from "@chakra-ui/react";
+import { Center, Divider, Flex, Heading, Spacer } from "@chakra-ui/react";
 
 import LPInfoBlock from "@/components/LPInfoBlock";
 import StakingWidget from "@/components/StakingWidget";
@@ -24,20 +18,19 @@ export default function Home() {
         <Center paddingX={10}>
           <Divider borderColor={"poktLime"} />
         </Center>
-        
+
         <LPInfoBlock />
         <Center paddingX={10}>
           <Divider borderColor={"poktLime"} />
         </Center>
         <Center padding={10}>
-        <StakingWidget/>
-        {/* <UnstakeWidget/>
-        <WithdrawRewardsWidget/> */}
-        
-        {/* Space to be removed */}
+          <StakingWidget />
+        </Center>
+        <Center padding={10}>
+          <UnstakeWidget />
         </Center>
         <Spacer />
-        
+
         <Footer />
       </Flex>
     </GlobalContextProvider>

@@ -9,7 +9,7 @@ import { publicProvider } from 'wagmi/providers/public'
 import { RainbowKitProvider, getDefaultWallets, darkTheme } from '@rainbow-me/rainbowkit'
  
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [goerli],
+  [mainnet],
   [publicProvider()],
 )
 
