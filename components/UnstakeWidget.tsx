@@ -61,7 +61,7 @@ export default function UnstakeWidget() {
       <Button
         bg="poktLime"
         onClick={handleWithdrawButtonClick}
-        isDisabled={isInvalidUnstakeAmount}
+        isDisabled={isInvalidUnstakeAmount || Number(unstakeAmount) == 0}
       >
         Withdraw
       </Button>
