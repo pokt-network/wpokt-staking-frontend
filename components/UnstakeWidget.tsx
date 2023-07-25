@@ -110,7 +110,7 @@ export default function UnstakeWidget() {
       gap={8}
       textAlign="center"
       flexGrow={1}
-      bg="darkOverlay"
+      
       mx={!mobile ? "20%" : "0%"}
       px={10}
       py={10}
