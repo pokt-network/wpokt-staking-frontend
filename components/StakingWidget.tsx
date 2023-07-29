@@ -39,7 +39,7 @@ export default function StakingWidget() {
   
   
 
-  const { config } = useStakeLPToken(parseEther(newStakeAmount.toString()));
+  const { config } = useStakeLPToken({amount: parseEther(newStakeAmount.toString())});
   const { data, isLoading, isSuccess, write, isError } = useContractWrite(config);
   console.log(data, isLoading, isSuccess, isError);
 

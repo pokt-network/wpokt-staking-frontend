@@ -10,6 +10,7 @@ import { sepolia } from "wagmi";
 import { address } from "./types";
 import { StakingRewardsABI } from "./abi";
 import { use } from "react";
+import { parseEther } from "viem";
 
 export const useLPTokenBalance = (address: address) =>
   useBalance({
@@ -44,10 +45,10 @@ export const usePendingRewardBalance = (address: address) =>
     chainId: sepolia.id,
   });
 
-  export const useStakeLPToken = (amount:bigint) => usePrepareContractWrite({
+  export const useStakeLPToken = (args:{amount:bigint}) => usePrepareContractWrite({
     abi: StakingRewardsABI,
     address: StakingRewardContract,
     functionName: "stake",
-    args: [amount],
+    args: Array.from(Object.values(args)),
     chainId: sepolia.id,
     });

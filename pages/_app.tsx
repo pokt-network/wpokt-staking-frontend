@@ -4,16 +4,21 @@ import Head from "next/head";
 import { ChakraProvider } from "@chakra-ui/react";
 import { theme } from "../theme";
 import { WagmiConfig, createConfig, configureChains, sepolia } from "wagmi";
-import { publicProvider } from "wagmi/providers/public";
+import { publicProvider } from 'wagmi/providers/public';
+import {alchemyProvider,} from 'wagmi/providers/alchemy';
+
 import {
   RainbowKitProvider,
   getDefaultWallets,
   darkTheme,
 } from "@rainbow-me/rainbowkit";
 
+
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [sepolia],
-  [publicProvider()]
+  [
+    alchemyProvider({apiKey: String(process.env.ALCHEMY_API_KEY)}),
+  ]
 );
 
 const { connectors } = getDefaultWallets({
