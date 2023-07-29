@@ -16,6 +16,7 @@
     "@types/node": "20.2.1",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
+    "abitype": "^0.9.6",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
     "framer-motion": "^10.12.12",
@@ -24,7 +25,7 @@
     "react-dom": "18.2.0",
     "typescript": "5.0.4",
     "usehooks-ts": "^2.9.1",
-    "viem": "^1.2.14",
-    "wagmi": "^1.3.8"
+    "viem": "^1.4.2",
+    "wagmi": "^1.3.9"
   }
 }

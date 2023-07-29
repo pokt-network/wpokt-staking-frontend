@@ -1,4 +1,14 @@
+import { use, useEffect, useState } from "react";
+import { useContractWrite, useAccount } from "wagmi";
+import { formatEther, formatUnits, parseEther } from "viem";
+import {
+  useLPTokenBalance,
+  useStakedTokenBalance,
+  useStakeLPToken,
+} from "@/utils/contract/hooks";
+import { address } from "@/utils/contract/types";
 import { useGlobalContext } from "@/context/Globals";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import {
   Button,
   Center,
@@ -9,40 +19,46 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useState } from "react";
-import { useAccount, useBalance } from "wagmi";
 import { EthIcon } from "./icons/eth";
 
 export default function StakingWidget() {
   const { mobile } = useGlobalContext();
-  const { address } = useAccount();
+  const { address: userAddress } = useAccount();
   const { openConnectModal } = useConnectModal();
 
-  const [stakeAmount, setStakeAmount] = useState("0");
 
-  const { data: balance } = useBalance({
-    address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
-    token: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-  });
 
-  const newTotal = Number(balance?.formatted) + Number(stakeAmount);
+  // Setting initial balances
+  const [newStakeAmount, setNewStakeAmount] = useState(0);
+  const { data: lpTokenBalance} = useLPTokenBalance(userAddress as address);
+  const { data: lpTokenStaked } =   useStakedTokenBalance(userAddress as address);
+  const newTotalStaked =  lpTokenStaked ? Number(newStakeAmount) + Number(formatEther(lpTokenStaked as any)) : 0;
+  
+
+  
+  
+  
+
+  const { config } = useStakeLPToken(parseEther(newStakeAmount.toString()));
+  const { data, isLoading, isSuccess, write, isError } = useContractWrite(config);
+  console.log(data, isLoading, isSuccess, isError);
 
   const handleStakeButtonClick = () => {
-    console.log("Pressed it");
+    console.log("Stake button pressed");
+    write?.();
   };
 
   const handleAllButtonClick = () => {
-    setStakeAmount(balance?.formatted as string);
+    lpTokenBalance ? setNewStakeAmount(Number(lpTokenBalance?.formatted)) : setNewStakeAmount(0);
   };
 
   const isInvalidStakeAmount =
-    Number(stakeAmount) < 0 ||
-    newTotal < 0 ||
-    Number(stakeAmount) > Number(balance?.formatted);
+    Number(newStakeAmount) < 0 ||
+    Number(newTotalStaked) < 0 ||
+    Number(newStakeAmount) > Number(lpTokenBalance?.formatted);
 
   const renderStakeButton = () => {
-    if (!address) {
+    if (!userAddress) {
       return (
         <Button
           variant="outline"
@@ -61,7 +77,7 @@ export default function StakingWidget() {
       <Button
         bg="poktLime"
         onClick={handleStakeButtonClick}
-        isDisabled={isInvalidStakeAmount || Number(stakeAmount) == 0}
+        isDisabled={isInvalidStakeAmount || Number(newStakeAmount) === 0}
       >
         Stake
       </Button>
@@ -81,11 +97,11 @@ export default function StakingWidget() {
           _invalid={{ borderColor: "red" }}
           borderRadius={0}
           type="number"
-          value={stakeAmount}
-          onChange={(e) => setStakeAmount(e.target.value)}
+          value={newStakeAmount}
+          onChange={(e) => setNewStakeAmount(Number(e.target.value))}
           isInvalid={isInvalidStakeAmount}
           min={0}
-          max={balance?.formatted}
+          max={lpTokenBalance?.formatted}
         />
         <Button
           bg="poktLime"
@@ -110,7 +126,6 @@ export default function StakingWidget() {
       gap={8}
       textAlign="center"
       flexGrow={1}
-      
       mx={!mobile ? "20%" : "0%"}
       px={10}
       py={10}
@@ -118,28 +133,36 @@ export default function StakingWidget() {
       <Heading>Stake LP tokens</Heading>
       <HStack justify="space-between" maxWidth="80%">
         <Text>Amount to Stake:</Text>
-        {!address ? (
+        {!userAddress ? (
           <Text>No wallet connected</Text>
         ) : (
-          <Text>{balance?.formatted} LP Tokens in wallet</Text>
+          <Text>{lpTokenBalance?.formatted} LP Tokens in wallet</Text>
         )}
       </HStack>
-      {address ? renderStakeInput() : <Center>{renderStakeButton()}</Center>}
+      {userAddress ? (
+        renderStakeInput()
+      ) : (
+        <Center>{renderStakeButton()}</Center>
+      )}
 
       <Divider borderColor="poktLime" marginX={20} />
 
       <Center flexDirection="column">
         <Text>Currently Staked</Text>
-        <Text>{address ? balance?.formatted : "No wallet connected"}</Text>
+        <Text>
+          {userAddress
+            ? (formatUnits(lpTokenStaked as unknown as bigint, 18) as string)
+            : "No wallet connected"}
+        </Text>
       </Center>
       <Center flexDirection="column">
         <Text>New Total Staked:</Text>
         <Text color={!isInvalidStakeAmount ? "white" : "red"}>
-          {address
-            ? Number(stakeAmount) < 0
+          {userAddress
+            ? newStakeAmount < 0
               ? "Can't Input Negative number"
               : !isInvalidStakeAmount
-              ? newTotal
+              ? newTotalStaked
               : "Not Enough LP tokens in Wallet!"
             : "No wallet connected"}
         </Text>
