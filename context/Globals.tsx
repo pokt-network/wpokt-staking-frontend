@@ -1,5 +1,4 @@
-import { useMemo, createContext, useContext, useEffect, useState } from "react";
-import { address } from '../utils/contract/types';
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 export interface GlobalContextProps {
   mobile: boolean;

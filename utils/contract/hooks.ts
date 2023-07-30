@@ -1,16 +1,13 @@
-import { usePrepareContractWrite, useContractRead, useBalance } from "wagmi";
+import { sepolia, useBalance, useContractRead, usePrepareContractWrite } from "wagmi";
 import {
-  StakeContract,
   RewardContract,
+  StakeContract,
   StakingRewardContract,
 } from "./contractAddress";
-import { sepolia } from "wagmi";
 
 // types and iterfaces
-import { address } from "./types";
 import { StakingRewardsABI } from "./abi";
-import { use } from "react";
-import { parseEther } from "viem";
+import { address } from "./types";
 
 export const useLPTokenBalance = (address: address) =>
   useBalance({

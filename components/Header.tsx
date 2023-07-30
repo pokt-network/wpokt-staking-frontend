@@ -1,4 +1,4 @@
-
+"use client"
 import { useGlobalContext } from "@/context/Globals";
 import {
     Button, ButtonGroup,
@@ -20,7 +20,6 @@ import { useAccount, useDisconnect } from "wagmi";
 import logo from "../public/logo/full_white.png";
 import { BlueEthIcon, EthIcon } from "./icons/eth";
 import { CloseIcon, MenuIcon } from "./icons/misc";
-import { useEffect, useState } from "react";
 
 
 export function Header() {
