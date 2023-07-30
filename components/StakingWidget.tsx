@@ -1,6 +1,6 @@
 import { use, useEffect, useState } from "react";
 import { useContractWrite, useAccount } from "wagmi";
-import { formatEther, formatUnits, parseEther } from "viem";
+import { formatEther, parseEther } from "viem";
 import {
   useLPTokenBalance,
   useStakedTokenBalance,
@@ -26,21 +26,20 @@ export default function StakingWidget() {
   const { address: userAddress } = useAccount();
   const { openConnectModal } = useConnectModal();
 
-
-
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState(0);
-  const { data: lpTokenBalance} = useLPTokenBalance(userAddress as address);
-  const { data: lpTokenStaked } =   useStakedTokenBalance(userAddress as address);
-  const newTotalStaked =  lpTokenStaked ? Number(newStakeAmount) + Number(formatEther(lpTokenStaked as any)) : 0;
-  
+  const { data: lpTokenBalance } = useLPTokenBalance(userAddress as address);
+  const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address);
+  const newTotalStaked =
+    userAddress && lpTokenStaked
+      ? Number(newStakeAmount) + Number(formatEther(lpTokenStaked as any))
+      : 0;
 
-  
-  
-  
-
-  const { config } = useStakeLPToken({amount: parseEther(newStakeAmount.toString())});
-  const { data, isLoading, isSuccess, write, isError } = useContractWrite(config);
+  const { config } = useStakeLPToken({
+    amount: parseEther(newStakeAmount.toString()),
+  });
+  const { data, isLoading, isSuccess, write, isError } =
+    useContractWrite(config);
   console.log(data, isLoading, isSuccess, isError);
 
   const handleStakeButtonClick = () => {
@@ -49,7 +48,9 @@ export default function StakingWidget() {
   };
 
   const handleAllButtonClick = () => {
-    lpTokenBalance ? setNewStakeAmount(Number(lpTokenBalance?.formatted)) : setNewStakeAmount(0);
+    lpTokenBalance
+      ? setNewStakeAmount(Number(lpTokenBalance?.formatted))
+      : setNewStakeAmount(0);
   };
 
   const isInvalidStakeAmount =
@@ -133,10 +134,10 @@ export default function StakingWidget() {
       <Heading>Stake LP tokens</Heading>
       <HStack justify="space-between" maxWidth="80%">
         <Text>Amount to Stake:</Text>
-        {!userAddress ? (
-          <Text>No wallet connected</Text>
-        ) : (
+        {userAddress ? (
           <Text>{lpTokenBalance?.formatted} LP Tokens in wallet</Text>
+        ) : (
+          <Text>No wallet connected</Text>
         )}
       </HStack>
       {userAddress ? (
@@ -151,7 +152,7 @@ export default function StakingWidget() {
         <Text>Currently Staked</Text>
         <Text>
           {userAddress
-            ? (formatUnits(lpTokenStaked as unknown as bigint, 18) as string)
+            ? formatEther(lpTokenStaked as unknown as bigint)
             : "No wallet connected"}
         </Text>
       </Center>

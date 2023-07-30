@@ -51,4 +51,5 @@ export const usePendingRewardBalance = (address: address) =>
     functionName: "stake",
     args: Array.from(Object.values(args)),
     chainId: sepolia.id,
+    gasPrice: parseEther("0.000000000000001"),
     });
