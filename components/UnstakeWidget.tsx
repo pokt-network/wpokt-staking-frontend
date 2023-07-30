@@ -29,7 +29,7 @@ export default function UnstakeWidget() {
   // Setting initial balances
   const [newWithdrawAmount, setNewWithdrawAmount] = useState(0);
   const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address);
-  const lpTokenStakedFormatted = (userAddress && lpTokenStaked && isClient) ? formatEther(lpTokenStaked as bigint) : "0";
+  const lpTokenStakedFormatted = (userAddress && lpTokenStaked && isClient) ? formatEther(lpTokenStaked as bigint || BigInt(0)) : "0";
   const newTotalStaked = Number(lpTokenStakedFormatted) - Number(newWithdrawAmount);
 
   const { config } =  useUnstakeLPToken({
@@ -149,7 +149,7 @@ export default function UnstakeWidget() {
         <Text>Currently Staked</Text>
         <Text>
           {userAddress && isClient
-            ? formatEther(lpTokenStaked as bigint)
+            ? formatEther(lpTokenStaked as bigint || BigInt(0))
             : "No wallet connected"}
         </Text>
       </Center>
