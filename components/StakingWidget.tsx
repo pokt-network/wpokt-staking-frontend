@@ -82,7 +82,7 @@ export default function StakingWidget() {
 
   const newTotalStaked = userAddress && lpTokenStaked && isClient
     ? Number(newStakeAmount) + (
-      (lpTokenStaked && isClient) ? Number(formatEther(lpTokenStaked as unknown as bigint)) : 0)
+      (lpTokenStaked && isClient) ? Number(formatEther(lpTokenStaked as unknown as bigint)) : 0) : 0
 
   
   const { config } = useStakeLPToken({
@@ -146,7 +146,7 @@ export default function StakingWidget() {
         <Text>Currently Staked</Text>
         <Text>
           {userAddress && isClient
-            ? formatEther(lpTokenStaked as bigint)
+            ? formatEther(lpTokenStaked as bigint || BigInt(0))
             : "No wallet connected"}
         </Text>
       </Center>
