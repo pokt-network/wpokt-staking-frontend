@@ -1,5 +1,10 @@
 import { useGlobalContext } from "@/context/Globals";
 import {
+  useStakedTokenBalance,
+  useUnstakeLPToken
+} from "@/utils/contract/hooks";
+import { address } from "@/utils/contract/types";
+import {
   Button,
   Center,
   Divider,
@@ -11,38 +16,46 @@ import {
 } from "@chakra-ui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { formatEther, parseEther } from "viem";
+import { useAccount, useContractWrite } from "wagmi";
 import { EthIcon } from "./icons/eth";
 
 export default function UnstakeWidget() {
-  const { mobile } = useGlobalContext();
-  const { address } = useAccount();
+  const { mobile, isClient } = useGlobalContext();
+  const { address: userAddress } = useAccount();
   const { openConnectModal } = useConnectModal();
 
-  const [unstakeAmount, setUnstakeAmount] = useState("0");
+  // Setting initial balances
+  const [newWithdrawAmount, setNewWithdrawAmount] = useState(0);
+  const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address);
+  const lpTokenStakedFormatted = (userAddress && lpTokenStaked && isClient) ? formatEther(lpTokenStaked as bigint) : "0";
+  const newTotalStaked = Number(lpTokenStakedFormatted) - Number(newWithdrawAmount);
 
-  const { data: balance } = useBalance({
-    address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
-    token: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  const { config } = useUnstakeLPToken({
+    amount: parseEther(Number(newTotalStaked).toFixed(18).toString()),
   });
-
-  const newTotal = Number(balance?.formatted) - Number(unstakeAmount);
+  const { data, isLoading, isSuccess, write, isError } =
+    useContractWrite(config);
+  console.log(data, isLoading, isSuccess, isError);
 
   const handleWithdrawButtonClick = () => {
-    console.log("Pressed it");
+    console.log("Withdraw button pressed");
+    write?.();
   };
 
   const handleAllButtonClick = () => {
-    setUnstakeAmount(balance?.formatted as string);
+    Number(lpTokenStaked) == 0
+      ? setNewWithdrawAmount(Number(lpTokenStakedFormatted))
+      : setNewWithdrawAmount(0);
   };
 
-  const isInvalidUnstakeAmount =
-    Number(unstakeAmount) < 0 ||
-    newTotal < 0 ||
-    newTotal > Number(balance?.formatted);
+  const isInvalidWithdrawAmount =
+    Number(newWithdrawAmount) < 0 ||
+    Number(lpTokenStakedFormatted) <= 0 ||
+    Number(newWithdrawAmount) > Number(lpTokenStakedFormatted);
 
   const renderWithdrawButton = () => {
-    if (!address) {
+    if (!userAddress || !isClient) {
       return (
         <Button
           variant="outline"
@@ -61,14 +74,14 @@ export default function UnstakeWidget() {
       <Button
         bg="poktLime"
         onClick={handleWithdrawButtonClick}
-        isDisabled={isInvalidUnstakeAmount || Number(unstakeAmount) == 0}
+        isDisabled={isInvalidWithdrawAmount || Number(newWithdrawAmount) === 0}
       >
         Withdraw
       </Button>
     );
   };
 
-  const renderUnstakeInput = () => {
+  const renderStakeInput = () => {
     return (
       <Center position="relative" width="60%">
         <Input
@@ -81,11 +94,11 @@ export default function UnstakeWidget() {
           _invalid={{ borderColor: "red" }}
           borderRadius={0}
           type="number"
-          value={unstakeAmount}
-          onChange={(e) => setUnstakeAmount(e.target.value)}
-          isInvalid={isInvalidUnstakeAmount}
+          value={newWithdrawAmount}
+          onChange={(e) => setNewWithdrawAmount(Number(e.target.value))}
+          isInvalid={isInvalidWithdrawAmount}
           min={0}
-          max={balance?.formatted}
+          max={Number(lpTokenStakedFormatted)}
         />
         <Button
           bg="poktLime"
@@ -93,7 +106,7 @@ export default function UnstakeWidget() {
           position="absolute"
           right={1}
           float="right"
-          zIndex={10}
+          zIndex={5}
         >
           All
         </Button>
@@ -110,22 +123,21 @@ export default function UnstakeWidget() {
       gap={8}
       textAlign="center"
       flexGrow={1}
-      
       mx={!mobile ? "20%" : "0%"}
       px={10}
       py={10}
     >
       <Heading>Withdraw LP tokens</Heading>
       <HStack justify="space-between" maxWidth="80%">
-        <Text>Amount to withdraw:</Text>
-        {!address ? (
-          <Text>No wallet connected</Text>
+        <Text>Amount to Withdraw:</Text>
+        {userAddress && isClient ? (
+          <Text>{lpTokenStakedFormatted} LP Staked</Text>
         ) : (
-          <Text>{balance?.formatted} LP Staked</Text>
+          <Text>No wallet connected</Text>
         )}
       </HStack>
-      {address ? (
-        renderUnstakeInput()
+      {userAddress && isClient ? (
+        renderStakeInput()
       ) : (
         <Center>{renderWithdrawButton()}</Center>
       )}
@@ -134,17 +146,21 @@ export default function UnstakeWidget() {
 
       <Center flexDirection="column">
         <Text>Currently Staked</Text>
-        <Text>{address ? balance?.formatted : "No wallet connected"}</Text>
+        <Text>
+          {userAddress && isClient
+            ? formatEther(lpTokenStaked as bigint)
+            : "No wallet connected"}
+        </Text>
       </Center>
       <Center flexDirection="column">
         <Text>New Total Staked:</Text>
-        <Text color={!isInvalidUnstakeAmount ? "white" : "red"}>
-          {address
-            ? Number(unstakeAmount) < 0
+        <Text color={!isInvalidWithdrawAmount ? "white" : "red"}>
+          {userAddress && isClient
+            ? newWithdrawAmount < 0
               ? "Can't Input Negative number"
-              : !isInvalidUnstakeAmount
-              ? newTotal
-              : "Withdraw Amount can't be more than staked!"
+              : !isInvalidWithdrawAmount
+              ? Number(newTotalStaked).toFixed(18)
+              : `Withdrawal amount can't be greater than staked amount`
             : "No wallet connected"}
         </Text>
       </Center>

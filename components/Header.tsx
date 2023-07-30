@@ -17,17 +17,20 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
 import { useAccount, useDisconnect } from "wagmi";
 import logo from "../public/logo/full_white.png";
-import { EthIcon } from "./icons/eth";
+import { BlueEthIcon, EthIcon } from "./icons/eth";
 import { CloseIcon, MenuIcon } from "./icons/misc";
+import { useEffect, useState } from "react";
 
 
 export function Header() {
-    const { mobile  } = useGlobalContext()
+    const { mobile, isClient  } = useGlobalContext()
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { openConnectModal } = useConnectModal()
     const { address } = useAccount()
     const { disconnect } = useDisconnect()
     const width = 220
+    
+
 
     return (
         <HStack justify="space-between" align="center" paddingX={10} paddingY={5}>
@@ -49,10 +52,10 @@ export function Header() {
                     <DrawerContent bg="#242C34" color="white" maxW={width}>
                         <DrawerHeader textAlign="center" color="poktBlue">MENU</DrawerHeader>
                         <DrawerBody>
-                            {address ? (
+                            {isClient && address ? (
                                 <VStack spacing={1}>
                                     <Flex align="center" justify="space-between" bg="darkBlue" width={width} padding={2}>
-                                        <EthIcon fill="poktBlue" width="26px" height="26px" />
+                                        <BlueEthIcon width="26px" height="26px" />
                                         <Text>{address.substring(0,4) + "..." + address.substring(address.length - 4)}</Text>
                                         <CloseIcon width="22.63px" height="22.63px" fill="none" />
                                     </Flex>
@@ -88,11 +91,11 @@ export function Header() {
                 </>
             ) : (
                 <ButtonGroup>
-                    {address ? (
+                    {address && isClient ? (
                         <Button
                             color="white"
                             background="darkOverlay"
-                            leftIcon={<EthIcon fill="poktBlue" width="28px" height="28px" />}
+                            leftIcon={<BlueEthIcon width="28px" height="28px" />}
                             borderWidth={2}
                             borderColor="darkOverlay"
                             padding={4}

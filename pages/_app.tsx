@@ -1,3 +1,4 @@
+"use client";
 import "@rainbow-me/rainbowkit/styles.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";

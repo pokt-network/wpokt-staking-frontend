@@ -25,16 +25,13 @@ export default function Home() {
     <GlobalContextProvider>
       <Flex direction="column" minHeight="100vh" overflowX="hidden">
         <Header />
-        <Heading size="lg" color="poktBlue" textAlign="center" padding={4}>
+        <Heading size="lg" color="white" textAlign="center" padding={4}>
           wPOKT-ETH Liquidity Pool Farm
         </Heading>
 
         <Center paddingX={10}>
           <Divider borderColor={"poktLime"} />
         </Center>
-        {/* <Heading>
-          {width}
-        </Heading> */}
         <LPInfoBlock />
         <Center paddingX={10}>
           <Divider borderColor={"poktLime"} />

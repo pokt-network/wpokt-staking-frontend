@@ -51,5 +51,12 @@ export const usePendingRewardBalance = (address: address) =>
     functionName: "stake",
     args: Array.from(Object.values(args)),
     chainId: sepolia.id,
-    gasPrice: parseEther("0.000000000000001"),
+    });
+
+  export const useUnstakeLPToken = (args:{amount:bigint}) => usePrepareContractWrite({
+    abi: StakingRewardsABI,
+    address: StakingRewardContract,
+    functionName: "withdraw",
+    args: Array.from(Object.values(args)),
+    chainId: sepolia.id,
     });

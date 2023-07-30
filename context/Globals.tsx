@@ -1,10 +1,12 @@
 import { useMemo, createContext, useContext, useEffect, useState } from "react";
+import { address } from '../utils/contract/types';
 
 export interface GlobalContextProps {
   mobile: boolean;
   setMobile: (mobile: boolean) => void;
   ethAddress: string;
   setEthAddress: (address: string) => void;
+  isClient: boolean;
 }
 
 export const GlobalContext = createContext<GlobalContextProps>({
@@ -12,6 +14,7 @@ export const GlobalContext = createContext<GlobalContextProps>({
   setMobile: () => {},
   ethAddress: "",
   setEthAddress: () => {},
+  isClient: false,
 });
 
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -21,8 +24,9 @@ export const useGlobalContext = () => useContext(GlobalContext);
 export function GlobalContextProvider({ children }: any) {
     const [mobile, setMobile] = useState<boolean>(false);
     const [ethAddress, setEthAddress] = useState<string>("");
-
+    const [isClient, setIsClient] = useState(false);
     useEffect(() => {
+        setIsClient(true);
         toggleMobile();
         window.addEventListener("resize", toggleMobile);
         return () => window.removeEventListener("resize", toggleMobile);
@@ -41,7 +45,8 @@ export function GlobalContextProvider({ children }: any) {
         setMobile,
         ethAddress,
         setEthAddress,
-    }), [mobile, setMobile, ethAddress, setEthAddress]);
+        isClient
+    }), [mobile, setMobile, ethAddress, setEthAddress, isClient]);
 
     return (
         <GlobalContext.Provider value={contextValue}>
