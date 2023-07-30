@@ -25,6 +25,7 @@
     "next": "^13.0.7",
     "node-fetch": "^3.3.2",
     "pino": "^8.14.2",
+    "pino-pretty": "^10.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.0.2",

@@ -81,9 +81,10 @@ export default function StakingWidget() {
   const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address);
 
   const newTotalStaked = userAddress && lpTokenStaked && isClient
-    ? Number(newStakeAmount) + ((lpTokenStaked && isClient) ? Number(formatEther(lpTokenStaked as bigint)) : 0)
-    : 0;
+    ? Number(newStakeAmount) + (
+      (lpTokenStaked && isClient) ? Number(formatEther(lpTokenStaked as unknown as bigint)) : 0)
 
+  
   const { config } = useStakeLPToken({
     amount: parseEther(newStakeAmount.toString()),
   });
