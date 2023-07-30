@@ -1,6 +1,5 @@
 "use client"
 
-import { ColorModeScript } from "@chakra-ui/react"
 import Provider from "./provider"
 import Head from "next/head";
 export default function RootLayout({
@@ -17,7 +16,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
-        <ColorModeScript type="cookie" nonce="testing" />
+
         <Provider>{children}</Provider>
       </body>
     </html>

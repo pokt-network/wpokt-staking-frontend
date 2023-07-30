@@ -1,7 +1,7 @@
 "use client"
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { GlobalContextProvider } from "@/context/Globals";
+import { GlobalContextProvider, useGlobalContext } from "@/context/Globals";
 import {
   Center,
   Divider,
@@ -16,11 +16,13 @@ import {
 } from "@chakra-ui/react";
 import { useWindowSize } from 'usehooks-ts';
 
+
 import LPInfoBlock from "@/components/LPInfoBlock";
 import StakingWidget from "@/components/StakingWidget";
 import UnstakeWidget from "@/components/UnstakeWidget";
 
 export default function Page() {
+  const {isClient} = useGlobalContext();
   const { width } = useWindowSize();
   return (
     <GlobalContextProvider>
@@ -45,7 +47,8 @@ export default function Page() {
           bg="darkOverlay"
           m={8}
           borderRadius={"10 10 0 0"}
-          width={width > 1200 ? "1200px" : "100%"}
+          width={isClient && (width > 1200) ? "1200px" : "100%"}
+          id={"0"}
         >
           <TabList flexGrow={1}>
             <Tab>Stake</Tab>

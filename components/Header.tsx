@@ -56,7 +56,7 @@ export function Header() {
                                 <VStack spacing={1}>
                                     <Flex align="center" justify="space-between" bg="darkBlue" width={width} padding={2}>
                                         <BlueEthIcon width="26px" height="26px" />
-                                        <Text>{address.substring(0,4) + "..." + address.substring(address.length - 4)}</Text>
+                                        <Text>{address?.substring(0,4) + "..." + address?.substring(address.length - 4)}</Text>
                                         <CloseIcon width="22.63px" height="22.63px" fill="none" />
                                     </Flex>
                                     <Link
