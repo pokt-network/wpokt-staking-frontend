@@ -17,13 +17,13 @@ import {
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [sepolia],
   [
-    alchemyProvider({apiKey: String(process.env.ALCHEMY_API_KEY)}),
+    alchemyProvider({apiKey: String(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY)}),
   ]
 );
 
 const { connectors } = getDefaultWallets({
   appName: "wPOKT Bridge",
-  projectId: `${process.env.APP_PROJECT_ID}`,
+  projectId: `${process.env.NEXT_PUBLIC_APP_PROJECT_ID}`,
   chains,
 });
 
