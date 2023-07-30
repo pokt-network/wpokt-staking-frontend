@@ -1,3 +1,4 @@
+"use client"
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { GlobalContextProvider } from "@/context/Globals";
@@ -13,13 +14,13 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import { useWindowSize } from 'usehooks-ts'
+import { useWindowSize } from 'usehooks-ts';
 
 import LPInfoBlock from "@/components/LPInfoBlock";
 import StakingWidget from "@/components/StakingWidget";
 import UnstakeWidget from "@/components/UnstakeWidget";
-import WithdrawRewardsWidget from "@/components/WithdrawRewardsWidget";
-export default function Home() {
+
+export default function Page() {
   const { width } = useWindowSize();
   return (
     <GlobalContextProvider>

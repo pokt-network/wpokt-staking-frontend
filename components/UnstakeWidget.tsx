@@ -1,4 +1,4 @@
-
+"use client"
 import { useGlobalContext } from "@/context/Globals";
 import {
   useStakedTokenBalance,

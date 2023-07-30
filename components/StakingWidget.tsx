@@ -1,4 +1,4 @@
-
+"use client"
 import { useGlobalContext } from "@/context/Globals";
 import { useLPTokenBalance, useStakeLPToken, useStakedTokenBalance } from "@/utils/contract/hooks";
 import { address } from "@/utils/contract/types";
