@@ -1,17 +1,16 @@
-"use client";
+
+import { ChakraProvider } from "@chakra-ui/react";
 import "@rainbow-me/rainbowkit/styles.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { ChakraProvider } from "@chakra-ui/react";
+import { WagmiConfig, configureChains, createConfig, sepolia } from "wagmi";
+import { alchemyProvider, } from 'wagmi/providers/alchemy';
 import { theme } from "../theme";
-import { WagmiConfig, createConfig, configureChains, sepolia } from "wagmi";
-import { publicProvider } from 'wagmi/providers/public';
-import {alchemyProvider,} from 'wagmi/providers/alchemy';
 
 import {
   RainbowKitProvider,
-  getDefaultWallets,
   darkTheme,
+  getDefaultWallets,
 } from "@rainbow-me/rainbowkit";
 
 

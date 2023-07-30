@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useContractWrite, useAccount } from "wagmi";
-import { formatEther, parseEther } from "viem";
-import { useLPTokenBalance, useStakedTokenBalance, useStakeLPToken } from "@/utils/contract/hooks";
-import { address } from "@/utils/contract/types";
+
 import { useGlobalContext } from "@/context/Globals";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useLPTokenBalance, useStakeLPToken, useStakedTokenBalance } from "@/utils/contract/hooks";
+import { address } from "@/utils/contract/types";
 import { Button, Center, Divider, HStack, Heading, Input, Text, VStack } from "@chakra-ui/react";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useState } from "react";
+import { formatEther, parseEther } from "viem";
+import { useAccount, useContractWrite } from "wagmi";
 import { EthIcon } from "./icons/eth";
 
 function ConnectWalletButton({ openConnectModal}:any) {

@@ -1,3 +1,4 @@
+
 import { useGlobalContext } from "@/context/Globals";
 import {
   useStakedTokenBalance,
@@ -31,7 +32,7 @@ export default function UnstakeWidget() {
   const lpTokenStakedFormatted = (userAddress && lpTokenStaked && isClient) ? formatEther(lpTokenStaked as bigint) : "0";
   const newTotalStaked = Number(lpTokenStakedFormatted) - Number(newWithdrawAmount);
 
-  const { config } = useUnstakeLPToken({
+  const { config } =  useUnstakeLPToken({
     amount: parseEther(Number(newTotalStaked).toFixed(18).toString()),
   });
   const { data, isLoading, isSuccess, write, isError } =
