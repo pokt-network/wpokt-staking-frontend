@@ -18,8 +18,9 @@ import { useWindowSize } from 'usehooks-ts';
 
 
 import LPInfoBlock from "@/components/LPInfoBlock";
-import StakingWidget from "@/components/StakingWidget";
-import UnstakeWidget from "@/components/UnstakeWidget";
+import StakingWidget from "@/components/Stake/StakingWidget";
+import UnstakeWidget from "@/components/Unstake/UnstakeWidget";
+import WithdrawRewardsWidget from "@/components/WithdrawRewardsWidget";
 
 export default function Page() {
   const {isClient} = useGlobalContext();
@@ -64,7 +65,10 @@ export default function Page() {
             </TabPanel>
           </TabPanels>
         </Tabs>
-
+        <Center
+          bg="darkOverlay">
+        <WithdrawRewardsWidget />
+        </Center>
         <Spacer />
       </Flex>
       <Footer />

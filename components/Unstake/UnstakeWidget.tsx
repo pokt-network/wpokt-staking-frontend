@@ -1,43 +1,46 @@
-"use client"
 import { useGlobalContext } from "@/context/Globals";
 import {
   useStakedTokenBalance,
-  useUnstakeLPToken
+  useUnstakeLPToken,
 } from "@/utils/contract/hooks";
 import { address } from "@/utils/contract/types";
 import {
-  Button,
   Center,
   Divider,
   HStack,
   Heading,
-  Input,
   Text,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
-import { EthIcon } from "./icons/eth";
+import ConnectWalletButton from "../ConnectButton";
+import WithDrawButton from "./Components/Button";
+import WithdrawInput from "./Components/Input";
+
 
 export default function UnstakeWidget() {
+
+
   const { mobile, isClient } = useGlobalContext();
   const { address: userAddress } = useAccount();
   const { openConnectModal } = useConnectModal();
 
-  // Setting initial balances
   const [newWithdrawAmount, setNewWithdrawAmount] = useState(0);
   const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address);
-  const lpTokenStakedFormatted = (userAddress && lpTokenStaked && isClient) ? formatEther(lpTokenStaked as bigint || BigInt(0)) : "0";
-  const newTotalStaked = Number(lpTokenStakedFormatted) - Number(newWithdrawAmount);
+  const lpTokenStakedFormatted =
+    userAddress && lpTokenStaked && isClient
+      ? formatEther((lpTokenStaked as bigint) || BigInt(0))
+      : "0";
+  const newTotalStaked =
+    Number(lpTokenStakedFormatted) - Number(newWithdrawAmount);
 
-  const { config } =  useUnstakeLPToken({
+  const { config } = useUnstakeLPToken({
     amount: parseEther(Number(newWithdrawAmount).toFixed(18).toString()),
   });
-  const { data, isLoading, isSuccess, write, isError } =
-    useContractWrite(config);
-  console.log(data, isLoading, isSuccess, isError);
+  const { write } = useContractWrite(config);
 
   const handleWithdrawButtonClick = () => {
     console.log("Withdraw button pressed");
@@ -53,66 +56,6 @@ export default function UnstakeWidget() {
   const isInvalidWithdrawAmount =
     Number(newWithdrawAmount) < 0 ||
     Number(newWithdrawAmount) > Number(lpTokenStakedFormatted);
-
-  const renderWithdrawButton = () => {
-    if (!userAddress || !isClient) {
-      return (
-        <Button
-          variant="outline"
-          borderColor="poktLime"
-          bg="transparent"
-          color="white"
-          leftIcon={<EthIcon fill={"white"} />}
-          onClick={openConnectModal}
-        >
-          Connect Wallet
-        </Button>
-      );
-    }
-
-    return (
-      <Button
-        bg="poktLime"
-        onClick={handleWithdrawButtonClick}
-        isDisabled={isInvalidWithdrawAmount || Number(newWithdrawAmount) === 0}
-      >
-        Withdraw
-      </Button>
-    );
-  };
-
-  const renderStakeInput = () => {
-    return (
-      <Center position="relative" width="60%">
-        <Input
-          placeholder="0.0"
-          width="100%"
-          color="white"
-          _placeholder={{ color: "white" }}
-          _focus={{ borderColor: "poktLime" }}
-          _hover={{ borderColor: "poktLime" }}
-          _invalid={{ borderColor: "red" }}
-          borderRadius={0}
-          type="number"
-          value={newWithdrawAmount}
-          onChange={(e) => setNewWithdrawAmount(Number(e.target.value))}
-          isInvalid={isInvalidWithdrawAmount}
-          min={0}
-          max={Number(lpTokenStakedFormatted)}
-        />
-        <Button
-          bg="poktLime"
-          onClick={handleAllButtonClick}
-          position="absolute"
-          right={1}
-          float="right"
-          zIndex={5}
-        >
-          All
-        </Button>
-      </Center>
-    );
-  };
 
   return (
     <VStack
@@ -137,9 +80,17 @@ export default function UnstakeWidget() {
         )}
       </HStack>
       {userAddress && isClient ? (
-        renderStakeInput()
+        <WithdrawInput
+          newWithdrawAmount={newWithdrawAmount}
+          setNewWithdrawAmount={setNewWithdrawAmount}
+          handleAllButtonClick={handleAllButtonClick}
+          isInvalidWithdrawAmount={isInvalidWithdrawAmount}
+          lpTokenStakedFormatted={lpTokenStakedFormatted}
+        />
       ) : (
-        <Center>{renderWithdrawButton()}</Center>
+        <Center>
+          <ConnectWalletButton />
+        </Center>
       )}
 
       <Divider borderColor="poktLime" marginX={20} />
@@ -148,7 +99,7 @@ export default function UnstakeWidget() {
         <Text>Currently Staked</Text>
         <Text>
           {userAddress && isClient
-            ? formatEther(lpTokenStaked as bigint || BigInt(0))
+            ? formatEther((lpTokenStaked as bigint) || BigInt(0))
             : "No wallet connected"}
         </Text>
       </Center>
@@ -159,8 +110,8 @@ export default function UnstakeWidget() {
             ? newWithdrawAmount < 0
               ? "Can't Input Negative number"
               : !isInvalidWithdrawAmount
-              ? Number(newTotalStaked).toFixed(15)
-              : `Withdrawal amount can't be greater than staked amount`
+                ? Number(newTotalStaked).toFixed(15)
+                : `Withdrawal amount can't be greater than staked amount`
             : "No wallet connected"}
         </Text>
       </Center>
@@ -169,7 +120,17 @@ export default function UnstakeWidget() {
         <Text>0.001 Gwei</Text>
       </Center>
 
-      <Center gap={2}>{renderWithdrawButton()}</Center>
+      <Center gap={2}>
+        {userAddress && isClient ? (
+          <WithDrawButton
+            isInvalidWithdrawAmount={isInvalidWithdrawAmount}
+            newWithdrawAmount={newWithdrawAmount}
+            handleWithdrawButtonClick={handleWithdrawButtonClick}
+          />
+        ) : (
+          <ConnectWalletButton openConnectModal={openConnectModal} />
+        )}
+      </Center>
     </VStack>
   );
 }
