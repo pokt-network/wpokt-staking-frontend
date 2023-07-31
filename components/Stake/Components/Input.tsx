@@ -27,7 +27,7 @@ export default function StakeInput({
           max={lpTokenBalance?.formatted}
         />
         <Button
-          bg="poktLime"
+          
           onClick={handleAllButtonClick}
           position="absolute"
           right={1}

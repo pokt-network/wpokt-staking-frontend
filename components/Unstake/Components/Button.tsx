@@ -7,7 +7,7 @@ export default function WithDrawButton({
   }: any) {
     return (
       <Button
-        bg="poktLime"
+        
         onClick={handleWithdrawButtonClick}
         isDisabled={isInvalidWithdrawAmount || Number(newWithdrawAmount) === 0}
       >

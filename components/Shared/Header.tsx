@@ -17,9 +17,9 @@ import {
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
 import { useAccount, useDisconnect } from "wagmi";
-import logo from "../public/logo/full_white.png";
-import { BlueEthIcon, EthIcon } from "./icons/eth";
-import { CloseIcon, MenuIcon } from "./icons/misc";
+import logo from "@/public/logo/full_white.png";
+import { BlueEthIcon, EthIcon } from "@/components/icons/eth";
+import { CloseIcon, MenuIcon } from "@/components/icons/misc";
 
 
 export function Header() {

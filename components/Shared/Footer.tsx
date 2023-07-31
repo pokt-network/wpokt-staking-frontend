@@ -1,6 +1,6 @@
 import { Box, Center, Flex, HStack, Heading, Link, Text, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { DiscordIcon, GithubIcon, TwitterIcon } from "./icons/socials";
+import { DiscordIcon, GithubIcon, TwitterIcon } from "../icons/socials";
 
 export function Footer() {
     const [mobileFooter, setMobileFooter] = useState<boolean>(false)

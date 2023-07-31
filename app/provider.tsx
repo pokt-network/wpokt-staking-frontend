@@ -1,5 +1,7 @@
 "use client"
 
+import '@fontsource-variable/manrope';
+
 import { CacheProvider } from "@chakra-ui/next-js";
 import { ChakraProvider } from "@chakra-ui/react";
 import "@rainbow-me/rainbowkit/styles.css";

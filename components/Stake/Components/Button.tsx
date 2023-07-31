@@ -7,7 +7,7 @@ export default function StakeButton({
   }: any) {
     return (
       <Button
-        bg="poktLime"
+        
         onClick={handleStakeButtonClick}
         isDisabled={isInvalidStakeAmount || Number(newStakeAmount) === 0}
       >

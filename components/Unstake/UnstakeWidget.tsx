@@ -16,7 +16,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
-import ConnectWalletButton from "../ConnectButton";
+import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import WithDrawButton from "./Components/Button";
 import WithdrawInput from "./Components/Input";
 
@@ -128,7 +128,7 @@ export default function UnstakeWidget() {
             handleWithdrawButtonClick={handleWithdrawButtonClick}
           />
         ) : (
-          <ConnectWalletButton openConnectModal={openConnectModal} />
+          <ConnectWalletButton/>
         )}
       </Center>
     </VStack>

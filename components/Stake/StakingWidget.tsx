@@ -12,18 +12,15 @@ import {
   HStack,
   Heading,
   Text,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
-import ConnectWalletButton from "../ConnectButton";
+import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import StakeButton from "./Components/Button";
 import StakeInput from "./Components/Input";
-
-
-
 
 export default function StakingWidget() {
   const { mobile, isClient } = useGlobalContext();
@@ -40,9 +37,9 @@ export default function StakingWidget() {
   const newTotalStaked =
     userAddress && lpTokenStaked && isClient
       ? Number(newStakeAmount) +
-      (lpTokenStaked && isClient
-        ? Number(formatEther(lpTokenStaked as unknown as bigint))
-        : 0)
+        (lpTokenStaked && isClient
+          ? Number(formatEther(lpTokenStaked as unknown as bigint))
+          : 0)
       : 0;
 
   const { config } = useStakeLPToken({
@@ -100,7 +97,7 @@ export default function StakingWidget() {
         />
       ) : (
         <Center>
-          <ConnectWalletButton openConnectModal={openConnectModal} />
+          <ConnectWalletButton/>
         </Center>
       )}
 
@@ -121,8 +118,8 @@ export default function StakingWidget() {
             ? newStakeAmount < 0
               ? "Can't Input Negative number"
               : !isInvalidStakeAmount
-                ? Number(newTotalStaked).toFixed(18)
-                : "Not Enough LP tokens in Wallet!"
+              ? Number(newTotalStaked).toFixed(18)
+              : "Not Enough LP tokens in Wallet!"
             : "No wallet connected"}
         </Text>
       </Center>
@@ -139,7 +136,7 @@ export default function StakingWidget() {
             handleStakeButtonClick={handleStakeButtonClick}
           />
         ) : (
-          <ConnectWalletButton openConnectModal={openConnectModal} />
+          <ConnectWalletButton/>
         )}
       </Center>
     </VStack>

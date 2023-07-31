@@ -26,7 +26,7 @@ export default function WithdrawInput({
           max={Number(lpTokenStakedFormatted)}
         />
         <Button
-          bg="poktLime"
+          
           onClick={handleAllButtonClick}
           position="absolute"
           right={1}

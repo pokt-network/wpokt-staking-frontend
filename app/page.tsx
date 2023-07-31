@@ -1,6 +1,6 @@
 "use client"
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
+import { Footer } from "@/components/Shared/Footer";
+import { Header } from "@/components/Shared/Header";
 import { GlobalContextProvider, useGlobalContext } from "@/context/Globals";
 import {
   Center,
@@ -17,10 +17,10 @@ import {
 import { useWindowSize } from 'usehooks-ts';
 
 
-import LPInfoBlock from "@/components/LPInfoBlock";
+import LPInfoBlock from "@/components/Shared/LPInfoBlock";
 import StakingWidget from "@/components/Stake/StakingWidget";
 import UnstakeWidget from "@/components/Unstake/UnstakeWidget";
-import WithdrawRewardsWidget from "@/components/WithdrawRewardsWidget";
+import RewardsWidget from "@/components/Rewards/RewardsWidget";
 
 export default function Page() {
   const {isClient} = useGlobalContext();
@@ -67,7 +67,7 @@ export default function Page() {
         </Tabs>
         <Center
           bg="darkOverlay">
-        <WithdrawRewardsWidget />
+        <RewardsWidget/>
         </Center>
         <Spacer />
       </Flex>
