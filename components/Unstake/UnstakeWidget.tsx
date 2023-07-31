@@ -1,3 +1,4 @@
+import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
 import {
   useStakedTokenBalance,
@@ -12,11 +13,9 @@ import {
   Text,
   VStack
 } from "@chakra-ui/react";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
-import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import WithDrawButton from "./Components/Button";
 import WithdrawInput from "./Components/Input";
 
@@ -26,7 +25,7 @@ export default function UnstakeWidget() {
 
   const { mobile, isClient } = useGlobalContext();
   const { address: userAddress } = useAccount();
-  const { openConnectModal } = useConnectModal();
+  
 
   const [newWithdrawAmount, setNewWithdrawAmount] = useState(0);
   const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address);

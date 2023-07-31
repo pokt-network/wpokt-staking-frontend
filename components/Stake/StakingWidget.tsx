@@ -1,4 +1,5 @@
 "use client";
+import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
 import {
   useLPTokenBalance,
@@ -14,18 +15,16 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
-import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import StakeButton from "./Components/Button";
 import StakeInput from "./Components/Input";
 
 export default function StakingWidget() {
   const { mobile, isClient } = useGlobalContext();
   const { address: userAddress } = useAccount();
-  const { openConnectModal } = useConnectModal();
+  
 
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState(0);
