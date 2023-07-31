@@ -2,40 +2,21 @@
 
 import '@fontsource-variable/manrope';
 
+import config, { chains } from "@/utils/config";
 import { CacheProvider } from "@chakra-ui/next-js";
 import { ChakraProvider } from "@chakra-ui/react";
 import "@rainbow-me/rainbowkit/styles.css";
-import { WagmiConfig, configureChains, createConfig, sepolia } from "wagmi";
-import { alchemyProvider, } from 'wagmi/providers/alchemy';
+import { WagmiConfig } from "wagmi";
 
 
 import { theme } from "@/theme";
 import {
   RainbowKitProvider,
   darkTheme,
-  getDefaultWallets,
 } from "@rainbow-me/rainbowkit";
 
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [sepolia],
-  [
-    alchemyProvider({apiKey: String(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY)}),
-  ]
-);
 
-const { connectors } = getDefaultWallets({
-  appName: "wPOKT Bridge",
-  projectId: `${process.env.NEXT_PUBLIC_APP_PROJECT_ID}`,
-  chains,
-});
-
-const config = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
-  webSocketPublicClient,
-});
 
 
 

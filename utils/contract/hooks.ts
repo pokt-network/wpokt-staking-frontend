@@ -1,13 +1,13 @@
 import { sepolia, useBalance, useContractRead, usePrepareContractWrite } from "wagmi";
+import { estimationClient } from "../config";
 import {
   RewardContract,
   StakeContract,
   StakingRewardContract,
 } from "./contractAddress";
-
 // types and iterfaces
 import { StakingRewardsABI } from "./abi";
-import { address } from "./types";
+import { address } from './types';
 
 export const useLPTokenBalance = (address: address) =>
   useBalance({
@@ -57,3 +57,12 @@ export const usePendingRewardBalance = (address: address) =>
     args: Array.from(Object.values(args)),
     chainId: sepolia.id,
     });
+
+
+    export const useGasEstimate = (args: {method: string, amount: bigint, address: address}) => estimationClient.estimateContractGas({
+      abi: StakingRewardsABI,
+      address: StakingRewardContract,
+      functionName: args.method,
+      args: [args.amount],
+      account: args.address,
+    })

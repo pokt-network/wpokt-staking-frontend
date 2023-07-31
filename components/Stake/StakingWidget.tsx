@@ -47,6 +47,8 @@ export default function StakingWidget() {
   const { data, isLoading, isSuccess, write, isError } =
     useContractWrite(config);
   console.log(data, isLoading, isSuccess, isError);
+  const [gasEstResp, setGasEstResp] = useState("0");
+  
 
   const handleStakeButtonClick = () => {
     console.log("Stake button pressed");
@@ -93,6 +95,7 @@ export default function StakingWidget() {
           handleAllButtonClick={handleAllButtonClick}
           isInvalidStakeAmount={isInvalidStakeAmount}
           lpTokenBalance={lpTokenBalance}
+          changeHandler={setGasEstResp}
         />
       ) : (
         <Center>
@@ -124,7 +127,7 @@ export default function StakingWidget() {
       </Center>
       <Center flexDirection="column">
         <Text>Estimated Gas Cost:</Text>
-        <Text>0.001 Gwei</Text>
+        <Text>{gasEstResp}</Text>
       </Center>
 
       <Center gap={2}>
