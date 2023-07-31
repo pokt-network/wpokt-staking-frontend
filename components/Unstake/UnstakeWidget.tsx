@@ -48,7 +48,7 @@ export default function UnstakeWidget() {
   };
 
   const handleAllButtonClick = () => {
-    Number(lpTokenStaked) > 1e-10
+    Number(lpTokenStakedFormatted) > 1e-10
       ? setNewWithdrawAmount(Number(lpTokenStakedFormatted))
       : setNewWithdrawAmount(0);
   };
