@@ -77,8 +77,8 @@ export default function StakingWidget() {
 
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState(0);
-  const { data: lpTokenBalance } = useLPTokenBalance(userAddress as address);
-  const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address);
+  const { data: lpTokenBalance } = useLPTokenBalance(userAddress as address) || BigInt(0);
+  const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address) || BigInt(0);
 
   const newTotalStaked = userAddress && lpTokenStaked && isClient
     ? Number(newStakeAmount) + (
@@ -97,7 +97,7 @@ export default function StakingWidget() {
   };
 
   const handleAllButtonClick = () => {
-    lpTokenBalance
+    Number(lpTokenBalance?.formatted) > 1e-10
       ? setNewStakeAmount(Number(lpTokenBalance?.formatted))
       : setNewStakeAmount(0);
   };
@@ -158,8 +158,8 @@ export default function StakingWidget() {
               ? "Can't Input Negative number"
               : !isInvalidStakeAmount
                 ? Number(newTotalStaked).toFixed(18)
-                : "Not Enough LP tokens in Wallet!"
-            : "No wallet connected"}
+                    : "Not Enough LP tokens in Wallet!"
+                        : "No wallet connected"}
         </Text>
       </Center>
       <Center flexDirection="column">

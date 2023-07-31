@@ -33,7 +33,7 @@ export default function UnstakeWidget() {
   const newTotalStaked = Number(lpTokenStakedFormatted) - Number(newWithdrawAmount);
 
   const { config } =  useUnstakeLPToken({
-    amount: parseEther(Number(newTotalStaked).toFixed(18).toString()),
+    amount: parseEther(Number(newWithdrawAmount).toFixed(18).toString()),
   });
   const { data, isLoading, isSuccess, write, isError } =
     useContractWrite(config);
@@ -45,7 +45,7 @@ export default function UnstakeWidget() {
   };
 
   const handleAllButtonClick = () => {
-    Number(lpTokenStaked) == 0
+    Number(lpTokenStaked) > 1e-10
       ? setNewWithdrawAmount(Number(lpTokenStakedFormatted))
       : setNewWithdrawAmount(0);
   };
@@ -160,7 +160,7 @@ export default function UnstakeWidget() {
             ? newWithdrawAmount < 0
               ? "Can't Input Negative number"
               : !isInvalidWithdrawAmount
-              ? Number(newTotalStaked).toFixed(18)
+              ? Number(newTotalStaked).toFixed(15)
               : `Withdrawal amount can't be greater than staked amount`
             : "No wallet connected"}
         </Text>
