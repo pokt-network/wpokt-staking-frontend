@@ -52,7 +52,6 @@ export default function UnstakeWidget() {
 
   const isInvalidWithdrawAmount =
     Number(newWithdrawAmount) < 0 ||
-    Number(lpTokenStakedFormatted) <= 0 ||
     Number(newWithdrawAmount) > Number(lpTokenStakedFormatted);
 
   const renderWithdrawButton = () => {
