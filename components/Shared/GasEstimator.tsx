@@ -1,3 +1,4 @@
+"use client";
 import { useGasEstimate } from "@/utils/contract/hooks";
 import { address } from "@/utils/contract/types";
 import { Text } from "@chakra-ui/react";
@@ -52,17 +53,13 @@ export default function GasEstimator(args: {
     );
   }
 
-  if (args.willFail && Number(args.amount)!= 0) {
-    return (
-      <Text color={"red"}>
-        {`Not enough Gas, Try lower amount!`}
-      </Text>
-    );
+  if (args.willFail && Number(args.amount) != 0) {
+    return <Text color={"red"}>{`Not enough Gas, Try lower amount!`}</Text>;
   }
 
   return (
     <Text color={eth ? "white" : "poktLime"}>
-      {Number(amount)  ? eth + " eth" : "Estimating"}
+      {Number(amount) ? eth + " eth" : "Estimating"}
     </Text>
   );
 }

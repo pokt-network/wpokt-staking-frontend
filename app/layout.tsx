@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import Provider from "./provider"
+import Provider from "./provider";
 import Head from "next/head";
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" data-theme="light">
@@ -16,9 +16,8 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
-
         <Provider>{children}</Provider>
       </body>
     </html>
-  )
+  );
 }

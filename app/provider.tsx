@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import '@fontsource-variable/manrope';
+import "@fontsource-variable/manrope";
 
 import config, { chains } from "@/utils/config";
 import { CacheProvider } from "@chakra-ui/next-js";
@@ -8,23 +8,13 @@ import { ChakraProvider } from "@chakra-ui/react";
 import "@rainbow-me/rainbowkit/styles.css";
 import { WagmiConfig } from "wagmi";
 
-
 import { theme } from "@/theme";
-import {
-  RainbowKitProvider,
-  darkTheme,
-} from "@rainbow-me/rainbowkit";
-
-
-
-
-
-
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <CacheProvider>
@@ -38,12 +28,9 @@ export default function RootLayout({
             borderRadius: "small",
           })}
         >
-      <ChakraProvider theme={theme}>
-        {children}
-      </ChakraProvider>
-      
-      </RainbowKitProvider>
+          <ChakraProvider theme={theme}>{children}</ChakraProvider>
+        </RainbowKitProvider>
       </WagmiConfig>
     </CacheProvider>
-  )
+  );
 }

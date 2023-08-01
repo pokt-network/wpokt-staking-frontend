@@ -1,4 +1,3 @@
 import { AbiTypeToPrimitiveType } from "abitype";
 
-
-export type address = AbiTypeToPrimitiveType<'address'>
+export type address = AbiTypeToPrimitiveType<"address">;

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Footer } from "@/components/Shared/Footer";
 import { Header } from "@/components/Shared/Header";
 import { GlobalContextProvider, useGlobalContext } from "@/context/Globals";
@@ -13,9 +13,9 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  VStack,
 } from "@chakra-ui/react";
-import { useWindowSize } from 'usehooks-ts';
-
+import { useWindowSize } from "usehooks-ts";
 
 import LPInfoBlock from "@/components/Shared/LPInfoBlock";
 import StakingWidget from "@/components/Stake/StakingWidget";
@@ -23,13 +23,13 @@ import UnstakeWidget from "@/components/Unstake/UnstakeWidget";
 import RewardsWidget from "@/components/Rewards/RewardsWidget";
 
 export default function Page() {
-  const {isClient} = useGlobalContext();
+  const { isClient } = useGlobalContext();
   const { width } = useWindowSize();
   return (
     <GlobalContextProvider>
-      <Flex direction="column" minHeight="100vh" overflowX="hidden">
+      <Flex direction="column" minHeight="100vh" overflowX="hidden"  >
         <Header />
-        <Heading size="lg" color="white" textAlign="center" padding={4}>
+        <Heading size="lg" color="poktBlue" textAlign="center" padding={4}>
           wPOKT-ETH Liquidity Pool Farm
         </Heading>
 
@@ -41,6 +41,8 @@ export default function Page() {
           <Divider borderColor={"poktLime"} />
         </Center>
 
+    
+
         <Tabs
           isFitted
           variant="enclosed"
@@ -48,10 +50,11 @@ export default function Page() {
           bg="darkOverlay"
           m={8}
           borderRadius={"10 10 0 0"}
-          width={isClient && (width > 1200) ? "1200px" : "100%"}
+          width={width > 900 ? "50%" : "100%"}
           id={"0"}
         >
-          <TabList flexGrow={1}>
+          <TabList >
+            
             <Tab>Stake</Tab>
             <Tab>Withdraw</Tab>
           </TabList>
@@ -65,10 +68,10 @@ export default function Page() {
             </TabPanel>
           </TabPanels>
         </Tabs>
-        <Center
-          bg="darkOverlay">
-        <RewardsWidget/>
+        <Center bg="darkOverlay" width={width > 900 ? "50%" : "100%"} alignSelf={"center"}>
+          <RewardsWidget />
         </Center>
+
         <Spacer />
       </Flex>
       <Footer />

@@ -120,15 +120,18 @@ export default function UnstakeWidget() {
       </Center>
       <Center flexDirection="column">
         <Text>Estimated Gas Cost:</Text>
-        {
-          Number(formatEther((lpTokenStaked as bigint) || BigInt(0))) > 1e-13 ?
+        {Number(formatEther((lpTokenStaked as bigint) || BigInt(0))) > 1e-13 ? (
           <GasEstimator
             amount={newWithdrawAmount}
             method={"withdraw"}
             willFail={willFail}
             isInvalidAmount={isInvalidWithdrawAmount}
-          /> : userAddress ? <Text color={"red"}>{`You don't have enough LP Tokens staked`}</Text> : "No wallet connected"}
-        
+          />
+        ) : userAddress ? (
+          <Text color={"red"}>{`You don't have enough LP Tokens staked`}</Text>
+        ) : (
+          "No wallet connected"
+        )}
       </Center>
 
       <Center gap={2}>

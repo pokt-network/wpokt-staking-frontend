@@ -39,7 +39,9 @@ export default function StakingWidget() {
     userAddress && lpTokenStaked && isClient
       ? Number(newStakeAmount) +
         (lpTokenStaked && isClient
-          ? Number(formatEther(lpTokenStaked as unknown as bigint || BigInt(0)))
+          ? Number(
+              formatEther((lpTokenStaked as unknown as bigint) || BigInt(0)),
+            )
           : 0)
       : 0;
 
@@ -48,11 +50,10 @@ export default function StakingWidget() {
     Number(newTotalStaked) < 0 ||
     Number(newStakeAmount) > Number(lpTokenBalance?.formatted);
 
-
-    
-
   const { config, isError: willFail } = useStakeLPToken({
-    amount: isInvalidStakeAmount ? BigInt("0") : parseEther(Number(newStakeAmount || 0).toFixed(18)) || BigInt("0"),
+    amount: isInvalidStakeAmount
+      ? BigInt("0")
+      : parseEther(Number(newStakeAmount || 0).toFixed(18)) || BigInt("0"),
     isValidAmount: !isInvalidStakeAmount,
   });
   const { data, isLoading, isSuccess, write, isError } =
@@ -66,7 +67,9 @@ export default function StakingWidget() {
 
   const handleAllButtonClick = () => {
     Number(lpTokenBalance?.formatted) >= 1e-13
-      ? setNewStakeAmount(Number(lpTokenBalance?.formatted).toFixed(18) as unknown as number)
+      ? setNewStakeAmount(
+          Number(lpTokenBalance?.formatted).toFixed(18) as unknown as number,
+        )
       : setNewStakeAmount(0);
   };
 
@@ -89,7 +92,12 @@ export default function StakingWidget() {
       <HStack justify="space-between" maxWidth="80%">
         <Text>Amount to Stake:</Text>
         {userAddress && isClient ? (
-          <Text>{formatEther(lpTokenBalance?.value as unknown as bigint || BigInt(0))} LP Tokens in wallet</Text>
+          <Text>
+            {formatEther(
+              (lpTokenBalance?.value as unknown as bigint) || BigInt(0),
+            )}{" "}
+            LP Tokens in wallet
+          </Text>
         ) : (
           <Text>No wallet connected</Text>
         )}
@@ -114,7 +122,9 @@ export default function StakingWidget() {
         <Text>Currently Staked</Text>
         <Text>
           {userAddress && isClient
-            ? Number(formatEther(lpTokenStaked as bigint || BigInt(0))).toFixed(18)
+            ? Number(
+                formatEther((lpTokenStaked as bigint) || BigInt(0)),
+              ).toFixed(18)
             : "No wallet connected"}
         </Text>
       </Center>
@@ -131,21 +141,27 @@ export default function StakingWidget() {
         </Text>
       </Center>
       <Center flexDirection="column">
-      
-      
         <Text>Estimated Gas Cost:</Text>
-        {
-        Number(formatEther(lpTokenBalance?.value as unknown as bigint || BigInt(0))) > 1e-13 ?   
+        {Number(
+          formatEther(
+            (lpTokenBalance?.value as unknown as bigint) || BigInt(0),
+          ),
+        ) > 1e-13 ? (
           <GasEstimator
             amount={newStakeAmount}
             method={"stake"}
             willFail={willFail}
             isInvalidAmount={isInvalidStakeAmount}
           />
-          
-         : userAddress ? <Text color={"red"}>{`You don't have enough LP Tokens in wallet.`}</Text> : "No wallet connected" }
+        ) : userAddress ? (
+          <Text
+            color={"red"}
+          >{`You don't have enough LP Tokens in wallet.`}</Text>
+        ) : (
+          "No wallet connected"
+        )}
       </Center>
-      
+
       <Center gap={2}>
         {userAddress && isClient ? (
           <StakeButton
