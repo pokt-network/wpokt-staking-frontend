@@ -1,4 +1,4 @@
-"use client";
+;
 import { Link } from "@chakra-ui/next-js";
 import { VStack, Text, HStack } from "@chakra-ui/react";
 export default function LPInfoBlock() {

@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { VStack, Text, Heading, HStack } from "@chakra-ui/react";
 import { useGlobalContext } from "@/context/Globals";
 import { useAccount } from "wagmi";

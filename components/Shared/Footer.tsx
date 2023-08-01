@@ -1,26 +1,15 @@
+import { useGlobalContext } from "@/context/Globals";
 import { Box, Center, Flex, HStack, Heading, Link, Text, VStack } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { DiscordIcon, GithubIcon, TwitterIcon } from "../icons/socials";
 
 export function Footer() {
-    const [mobileFooter, setMobileFooter] = useState<boolean>(false)
+    
 
-    useEffect(() => {
-        toggleMobile();
-        window.addEventListener('resize', toggleMobile);
-    });
-
-    function toggleMobile() {
-        if (window && window.innerWidth < 400) {
-            setMobileFooter(true);
-        } else {
-            setMobileFooter(false);
-        }
-    };
+    const {isClient, mobile} = useGlobalContext();
 
     return (
         <Flex direction="column" justify="center" paddingX={10} background="darkOverlay">
-            <Flex direction={mobileFooter ? "column" : "row"} justify="space-between" padding={10} gap={mobileFooter ? 10 : 4}>
+            <Flex direction={isClient && mobile ? "column" : "row"} justify="space-between" padding={10} gap={isClient && mobile ? 10 : 4}>
                 <Flex direction="column" gap={4}>
                     <Box>
                         <Heading size="sm">Connect With Us</Heading>
@@ -50,10 +39,10 @@ export function Footer() {
                     </Link>
                 </VStack>
             </Flex>
-            {mobileFooter && <Center mb={2}>© 2023 Pocket Network</Center>}
+            {mobile && <Center mb={2}>© 2023 Pocket Network</Center>}
             <HStack alignSelf="center" mb={4}>
-                {!mobileFooter && <Text>© 2023 Pocket Network</Text>}
-                {!mobileFooter && <Text>|</Text>}
+                {!mobile && <Text>© 2023 Pocket Network</Text>}
+                {!mobile && <Text>|</Text>}
                 <Link href="https://www.pokt.network/privacy-policy" isExternal>
                     Terms of Use
                 </Link>

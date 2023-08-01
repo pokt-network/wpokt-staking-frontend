@@ -1,9 +1,4 @@
-import { useGasEstimate } from "@/utils/contract/hooks";
-import { address } from "@/utils/contract/types";
 import { Button, Center, Input } from "@chakra-ui/react";
-import { useEffect } from "react";
-import { formatEther, parseEther } from "viem";
-import { useAccount } from 'wagmi';
 
 export default function StakeInput({
     newStakeAmount,
@@ -11,18 +6,8 @@ export default function StakeInput({
     handleAllButtonClick,
     isInvalidStakeAmount,
     lpTokenBalance,
-    changeHandler
   }: any) {
-    
-    const {address: userAddress} = useAccount();
-    const gasEstResp = useGasEstimate({method:'stake', amount: parseEther(newStakeAmount.toString()) || BigInt(20), address: userAddress as address});
 
-    useEffect(() => {
-      gasEstResp
-        .then((resp: bigint) => {
-          changeHandler(formatEther(resp));
-        })
-    }, [newStakeAmount]);
 
     return (
       <Center position="relative" width="60%">

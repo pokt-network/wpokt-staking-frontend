@@ -1,3 +1,4 @@
+"use client"
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
 import {

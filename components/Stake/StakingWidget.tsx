@@ -1,7 +1,8 @@
-"use client";
+"use client"
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
 import {
+  useGasEstimate,
   useLPTokenBalance,
   useStakeLPToken,
   useStakedTokenBalance,
@@ -15,7 +16,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
 import StakeButton from "./Components/Button";
@@ -24,6 +25,9 @@ import StakeInput from "./Components/Input";
 export default function StakingWidget() {
   const { mobile, isClient } = useGlobalContext();
   const { address: userAddress } = useAccount();
+  const [gas, setGas] = useState(0n);
+  
+
   
 
   // Setting initial balances
@@ -47,7 +51,7 @@ export default function StakingWidget() {
   const { data, isLoading, isSuccess, write, isError } =
     useContractWrite(config);
   console.log(data, isLoading, isSuccess, isError);
-  const [gasEstResp, setGasEstResp] = useState("0");
+  
   
 
   const handleStakeButtonClick = () => {
@@ -65,6 +69,20 @@ export default function StakingWidget() {
     Number(newStakeAmount) < 0 ||
     Number(newTotalStaked) < 0 ||
     Number(newStakeAmount) > Number(lpTokenBalance?.formatted);
+
+    useEffect(() => {
+      !isInvalidStakeAmount ?
+      setTimeout(() => GasEstimate, 1500)
+      : console.log("Invalid stake amount");
+    }, [newStakeAmount]);
+    
+    async function GasEstimate() {
+      const resp = useGasEstimate({method:'stake', amount: parseEther(newStakeAmount.toString()) || BigInt(20), address: userAddress as address});
+      const x = await resp;
+      setGas(x);
+      console.log(gas)
+  
+    }
 
   return (
     <VStack
@@ -95,7 +113,6 @@ export default function StakingWidget() {
           handleAllButtonClick={handleAllButtonClick}
           isInvalidStakeAmount={isInvalidStakeAmount}
           lpTokenBalance={lpTokenBalance}
-          changeHandler={setGasEstResp}
         />
       ) : (
         <Center>
@@ -127,7 +144,8 @@ export default function StakingWidget() {
       </Center>
       <Center flexDirection="column">
         <Text>Estimated Gas Cost:</Text>
-        <Text>{gasEstResp}</Text>
+        
+        <Text>{gas.toString() + ' gwei'}</Text>
       </Center>
 
       <Center gap={2}>
