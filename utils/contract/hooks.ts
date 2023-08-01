@@ -42,20 +42,22 @@ export const usePendingRewardBalance = (address: address) =>
     chainId: sepolia.id,
   });
 
-  export const useStakeLPToken = (args:{amount:bigint}) => usePrepareContractWrite({
+  export const useStakeLPToken = (args:{amount:bigint, isValidAmount:boolean}) => usePrepareContractWrite({
     abi: StakingRewardsABI,
     address: StakingRewardContract,
     functionName: "stake",
-    args: Array.from(Object.values(args)),
+    args: [args.amount],
     chainId: sepolia.id,
+    enabled: args.isValidAmount
     });
 
-  export const useUnstakeLPToken = (args:{amount:bigint}) => usePrepareContractWrite({
+  export const useUnstakeLPToken = (args:{amount:bigint, isValidAmount:boolean}) => usePrepareContractWrite({
     abi: StakingRewardsABI,
     address: StakingRewardContract,
     functionName: "withdraw",
-    args: Array.from(Object.values(args)),
+    args: [args.amount],
     chainId: sepolia.id,
+    enabled: args.isValidAmount
     });
 
 
@@ -65,4 +67,5 @@ export const usePendingRewardBalance = (address: address) =>
       functionName: args.method,
       args: [args.amount],
       account: args.address,
+
     })

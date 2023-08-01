@@ -1,6 +1,7 @@
-"use client"
+"use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
+import GasEstimator from "@/components/Shared/GasEstimator";
 import {
   useGasEstimate,
   useLPTokenBalance,
@@ -17,7 +18,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { formatEther, parseEther } from "viem";
+import { formatEther, parseEther, parseGwei } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
 import StakeButton from "./Components/Button";
 import StakeInput from "./Components/Input";
@@ -25,10 +26,7 @@ import StakeInput from "./Components/Input";
 export default function StakingWidget() {
   const { mobile, isClient } = useGlobalContext();
   const { address: userAddress } = useAccount();
-  const [gas, setGas] = useState(0n);
-  
-
-  
+  const [gas, setGas] = useState("");
 
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState(0);
@@ -41,48 +39,38 @@ export default function StakingWidget() {
     userAddress && lpTokenStaked && isClient
       ? Number(newStakeAmount) +
         (lpTokenStaked && isClient
-          ? Number(formatEther(lpTokenStaked as unknown as bigint))
+          ? Number(formatEther(lpTokenStaked as unknown as bigint || BigInt(0)))
           : 0)
       : 0;
-
-  const { config } = useStakeLPToken({
-    amount: parseEther(newStakeAmount.toString()),
-  });
-  const { data, isLoading, isSuccess, write, isError } =
-    useContractWrite(config);
-  console.log(data, isLoading, isSuccess, isError);
-  
-  
-
-  const handleStakeButtonClick = () => {
-    console.log("Stake button pressed");
-    write?.();
-  };
-
-  const handleAllButtonClick = () => {
-    Number(lpTokenBalance?.formatted) > 1e-10
-      ? setNewStakeAmount(Number(lpTokenBalance?.formatted))
-      : setNewStakeAmount(0);
-  };
 
   const isInvalidStakeAmount =
     Number(newStakeAmount) < 0 ||
     Number(newTotalStaked) < 0 ||
     Number(newStakeAmount) > Number(lpTokenBalance?.formatted);
 
-    useEffect(() => {
-      !isInvalidStakeAmount ?
-      setTimeout(() => GasEstimate, 1500)
-      : console.log("Invalid stake amount");
-    }, [newStakeAmount]);
+
     
-    async function GasEstimate() {
-      const resp = useGasEstimate({method:'stake', amount: parseEther(newStakeAmount.toString()) || BigInt(20), address: userAddress as address});
-      const x = await resp;
-      setGas(x);
-      console.log(gas)
-  
-    }
+
+  const { config, isError: willFail } = useStakeLPToken({
+    amount: isInvalidStakeAmount ? BigInt("0") : parseEther(Number(newStakeAmount || 0).toFixed(18)) || BigInt("0"),
+    isValidAmount: !isInvalidStakeAmount,
+  });
+  const { data, isLoading, isSuccess, write, isError } =
+    useContractWrite(config);
+
+  console.log(data, isLoading, isSuccess, isError);
+
+  const handleStakeButtonClick = () => {
+    write?.();
+  };
+
+  const handleAllButtonClick = () => {
+    Number(lpTokenBalance?.formatted) >= 1e-13
+      ? setNewStakeAmount(Number(lpTokenBalance?.formatted).toFixed(18) as unknown as number)
+      : setNewStakeAmount(0);
+  };
+
+  console.log(newStakeAmount);
 
   return (
     <VStack
@@ -101,7 +89,7 @@ export default function StakingWidget() {
       <HStack justify="space-between" maxWidth="80%">
         <Text>Amount to Stake:</Text>
         {userAddress && isClient ? (
-          <Text>{lpTokenBalance?.formatted} LP Tokens in wallet</Text>
+          <Text>{formatEther(lpTokenBalance?.value as unknown as bigint || BigInt(0))} LP Tokens in wallet</Text>
         ) : (
           <Text>No wallet connected</Text>
         )}
@@ -116,7 +104,7 @@ export default function StakingWidget() {
         />
       ) : (
         <Center>
-          <ConnectWalletButton/>
+          <ConnectWalletButton />
         </Center>
       )}
 
@@ -126,7 +114,7 @@ export default function StakingWidget() {
         <Text>Currently Staked</Text>
         <Text>
           {userAddress && isClient
-            ? formatEther((lpTokenStaked as bigint) || BigInt(0))
+            ? Number(formatEther(lpTokenStaked as bigint || BigInt(0))).toFixed(18)
             : "No wallet connected"}
         </Text>
       </Center>
@@ -143,20 +131,31 @@ export default function StakingWidget() {
         </Text>
       </Center>
       <Center flexDirection="column">
+      
+      
         <Text>Estimated Gas Cost:</Text>
-        
-        <Text>{gas.toString() + ' gwei'}</Text>
+        {
+        Number(formatEther(lpTokenBalance?.value as unknown as bigint || BigInt(0))) > 1e-13 ?   
+          <GasEstimator
+            amount={newStakeAmount}
+            method={"stake"}
+            willFail={willFail}
+            isInvalidAmount={isInvalidStakeAmount}
+          />
+          
+         : userAddress ? <Text color={"red"}>{`You don't have enough LP Tokens in wallet.`}</Text> : "No wallet connected" }
       </Center>
-
+      
       <Center gap={2}>
         {userAddress && isClient ? (
           <StakeButton
             isInvalidStakeAmount={isInvalidStakeAmount}
             newStakeAmount={newStakeAmount}
             handleStakeButtonClick={handleStakeButtonClick}
+            willFail={willFail}
           />
         ) : (
-          <ConnectWalletButton/>
+          <ConnectWalletButton />
         )}
       </Center>
     </VStack>

@@ -6,7 +6,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "lint": "next lint"
   },
   "dependencies": {
     "@chakra-ui/icons": "workspace:*",
@@ -22,6 +23,8 @@
     "@types/react-dom": "^18.0.11",
     "@walletconnect/sign-client": "^2.9.1",
     "abitype": "^0.9.6",
+    "eslint-config-next": "^13.4.12",
+    "eslint-plugin-next": "^0.0.0",
     "framer-motion": "^10.12.16",
     "next": "^13.0.7",
     "node-fetch": "^3.3.2",

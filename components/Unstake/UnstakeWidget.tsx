@@ -1,6 +1,7 @@
-"use client"
+"use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
+import GasEstimator from "@/components/Shared/GasEstimator";
 import {
   useStakedTokenBalance,
   useUnstakeLPToken,
@@ -12,7 +13,7 @@ import {
   HStack,
   Heading,
   Text,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { formatEther, parseEther } from "viem";
@@ -20,13 +21,9 @@ import { useAccount, useContractWrite } from "wagmi";
 import WithDrawButton from "./Components/Button";
 import WithdrawInput from "./Components/Input";
 
-
 export default function UnstakeWidget() {
-
-
   const { mobile, isClient } = useGlobalContext();
   const { address: userAddress } = useAccount();
-  
 
   const [newWithdrawAmount, setNewWithdrawAmount] = useState(0);
   const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address);
@@ -37,25 +34,30 @@ export default function UnstakeWidget() {
   const newTotalStaked =
     Number(lpTokenStakedFormatted) - Number(newWithdrawAmount);
 
-  const { config } = useUnstakeLPToken({
-    amount: parseEther(Number(newWithdrawAmount).toFixed(18).toString()),
+  const isInvalidWithdrawAmount =
+    Number(newWithdrawAmount) < 0 ||
+    Number(newWithdrawAmount) > Number(lpTokenStakedFormatted);
+
+  const { config, isError: willFail } = useUnstakeLPToken({
+    amount:
+      parseEther(Number(newWithdrawAmount).toFixed(18).toString()) || BigInt(0),
+    isValidAmount: !isInvalidWithdrawAmount,
   });
-  const { write } = useContractWrite(config);
+
+  const { data, isLoading, isSuccess, write, isError } =
+    useContractWrite(config);
+
+  console.log(data, isLoading, isSuccess, isError);
 
   const handleWithdrawButtonClick = () => {
-    console.log("Withdraw button pressed");
     write?.();
   };
 
   const handleAllButtonClick = () => {
-    Number(lpTokenStakedFormatted) > 1e-10
+    Number(lpTokenStakedFormatted) > 1e-8
       ? setNewWithdrawAmount(Number(lpTokenStakedFormatted))
       : setNewWithdrawAmount(0);
   };
-
-  const isInvalidWithdrawAmount =
-    Number(newWithdrawAmount) < 0 ||
-    Number(newWithdrawAmount) > Number(lpTokenStakedFormatted);
 
   return (
     <VStack
@@ -86,6 +88,7 @@ export default function UnstakeWidget() {
           handleAllButtonClick={handleAllButtonClick}
           isInvalidWithdrawAmount={isInvalidWithdrawAmount}
           lpTokenStakedFormatted={lpTokenStakedFormatted}
+          willFail={willFail}
         />
       ) : (
         <Center>
@@ -110,14 +113,22 @@ export default function UnstakeWidget() {
             ? newWithdrawAmount < 0
               ? "Can't Input Negative number"
               : !isInvalidWithdrawAmount
-                ? Number(newTotalStaked).toFixed(15)
-                : `Withdrawal amount can't be greater than staked amount`
+              ? Number(newTotalStaked).toFixed(15)
+              : `Withdrawal amount can't be greater than staked amount`
             : "No wallet connected"}
         </Text>
       </Center>
       <Center flexDirection="column">
         <Text>Estimated Gas Cost:</Text>
-        <Text>0.001 Gwei</Text>
+        {
+          Number(formatEther((lpTokenStaked as bigint) || BigInt(0))) > 1e-13 ?
+          <GasEstimator
+            amount={newWithdrawAmount}
+            method={"withdraw"}
+            willFail={willFail}
+            isInvalidAmount={isInvalidWithdrawAmount}
+          /> : userAddress ? <Text color={"red"}>{`You don't have enough LP Tokens staked`}</Text> : "No wallet connected"}
+        
       </Center>
 
       <Center gap={2}>
@@ -126,9 +137,10 @@ export default function UnstakeWidget() {
             isInvalidWithdrawAmount={isInvalidWithdrawAmount}
             newWithdrawAmount={newWithdrawAmount}
             handleWithdrawButtonClick={handleWithdrawButtonClick}
+            willFail={willFail}
           />
         ) : (
-          <ConnectWalletButton/>
+          <ConnectWalletButton />
         )}
       </Center>
     </VStack>

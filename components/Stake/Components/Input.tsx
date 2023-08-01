@@ -22,7 +22,8 @@ export default function StakeInput({
           borderRadius={0}
           type="number"
           value={newStakeAmount}
-          onChange={(e) => setNewStakeAmount(Number(e.target.value))}
+          defaultValue={0.0}
+          onChange={(e) =>  setNewStakeAmount(Number(e.target.value))}
           isInvalid={isInvalidStakeAmount}
           min={0}
           max={lpTokenBalance?.formatted}
