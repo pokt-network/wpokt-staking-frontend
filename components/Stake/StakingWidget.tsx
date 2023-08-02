@@ -1,12 +1,12 @@
 "use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
-import { useGlobalContext } from "@/context/Globals";
 import GasEstimator from "@/components/Shared/GasEstimator";
+import { useGlobalContext } from "@/context/Globals";
 import {
-  useGasEstimate,
+  useApproveLPToken,
   useLPTokenBalance,
   useStakeLPToken,
-  useStakedTokenBalance,
+  useStakedTokenBalance
 } from "@/utils/contract/hooks";
 import { address } from "@/utils/contract/types";
 import {
@@ -17,8 +17,8 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { formatEther, parseEther, parseGwei } from "viem";
+import { useState } from "react";
+import { formatEther, parseEther } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
 import StakeButton from "./Components/Button";
 import StakeInput from "./Components/Input";
@@ -30,8 +30,10 @@ export default function StakingWidget() {
 
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState(0);
+
   const { data: lpTokenBalance } =
     useLPTokenBalance(userAddress as address) || BigInt(0);
+
   const { data: lpTokenStaked } =
     useStakedTokenBalance(userAddress as address) || BigInt(0);
 
@@ -50,16 +52,24 @@ export default function StakingWidget() {
     Number(newTotalStaked) < 0 ||
     Number(newStakeAmount) > Number(lpTokenBalance?.formatted);
 
-  const { config, isError: willFail } = useStakeLPToken({
+  const { config: stakeConfig, isError: stakeWillFail } = useStakeLPToken({
     amount: isInvalidStakeAmount
       ? BigInt("0")
       : parseEther(Number(newStakeAmount || 0).toFixed(18)) || BigInt("0"),
     isValidAmount: !isInvalidStakeAmount,
   });
-  const { data, isLoading, isSuccess, write, isError } =
-    useContractWrite(config);
 
-  console.log(data, isLoading, isSuccess, isError);
+  const { config: approveConfig, isError: willFail2 } = useApproveLPToken({
+    amount: isInvalidStakeAmount
+      ? BigInt("0")
+      : parseEther(Number(newStakeAmount || 0).toFixed(18)) || BigInt("0"),
+    isValidAmount: !isInvalidStakeAmount,
+  });
+
+  const contractCallConfig =  stakeWillFail ? approveConfig : stakeConfig;
+
+  const { data, isLoading, isSuccess, write, isError } = useContractWrite(contractCallConfig as any);
+
 
   const handleStakeButtonClick = () => {
     write?.();
@@ -109,6 +119,7 @@ export default function StakingWidget() {
           handleAllButtonClick={handleAllButtonClick}
           isInvalidStakeAmount={isInvalidStakeAmount}
           lpTokenBalance={lpTokenBalance}
+          isDisabled={isLoading}
         />
       ) : (
         <Center>
@@ -150,7 +161,7 @@ export default function StakingWidget() {
           <GasEstimator
             amount={newStakeAmount}
             method={"stake"}
-            willFail={willFail}
+            willFail={stakeWillFail}
             isInvalidAmount={isInvalidStakeAmount}
           />
         ) : userAddress ? (
@@ -168,7 +179,8 @@ export default function StakingWidget() {
             isInvalidStakeAmount={isInvalidStakeAmount}
             newStakeAmount={newStakeAmount}
             handleStakeButtonClick={handleStakeButtonClick}
-            willFail={willFail}
+            willFail={stakeWillFail}
+            isLoading={isLoading}
           />
         ) : (
           <ConnectWalletButton />

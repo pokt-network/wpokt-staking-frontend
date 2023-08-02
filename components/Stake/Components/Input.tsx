@@ -6,9 +6,10 @@ export default function StakeInput({
   handleAllButtonClick,
   isInvalidStakeAmount,
   lpTokenBalance,
+  isLoading,
 }: any) {
   return (
-    <Center position="relative">
+    <Center position="relative" width="60%">
       <Input
         borderRadius={"4px"}
         placeholder="0.0"
@@ -27,6 +28,7 @@ export default function StakeInput({
         isInvalid={isInvalidStakeAmount}
         min={0}
         max={lpTokenBalance?.formatted}
+        isDisabled={isLoading}
       />
       <Button
         paddingX={"32px"}
@@ -39,6 +41,7 @@ export default function StakeInput({
         right={3}
         float="right"
         zIndex={5}
+        isDisabled={isLoading}
       >
         All
       </Button>

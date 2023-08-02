@@ -7,8 +7,8 @@ export default function ClaimButton({
 }: any) {
   return (
     <Button
-      paddingX={'32px'}
-      paddingY={'16px'}
+      paddingX={"32px"}
+      paddingY={"16px"}
       borderWidth={2}
       borderRadius={"12px"}
       fontSize={"16px"}

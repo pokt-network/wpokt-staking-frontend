@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { VStack, Text, Heading, HStack } from "@chakra-ui/react";
 import { useGlobalContext } from "@/context/Globals";
 import { useAccount } from "wagmi";
@@ -44,7 +44,8 @@ export default function RewardsWidget() {
             <VStack>
               <HStack>
                 <Text fontSize={16}>Your stake is worth:</Text>
-                <BlueEthIcon boxSize={6}/> <Text fontSize={16}>{`180.000000`}</Text>
+                <BlueEthIcon boxSize={6} />{" "}
+                <Text fontSize={16}>{`180.000000`}</Text>
               </HStack>
               <Text fontSize={16}>Your 24h earnings are worth:</Text>
               <HStack>

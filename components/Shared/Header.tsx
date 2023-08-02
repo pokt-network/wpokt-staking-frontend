@@ -112,7 +112,6 @@ export function Header() {
               background="darkOverlay"
               leftIcon={<BlueEthIcon width="28px" height="28px" />}
               borderColor="darkOverlay"
-            
               onClick={() => disconnect()}
             >
               {address.substring(0, 4) +
@@ -130,7 +129,6 @@ export function Header() {
               background="poktLime"
               borderColor="poktLime"
               leftIcon={<EthIcon />}
-
               onClick={openConnectModal}
             >
               Connect

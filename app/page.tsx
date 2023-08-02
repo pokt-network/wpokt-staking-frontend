@@ -27,7 +27,7 @@ export default function Page() {
   const { width } = useWindowSize();
   return (
     <GlobalContextProvider>
-      <Flex direction="column" minHeight="100vh" overflowX="hidden"  >
+      <Flex direction="column" minHeight="100vh" overflowX="hidden">
         <Header />
         <Heading size="lg" color="poktBlue" textAlign="center" padding={4}>
           wPOKT-ETH Liquidity Pool Farm
@@ -41,8 +41,6 @@ export default function Page() {
           <Divider borderColor={"poktLime"} />
         </Center>
 
-    
-
         <Tabs
           isFitted
           variant="enclosed"
@@ -53,8 +51,7 @@ export default function Page() {
           width={width > 900 ? "50%" : "100%"}
           id={"0"}
         >
-          <TabList >
-            
+          <TabList>
             <Tab>Stake</Tab>
             <Tab>Withdraw</Tab>
           </TabList>
@@ -68,7 +65,11 @@ export default function Page() {
             </TabPanel>
           </TabPanels>
         </Tabs>
-        <Center bg="darkOverlay" width={width > 900 ? "50%" : "100%"} alignSelf={"center"}>
+        <Center
+          bg="darkOverlay"
+          width={width > 900 ? "50%" : "100%"}
+          alignSelf={"center"}
+        >
           <RewardsWidget />
         </Center>
 

@@ -5,6 +5,7 @@ export default function StakeButton({
   newStakeAmount,
   handleStakeButtonClick,
   willFail,
+  isLoading,
 }: any) {
   return (
     <Button
@@ -15,10 +16,12 @@ export default function StakeButton({
       fontSize={"16px"}
       onClick={handleStakeButtonClick}
       isDisabled={
-        isInvalidStakeAmount || Number(newStakeAmount) === 0 || willFail
+        isInvalidStakeAmount || Number(newStakeAmount) === 0
       }
+      isLoading={isLoading}
+      
     >
-      Stake
+      {willFail ? "Approve" : "Stake"}
     </Button>
   );
 }

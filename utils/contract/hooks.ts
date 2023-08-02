@@ -11,7 +11,7 @@ import {
   StakingRewardContract,
 } from "./contractAddress";
 // types and iterfaces
-import { StakingRewardsABI } from "./abi";
+import { StakingRewardsABI, StakeABI } from "./abi";
 import { address } from "./types";
 import { useGlobalContext } from "@/context/Globals";
 
@@ -20,6 +20,19 @@ export const useLPTokenBalance = (address: address) =>
     address,
     token: StakeContract,
     chainId: sepolia.id,
+  });
+
+export const useApproveLPToken = (args: {
+  amount: bigint;
+  isValidAmount: boolean;
+}) =>
+  usePrepareContractWrite({
+    abi: StakeABI,
+    address: StakeContract,
+    functionName: "approve",
+    args: [StakingRewardContract, args.amount],
+    chainId: sepolia.id,
+    enabled: args.isValidAmount && args.amount != BigInt(0),
   });
 
 export const useRewardTokenBalance = (address: address) =>
@@ -83,5 +96,18 @@ export const useGasEstimate = (args: {
     address: StakingRewardContract,
     functionName: args.method,
     args: [args.amount],
+    account: args.address,
+  });
+
+export const useApprovalEstimate = (args: {
+  method: string;
+  amount: bigint;
+  address: address;
+}) =>
+  estimationClient.estimateContractGas({
+    abi: StakeABI,
+    address: StakeContract,
+    functionName: "approve",
+    args: [StakingRewardContract, args.amount],
     account: args.address,
   });
