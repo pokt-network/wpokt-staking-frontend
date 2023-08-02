@@ -6,6 +6,7 @@ export default function WithdrawInput({
   handleAllButtonClick,
   isInvalidWithdrawAmount,
   lpTokenStakedFormatted,
+  isLoading,
 }: any) {
   return (
     <Center position="relative" width="60%">
@@ -26,6 +27,7 @@ export default function WithdrawInput({
         isInvalid={isInvalidWithdrawAmount}
         min={0}
         max={Number(lpTokenStakedFormatted)}
+        isDisabled={isLoading}
       />
       <Button
         paddingX={"32px"}
@@ -38,6 +40,7 @@ export default function WithdrawInput({
         right={3}
         float="right"
         zIndex={5}
+        isDisabled={isLoading}
       >
         All
       </Button>

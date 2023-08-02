@@ -1,5 +1,5 @@
 "use client";
-import { VStack, Text, Heading, HStack } from "@chakra-ui/react";
+import { HStack, Text, Heading, VStack } from "@chakra-ui/react";
 import { useGlobalContext } from "@/context/Globals";
 import { useAccount } from "wagmi";
 import ConnectWalletButton from "../Shared/ConnectButton";
@@ -36,24 +36,35 @@ export default function RewardsWidget() {
           <Text fontWeight={"semibold"}>Rewards Breakdown</Text>
           <Text
             fontWeight={"normal"}
-            maxWidth={"60%"}
+            maxWidth={"80%"}
+            textAlign={"left"}
           >{`All figures are estimates provided for your convenience only, and by no means represent guaranteed returns.`}</Text>
         </VStack>
         <VStack mt={8}>
           {address && isClient ? (
-            <VStack>
-              <HStack>
+            <VStack alignItems={"flex-start"}>
+              <VStack alignItems={"flex-start"}>
                 <Text fontSize={16}>Your stake is worth:</Text>
-                <BlueEthIcon boxSize={6} />{" "}
-                <Text fontSize={16}>{`180.000000`}</Text>
-              </HStack>
+                <HStack>
+                  <BlueEthIcon boxSize={6} />{" "}
+                  <Text fontSize={16} fontWeight={"bold"}>{`180.000000`}</Text>
+                </HStack>
+              </VStack>
               <Text fontSize={16}>Your 24h earnings are worth:</Text>
-              <HStack>
-                <BlueEthIcon boxSize={6} />
-                <Text fontSize={16}>{`10.000000`}</Text>
-              </HStack>
-              <Text fontSize={16}>Your return per day is:</Text>
-              <Text fontSize={16}>{`1%`}</Text>
+              <VStack alignItems={"flex-start"}>
+                <HStack>
+                  <BlueEthIcon boxSize={6} />
+                  <Text fontSize={16} fontWeight={"bold"}>{`10.000000`}</Text>
+                </HStack>
+              </VStack>
+              <VStack>
+                <Text fontSize={16}>Your return per day is:</Text>
+                <Text
+                  fontSize={16}
+                  fontWeight={"bold"}
+                  alignSelf={"center"}
+                >{`1%`}</Text>
+              </VStack>
             </VStack>
           ) : (
             <Text fontSize={16}>

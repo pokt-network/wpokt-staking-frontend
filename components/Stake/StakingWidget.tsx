@@ -6,7 +6,7 @@ import {
   useApproveLPToken,
   useLPTokenBalance,
   useStakeLPToken,
-  useStakedTokenBalance
+  useStakedTokenBalance,
 } from "@/utils/contract/hooks";
 import { address } from "@/utils/contract/types";
 import {
@@ -66,10 +66,11 @@ export default function StakingWidget() {
     isValidAmount: !isInvalidStakeAmount,
   });
 
-  const contractCallConfig =  stakeWillFail ? approveConfig : stakeConfig;
+  const contractCallConfig = stakeWillFail ? approveConfig : stakeConfig;
 
-  const { data, isLoading, isSuccess, write, isError } = useContractWrite(contractCallConfig as any);
-
+  const { data, isLoading, isSuccess, write, isError } = useContractWrite(
+    contractCallConfig as any,
+  );
 
   const handleStakeButtonClick = () => {
     write?.();
@@ -86,18 +87,7 @@ export default function StakingWidget() {
   console.log(newStakeAmount);
 
   return (
-    <VStack
-      flexDirection="column"
-      justify="center"
-      align="center"
-      fontSize={16}
-      gap={8}
-      textAlign="center"
-      flexGrow={1}
-      mx={!mobile ? "20%" : "0%"}
-      px={10}
-      py={10}
-    >
+    <VStack fontSize={16} gap={8} padding={"20px"}>
       <Heading>Stake LP tokens</Heading>
       <HStack justify="space-between" maxWidth="80%">
         <Text>Amount to Stake:</Text>
@@ -157,7 +147,7 @@ export default function StakingWidget() {
           formatEther(
             (lpTokenBalance?.value as unknown as bigint) || BigInt(0),
           ),
-        ) > 1e-13 ? (
+        ) > 1e-13 && isClient ? (
           <GasEstimator
             amount={newStakeAmount}
             method={"stake"}

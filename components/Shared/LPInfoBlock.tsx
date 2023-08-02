@@ -16,26 +16,28 @@ export default function LPInfoBlock() {
       <HStack>
         <Text>
           You can get wPOKT-ETH LP tokens by providing liquidity on Uniswap{" "}
+          <Link
+            _hover={{ color: "white" }}
+            href={"/"}
+            textColor={"poktLime"}
+            textDecoration={"underline"}
+          >
+            here.
+          </Link>
         </Text>
-        <Link
-          _hover={{ color: "white" }}
-          href={"/"}
-          textColor={"poktLime"}
-          textDecoration={"underline"}
-        >
-          here.
-        </Link>
       </HStack>
       <HStack>
-        <Text>Farming uses this SNX Rewards contract </Text>
-        <Link
-          _hover={{ color: "white" }}
-          href={"/"}
-          textColor={"poktLime"}
-          textDecoration={"underline"}
-        >
-          here.
-        </Link>
+        <Text>
+          Farming uses this SNX Rewards contract{" "}
+          <Link
+            _hover={{ color: "white" }}
+            href={"/"}
+            textColor={"poktLime"}
+            textDecoration={"underline"}
+          >
+            here.
+          </Link>
+        </Text>
       </HStack>
     </VStack>
   );

@@ -60,20 +60,9 @@ export default function UnstakeWidget() {
   };
 
   return (
-    <VStack
-      flexDirection="column"
-      justify="center"
-      align="center"
-      fontSize={16}
-      gap={8}
-      textAlign="center"
-      flexGrow={1}
-      mx={!mobile ? "20%" : "0%"}
-      px={10}
-      py={10}
-    >
+    <VStack fontSize={16} gap={8} padding={"20px"}>
       <Heading>Withdraw LP tokens</Heading>
-      <HStack justify="space-between" maxWidth="80%">
+      <HStack justify="space-between">
         <Text>Amount to Withdraw:</Text>
         {userAddress && isClient ? (
           <Text>{lpTokenStakedFormatted} LP Staked</Text>
@@ -141,6 +130,7 @@ export default function UnstakeWidget() {
             newWithdrawAmount={newWithdrawAmount}
             handleWithdrawButtonClick={handleWithdrawButtonClick}
             willFail={willFail}
+            isDisabled={isLoading}
           />
         ) : (
           <ConnectWalletButton />

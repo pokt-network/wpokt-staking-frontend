@@ -30,22 +30,23 @@ export default function GasEstimator(args: {
   useEffect(() => {
     Promise.all([resp, resp2]).then((values) => {
       const val =
-        Number(formatEther(values[0])) + (args.method=='withdraw' ? Number(formatEther(values[1])) : 0);
+        Number(formatEther(values[0])) +
+        (args.method == "withdraw" ? Number(formatEther(values[1])) : 0);
       setGas(String(val));
     });
   });
 
-  const eth = Number(gas).toFixed(18);
+  const eth = Number(gas).toFixed(18).toString() + " ETH";
 
   if (args.isInvalidAmount && args.amount != 0) {
     return (
       <Text color={"red"}> {`Invalid Amount, Can't estimate gas fee!`}</Text>
     );
+  } else {
+    return (
+      <Text color={eth ? "white" : "poktLime"}>
+        {Number(amount) ? eth : "Estimating"}
+      </Text>
+    );
   }
-
-  return (
-    <Text color={eth ? "white" : "poktLime"}>
-      {Number(amount) ? eth + " eth" : "Estimating"}
-    </Text>
-  );
 }

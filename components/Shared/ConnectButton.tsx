@@ -7,8 +7,7 @@ export default function ConnectWalletButton() {
   const { openConnectModal } = useConnectModal();
   return (
     <Button
-      paddingX={"32px"}
-      paddingY={"16px"}
+      height={'52px'}
       borderWidth={2}
       borderRadius={"12px"}
       fontSize={"16px"}

@@ -17,58 +17,73 @@ import {
 } from "@chakra-ui/react";
 import { useWindowSize } from "usehooks-ts";
 
+import RewardsWidget from "@/components/Rewards/RewardsWidget";
 import LPInfoBlock from "@/components/Shared/LPInfoBlock";
 import StakingWidget from "@/components/Stake/StakingWidget";
 import UnstakeWidget from "@/components/Unstake/UnstakeWidget";
-import RewardsWidget from "@/components/Rewards/RewardsWidget";
 
 export default function Page() {
   const { isClient } = useGlobalContext();
   const { width } = useWindowSize();
   return (
     <GlobalContextProvider>
-      <Flex direction="column" minHeight="100vh" overflowX="hidden">
+      <Flex direction="column" minHeight="100vh" overflowX="hidden" gap={20}>
         <Header />
         <Heading size="lg" color="poktBlue" textAlign="center" padding={4}>
           wPOKT-ETH Liquidity Pool Farm
         </Heading>
 
-        <Center paddingX={10}>
+        <Center paddingX={10} flexDirection={"column"} alignItems={"center"}>
           <Divider borderColor={"poktLime"} />
-        </Center>
-        <LPInfoBlock />
-        <Center paddingX={10}>
+
+          <LPInfoBlock />
+
           <Divider borderColor={"poktLime"} />
         </Center>
 
         <Tabs
-          isFitted
-          variant="enclosed"
-          alignSelf={"center"}
-          bg="darkOverlay"
-          m={8}
-          borderRadius={"10 10 0 0"}
-          width={width > 900 ? "50%" : "100%"}
           id={"0"}
+          variant="enclosed"
+          bg="darkOverlay"
+          width={width > 900 ? "900px" : width}
+          alignSelf={"center"}
         >
-          <TabList>
-            <Tab>Stake</Tab>
-            <Tab>Withdraw</Tab>
+          <TabList borderColor={"poktLime"} borderRadius={4}>
+            <Tab
+              color={"poktLime"}
+              fontSize={16}
+              fontWeight={"medium"}
+              padding={4}
+              borderBottomColor={"poktLime"}
+              _active={{ borderBottomColor: "poktLime" }}
+            >
+              Stake
+            </Tab>
+            <Tab
+              color={"poktLime"}
+              fontSize={16}
+              fontWeight={"medium"}
+              padding={4}
+              borderBottomColor={"poktLime"}
+            >
+              Withdraw
+            </Tab>
           </TabList>
 
           <TabPanels>
-            <TabPanel>
+            <TabPanel mt={4}>
               <StakingWidget />
             </TabPanel>
-            <TabPanel>
+            <TabPanel mt={4}>
               <UnstakeWidget />
             </TabPanel>
           </TabPanels>
         </Tabs>
+
         <Center
           bg="darkOverlay"
-          width={width > 900 ? "50%" : "100%"}
           alignSelf={"center"}
+          width={width > 900 ? "900px" : width}
         >
           <RewardsWidget />
         </Center>
