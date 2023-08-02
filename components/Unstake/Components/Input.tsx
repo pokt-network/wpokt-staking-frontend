@@ -32,7 +32,6 @@ export default function WithdrawInput({
       <Button
         paddingX={"32px"}
         paddingY={"16px"}
-        borderWidth={2}
         borderRadius={"12px"}
         fontSize={"16px"}
         onClick={handleAllButtonClick}
@@ -41,6 +40,7 @@ export default function WithdrawInput({
         float="right"
         zIndex={5}
         isDisabled={isLoading}
+        bg={"poktLime"}
       >
         All
       </Button>

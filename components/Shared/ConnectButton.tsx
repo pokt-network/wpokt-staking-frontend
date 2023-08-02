@@ -7,7 +7,7 @@ export default function ConnectWalletButton() {
   const { openConnectModal } = useConnectModal();
   return (
     <Button
-      height={'52px'}
+      height={"52px"}
       borderWidth={2}
       borderRadius={"12px"}
       fontSize={"16px"}
@@ -16,6 +16,7 @@ export default function ConnectWalletButton() {
       color="white"
       leftIcon={<EthIcon fill={"white"} />}
       onClick={openConnectModal}
+      _hover={{ borderColor: "white", bg: "transparent"}}
     >
       Connect Wallet
     </Button>

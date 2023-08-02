@@ -20,10 +20,10 @@ export default function RewardsWidget() {
     >
       <Heading>wPOKT Rewards</Heading>
       <VStack mt={8}>
-        <Text fontSize={16}>wPOKT to claim:</Text>
+        <Text fontSize={14}>wPOKT to claim:</Text>
         {isClient && address ? (
           <>
-            <Text fontWeight={"bold"}> 0.000000000000000000 wPOKT</Text>
+            <Text fontWeight={"bold"} fontSize={16}> 0.000000000000000000 wPOKT</Text>
             <ClaimButton />
           </>
         ) : (
@@ -32,7 +32,7 @@ export default function RewardsWidget() {
             <ConnectWalletButton />
           </>
         )}
-        <VStack mt={8}>
+        <VStack mt={8} maxW={"400px"}>
           <Text fontWeight={"semibold"}>Rewards Breakdown</Text>
           <Text
             fontWeight={"normal"}
@@ -40,15 +40,15 @@ export default function RewardsWidget() {
             textAlign={"left"}
           >{`All figures are estimates provided for your convenience only, and by no means represent guaranteed returns.`}</Text>
         </VStack>
-        <VStack mt={8}>
+        <VStack mt={8} maxW={"400px"} alignContent={'flex-start'}>
           {address && isClient ? (
             <VStack alignItems={"flex-start"}>
               <VStack alignItems={"flex-start"}>
-                <Text fontSize={16}>Your stake is worth:</Text>
-                <HStack>
-                  <BlueEthIcon boxSize={6} />{" "}
-                  <Text fontSize={16} fontWeight={"bold"}>{`180.000000`}</Text>
-                </HStack>
+                      <Text fontSize={16}>Your stake is worth:</Text>
+                      <HStack>
+                        <BlueEthIcon boxSize={6} />{" "}
+                        <Text fontSize={16} fontWeight={"bold"}>{`180.000000`}</Text>
+                      </HStack>
               </VStack>
               <Text fontSize={16}>Your 24h earnings are worth:</Text>
               <VStack alignItems={"flex-start"}>
@@ -67,7 +67,7 @@ export default function RewardsWidget() {
               </VStack>
             </VStack>
           ) : (
-            <Text fontSize={16}>
+            <Text fontSize={16} textAlign={'left'} maxWidth={"80%"} >
               Connect your wallet to see estimates based on your staked balance.
             </Text>
           )}

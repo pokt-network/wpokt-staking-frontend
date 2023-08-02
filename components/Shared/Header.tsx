@@ -22,7 +22,7 @@ import { useAccount, useDisconnect } from "wagmi";
 import logo from "@/public/logo/full_white.png";
 import { BlueEthIcon, EthIcon } from "@/components/icons/eth";
 import { CloseIcon, MenuIcon } from "@/components/icons/misc";
-import { address } from '../../utils/contract/types';
+import { address } from "../../utils/contract/types";
 
 export function Header() {
   const { mobile, isClient } = useGlobalContext();
@@ -34,42 +34,42 @@ export function Header() {
 
   return (
     <HStack justify="space-between" align="center" paddingX={10} paddingY={5}>
-      <Image src={logo} alt="logo" width={122} height={36} />
-    ( address ?
-        <ButtonGroup>
-          {address && isClient ? (
-            <Button
-              height={'52px'}
-              borderWidth={2}
-              borderRadius={"12px"}
-              fontSize={"16px"}
-              color="white"
-              background="darkOverlay"
-              leftIcon={<BlueEthIcon width="28px" height="28px" />}
-              borderColor="darkOverlay"
-              onClick={() => disconnect()}
-            >
-              {address.substring(0, 4) +
-                "..." +
-                address.substring(address.length - 4)}
-            </Button>
-          ) : (
-            <Button
-              height={'52px'}
-              borderWidth={2}
-              borderRadius={"12px"}
-              fontSize={"16px"}
-              color="darkBlue"
-              background="poktLime"
-              borderColor="poktLime"
-              leftIcon={<EthIcon />}
-              onClick={openConnectModal}
-            >
-              Connect
-            </Button>
-          )}
-        </ButtonGroup>)
-      
+      <Image src={logo} alt="logo" width={122} height={36} />( address ?
+      <ButtonGroup>
+        {address && isClient ? (
+          <Button
+            height={"52px"}
+            borderWidth={2}
+            borderRadius={"12px"}
+            fontSize={"16px"}
+            color="white"
+            background="darkOverlay"
+            leftIcon={<BlueEthIcon width="28px" height="28px" />}
+            borderColor="darkOverlay"
+            onClick={() => disconnect()}
+          >
+            {address.substring(0, 4) +
+              "..." +
+              address.substring(address.length - 4)}
+          </Button>
+        ) : (
+          <Button
+            height={"52px"}
+            borderWidth={2}
+            borderRadius={"12px"}
+            fontSize={"16px"}
+            color="darkBlue"
+            background="poktLime"
+            borderColor="poktLime"
+            leftIcon={<EthIcon />}
+            onClick={openConnectModal}
+            
+          >
+            Connect
+          </Button>
+        )}
+      </ButtonGroup>
+      )
     </HStack>
   );
 }

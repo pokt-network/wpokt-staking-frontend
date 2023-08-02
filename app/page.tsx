@@ -27,7 +27,7 @@ export default function Page() {
   const { width } = useWindowSize();
   return (
     <GlobalContextProvider>
-      <Flex direction="column" minHeight="100vh" overflowX="hidden" gap={20}>
+      <Flex direction="column" minHeight="100vh" overflowX="hidden" gap={8}>
         <Header />
         <Heading size="lg" color="poktBlue" textAlign="center" padding={4}>
           wPOKT-ETH Liquidity Pool Farm

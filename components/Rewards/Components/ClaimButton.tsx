@@ -7,13 +7,12 @@ export default function ClaimButton({
 }: any) {
   return (
     <Button
-      height={'52px'}
-      borderWidth={2}
+      height={"52px"}
       borderRadius={"12px"}
       fontSize={"16px"}
       onClick={handleClaimButtonClick}
       isDisabled={isInvalidClaimAmount}
-     
+      bg={"poktLime"}
     >
       Claim wPOKT
     </Button>

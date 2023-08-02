@@ -9,13 +9,14 @@ export default function StakeButton({
 }: any) {
   return (
     <Button
-      height={'52px'}
-      borderWidth={2}
+      height={"52px"}
       borderRadius={"12px"}
       fontSize={"16px"}
+      bg={"poktLime"}
       onClick={handleStakeButtonClick}
       isDisabled={isInvalidStakeAmount || Number(newStakeAmount) === 0}
       isLoading={isLoading}
+      
     >
       {willFail ? "Approve" : "Stake"}
     </Button>
