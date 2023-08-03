@@ -1,17 +1,32 @@
 "use client";
 import useSWR from "swr";
-import { HStack, Text, Heading, VStack, Button } from "@chakra-ui/react";
+import {
+  HStack,
+  Text,
+  Heading,
+  VStack,
+  Button,
+  Switch,
+} from "@chakra-ui/react";
 import { useGlobalContext } from "@/context/Globals";
 import { useAccount, useContractWrite } from "wagmi";
 import ConnectWalletButton from "../Shared/ConnectButton";
-import { BlueEthIcon } from "../icons/eth";
+import { BlueDAIIcon, BlueEthIcon, PoktBlueIcon, SwitchIcon } from "../icons/eth";
 import {
   useClaimReward,
   usePendingRewardBalance,
 } from "@/utils/contract/hooks";
 import { address } from "../../utils/contract/types";
 import { formatEther } from "viem";
+import { ReactElement, useState } from "react";
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const refToken = ["ETHUSDC", "USDCUSDT", "ETHBTC"];
+const refIcon: Array<ReactElement> = [
+  <BlueEthIcon key="eth-icon" boxSize={6} />,
+  <BlueDAIIcon key="dai-icon" boxSize={6} />,
+  <PoktBlueIcon key="pokt-icon" boxSize={6} />,
+];
 export default function RewardsWidget() {
   const { isClient } = useGlobalContext();
   const { address } = useAccount();
@@ -27,8 +42,12 @@ export default function RewardsWidget() {
     isFetched: readToClaim,
   } = useClaimReward(Number(rewardValue));
   const { write } = useContractWrite(config);
+
+  const [refTokenIndex, setRefTokenIndex] = useState(0);
+
   const { data, error, isLoading } = useSWR(
-    "https://api.binance.us/api/v3/ticker/price?symbol=ETHUSDC",
+    "https://api.binance.us/api/v3/ticker/price?symbol=" +
+      refToken[refTokenIndex],
     fetcher,
   );
 
@@ -81,28 +100,45 @@ export default function RewardsWidget() {
           {address && isClient ? (
             <VStack alignItems={"flex-start"}>
               <VStack alignItems={"flex-start"}>
+                <Button
+                  paddingX={"32px"}
+                  paddingY={"16px"}
+                  borderRadius={"12px"}
+                  fontSize={"16px"}
+                  onClick={() => setRefTokenIndex((refTokenIndex + 1) % 3)}
+                  right={3}
+                  float="right"
+                  zIndex={5}
+                  isDisabled={isLoading}
+                  bg={"poktLime"}
+                  leftIcon={<SwitchIcon boxSize={"21px"} />}
+                >
+                  {refToken[refTokenIndex].substring(3, 7)}
+                </Button>
                 <Text fontSize={16}>Your stake is worth:</Text>
                 <HStack>
-                  <BlueEthIcon boxSize={6} />{" "}
+                  {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
-                    {isFetched && isClient
+                    {isFetched && isClient && data
                       ? (
                           Number(formatEther(rewardValue as bigint)) *
                           Number(data?.price as unknown as string)
                         ).toFixed(18)
-                      : `Fetching`}
+                      : "Calculating..."}
                   </Text>
                 </HStack>
               </VStack>
               <Text fontSize={16}>Your 24h earnings are worth:</Text>
               <VStack alignItems={"flex-start"}>
                 <HStack>
-                  <BlueEthIcon boxSize={6} />
+                {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
-                    {(
-                      Number(formatEther(rewardValue as bigint)) *
-                      Number(data?.price as unknown as string)
-                    ).toFixed(18)}
+                    {isFetched && isClient && data
+                      ? (
+                          Number(formatEther(rewardValue as bigint)) *
+                          Number(data?.price as unknown as string)
+                        ).toFixed(18)
+                      : "Calculating..."}
                   </Text>
                 </HStack>
               </VStack>

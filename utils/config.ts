@@ -1,12 +1,14 @@
 import { getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig } from "wagmi";
-import { alchemyProvider } from "wagmi/providers/alchemy";
+import { publicProvider } from "wagmi/providers/public";
 import { createPublicClient, http } from "viem";
 import { sepolia } from "viem/chains";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [sepolia],
   [
+    publicProvider(),
     alchemyProvider({
       apiKey: String(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY),
     }),

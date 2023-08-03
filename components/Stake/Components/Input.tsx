@@ -23,7 +23,6 @@ export default function StakeInput({
         height={"52px"}
         type="number"
         value={newStakeAmount}
-        defaultValue={0.0}
         onChange={(e) => setNewStakeAmount(Number(e.target.value))}
         isInvalid={isInvalidStakeAmount}
         min={0}

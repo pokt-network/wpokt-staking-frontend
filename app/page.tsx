@@ -44,8 +44,8 @@ export default function Page() {
         <Tabs
           id={"0"}
           variant="enclosed"
-          isFitted="true"
-          width={width > 900 ? "900px" : width}
+          isFitted={true}
+          width={width < 900 && isClient ? width : "900px"}
           alignSelf={"center"}
         >
           <TabList bg="transparent" border={"none"}>
