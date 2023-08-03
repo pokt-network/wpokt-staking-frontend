@@ -44,18 +44,22 @@ export default function Page() {
         <Tabs
           id={"0"}
           variant="enclosed"
-          bg="darkOverlay"
+          
+          // isFitted='true'
           width={width > 900 ? "900px" : width}
           alignSelf={"center"}
         >
-          <TabList borderColor={"poktLime"} borderRadius={4}>
+          <TabList  bg="transparent" border={'none'}> 
             <Tab
               color={"poktLime"}
               fontSize={16}
               fontWeight={"medium"}
-              padding={4}
-              borderBottomColor={"poktLime"}
-              _active={{ borderBottomColor: "poktLime" }}
+              padding={'16px 32px'}
+              borderRadius={'12px 12px 0px 0px'}
+              bg="darkOverlay"
+              border='none'
+              _selected={{border:'2px', borderColor: 'poktLime', borderBottom: 'none'}}
+              
             >
               Stake
             </Tab>
@@ -63,18 +67,22 @@ export default function Page() {
               color={"poktLime"}
               fontSize={16}
               fontWeight={"medium"}
-              padding={4}
-              borderBottomColor={"poktLime"}
+              padding={'16px 32px'}
+              borderRadius={'12px 12px 0px 0px'}
+              bg="darkOverlay"
+              border='none'
+              _selected={{border:'2px', borderColor: 'poktLime', borderBottom: 'none'}}
+              
             >
               Withdraw
             </Tab>
           </TabList>
 
-          <TabPanels>
-            <TabPanel mt={4}>
+          <TabPanels bg="darkOverlay">
+            <TabPanel pt={4}>
               <StakingWidget />
             </TabPanel>
-            <TabPanel mt={4}>
+            <TabPanel pt={4}>
               <UnstakeWidget />
             </TabPanel>
           </TabPanels>
