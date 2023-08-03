@@ -91,7 +91,9 @@ export default function UnstakeWidget() {
         <Text>Currently Staked</Text>
         <Text>
           {userAddress && isClient
-            ? formatEther((lpTokenStaked as bigint) || BigInt(0))
+            ? Number(
+                formatEther((lpTokenStaked as bigint) || BigInt(0)),
+              ).toFixed(18)
             : "No wallet connected"}
         </Text>
       </Center>
@@ -102,7 +104,7 @@ export default function UnstakeWidget() {
             ? newWithdrawAmount < 0
               ? "Can't Input Negative number"
               : !isInvalidWithdrawAmount
-              ? Number(newTotalStaked).toFixed(15)
+              ? Number(newTotalStaked).toFixed(18)
               : `Withdrawal amount can't be greater than staked amount`
             : "No wallet connected"}
         </Text>

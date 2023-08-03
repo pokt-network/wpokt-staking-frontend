@@ -16,7 +16,7 @@ export default function ConnectWalletButton() {
       color="white"
       leftIcon={<EthIcon fill={"white"} />}
       onClick={openConnectModal}
-      _hover={{ borderColor: "white", bg: "transparent"}}
+      _hover={{ borderColor: "white", bg: "transparent" }}
     >
       Connect Wallet
     </Button>

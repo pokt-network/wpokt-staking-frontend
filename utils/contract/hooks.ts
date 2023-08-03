@@ -111,3 +111,13 @@ export const useApprovalEstimate = (args: {
     args: [StakingRewardContract, args.amount],
     account: args.address,
   });
+
+export const useClaimReward = (pendingRewardBal: number) =>
+  usePrepareContractWrite({
+    abi: StakingRewardsABI,
+    address: StakingRewardContract,
+    functionName: "getReward",
+    args: [],
+    chainId: sepolia.id,
+    enabled: Boolean(pendingRewardBal),
+  });
