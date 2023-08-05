@@ -10,16 +10,23 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { formatEther, parseEther } from "viem";
-import { useAccount, useContractWrite } from "wagmi";
+import { useContractWrite } from "wagmi";
 import WithDrawButton from "./Components/Button";
 import WithdrawInput from "./Components/Input";
 
 export default function UnstakeWidget() {
-  const { isClient, lpTokenStaked, gasEstimates, ethBalance } =
-    useGlobalContext();
-  const { address: userAddress } = useAccount();
+  const {
+    isClient,
+    lpTokenStaked,
+    gasEstimates,
+    ethBalance,
+    setTxnHash,
+    address,
+    isConnected
+  } = useGlobalContext();
+  
 
   const [newWithdrawAmount, setNewWithdrawAmount] = useState("0");
 
@@ -31,13 +38,32 @@ export default function UnstakeWidget() {
     Number(newWithdrawAmount) < 0 ||
     newTotalStaked < 0;
 
-  const { config, isError: willFail } = useUnstakeLPToken({
+  const {
+    config,
+    isError: willFail,
+    isLoading: unStakeLoading,
+  } = useUnstakeLPToken({
     amount: newWithdrawAmount,
     isValidAmount: !isInvalidWithdrawAmount,
   });
 
-  const { data, isLoading, isSuccess, write, isError } =
-    useContractWrite(config);
+  const {
+    data,
+    isLoading: txnLoading,
+
+    isSuccess,
+    write,
+    isError,
+  } = useContractWrite(config);
+
+  const updateTxnHash = useCallback(
+    () => data?.hash && setTxnHash(data?.hash),
+    [data?.hash, setTxnHash],
+  );
+
+  useEffect(() => {
+    if (data?.hash && isSuccess) updateTxnHash();
+  }, [data?.hash, isSuccess, updateTxnHash]);
 
   const handleWithdrawButtonClick = () => {
     write?.();
@@ -47,10 +73,8 @@ export default function UnstakeWidget() {
     setNewWithdrawAmount(formatEther(lpTokenStaked));
   };
 
-  // const [withdrawText, setWithdrawText] = useState("");
-
   const withdrawText = () => {
-    if (userAddress && isClient) {
+    if (isConnected) {
       if (!isInvalidWithdrawAmount) {
         return formatEther(newTotalStaked) + " LP";
       } else {
@@ -70,13 +94,13 @@ export default function UnstakeWidget() {
       <Heading>Withdraw LP tokens</Heading>
       <HStack justify="space-between">
         <Text>Amount to Withdraw:</Text>
-        {userAddress && isClient ? (
+        {isConnected ? (
           <Text>{formatEther(lpTokenStaked)} LP Staked</Text>
         ) : (
           <Text>No wallet connected</Text>
         )}
       </HStack>
-      {userAddress && isClient ? (
+      {isConnected ? (
         <WithdrawInput
           newWithdrawAmount={newWithdrawAmount}
           setNewWithdrawAmount={setNewWithdrawAmount}
@@ -94,7 +118,7 @@ export default function UnstakeWidget() {
 
       <Center flexDirection="column">
         <Text>Currently Staked</Text>
-        {userAddress && isClient ? (
+        {isConnected ? (
           <Text>{formatEther(lpTokenStaked)} LP</Text>
         ) : (
           <Text>No wallet connected</Text>
@@ -108,7 +132,7 @@ export default function UnstakeWidget() {
       </Center>
       <Center flexDirection="column">
         <Text>Estimated Gas Cost:</Text>
-        {userAddress && isClient ? (
+        {isConnected ? (
           <Text
             color={
               formatEther(ethBalance) <
@@ -119,7 +143,8 @@ export default function UnstakeWidget() {
           >
             {formatEther(ethBalance) < formatEther(gasEstimates[2] || BigInt(0))
               ? "Not Enough ETH available for Gas"
-              : formatEther(gasEstimates[0] + gasEstimates[1] || BigInt("0"))}
+              : formatEther(gasEstimates[0] + gasEstimates[1] || BigInt("0")) +
+                " ETH"}
           </Text>
         ) : (
           <Text>No wallet connected</Text>
@@ -127,11 +152,11 @@ export default function UnstakeWidget() {
       </Center>
 
       <Center gap={2}>
-        {userAddress && isClient ? (
+        {isConnected ? (
           <WithDrawButton
             isInvalidWithdrawAmount={isInvalidWithdrawAmount}
             handleWithdrawButtonClick={handleWithdrawButtonClick}
-            isDisabled={isLoading}
+            isLoading={data?.hash || unStakeLoading || txnLoading || data?.hash}
           />
         ) : (
           <ConnectWalletButton />

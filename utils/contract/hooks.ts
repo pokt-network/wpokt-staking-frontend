@@ -4,6 +4,7 @@ import {
   useBalance,
   useContractRead,
   usePrepareContractWrite,
+  useWaitForTransaction,
 } from "wagmi";
 import { estimationClient } from "../config";
 import {
@@ -33,7 +34,7 @@ export const useApproveLPToken = (args: {
     functionName: "approve",
     args: [StakingRewardContract, parseEther(args.amount.toString())],
     chainId: sepolia.id,
-    enabled: args.isValidAmount,
+    enabled: args.isValidAmount && Number(args.amount) != 0,
   });
 
 export const useRewardTokenBalance = (address: address) =>
@@ -71,7 +72,7 @@ export const useStakeLPToken = (args: {
     functionName: "stake",
     args: [parseEther(args.amount)],
     chainId: sepolia.id,
-    enabled: args.isValidAmount,
+    enabled: args.isValidAmount && Number(args.amount) != 0,
   });
 
 export const useUnstakeLPToken = (args: {

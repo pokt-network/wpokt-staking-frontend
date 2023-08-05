@@ -25,9 +25,9 @@ export default function WithdrawInput({
         value={newWithdrawAmount}
         onChange={(e) => {
           e.preventDefault();
-          if (/^\d*\.?\d*$/.test(e.target.value)) 
-              setNewWithdrawAmount(e.target.value)
-            }}
+          if (/^\d*\.?\d*$/.test(e.target.value))
+            setNewWithdrawAmount(e.target.value);
+        }}
         isInvalid={isInvalidWithdrawAmount}
         min={0}
         isDisabled={isLoading}

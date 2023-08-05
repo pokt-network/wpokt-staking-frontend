@@ -4,6 +4,7 @@ export default function WithDrawButton({
   isInvalidWithdrawAmount,
   handleWithdrawButtonClick,
   willFail,
+  isLoading,
 }: any) {
   return (
     <Button
@@ -12,7 +13,8 @@ export default function WithDrawButton({
       fontSize={"16px"}
       onClick={handleWithdrawButtonClick}
       bg={"poktLime"}
-      isDisabled={isInvalidWithdrawAmount || willFail}
+      isDisabled={isInvalidWithdrawAmount || willFail || isLoading}
+      isLoading={isLoading}
     >
       Withdraw
     </Button>

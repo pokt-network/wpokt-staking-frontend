@@ -8,7 +8,6 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [sepolia],
   [
-    publicProvider(),
     alchemyProvider({
       apiKey: String(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY),
     }),

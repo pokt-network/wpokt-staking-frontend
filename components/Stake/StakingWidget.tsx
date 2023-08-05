@@ -10,18 +10,24 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useAccount, useContractWrite } from "wagmi";
 import StakeButton from "./Components/Button";
 import StakeInput from "./Components/Input";
 
 export default function StakingWidget() {
-  const { isClient, lpTokenBalance, lpTokenStaked, gasEstimates, ethBalance } =
-    useGlobalContext();
+  const {
+    isClient,
+    lpTokenBalance,
+    lpTokenStaked,
+    gasEstimates,
+    ethBalance,
+    setTxnHash,
+  } = useGlobalContext();
 
-  const { address: userAddress } = useAccount();
-
+  const { address, isConnected } = useAccount();
+  const [isApproved, setIsApproved] = useState(true);
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState("0");
 
@@ -31,19 +37,41 @@ export default function StakingWidget() {
   const isInvalidStakeAmount =
     Number(newStakeAmount) < 0 || parseEther(newStakeAmount) > lpTokenBalance;
 
-  const { config: stakeConfig, isError: stakeWillFail } = useStakeLPToken({
+  const {
+    config: stakeConfig,
+    isError: stakeWillFail,
+    isLoading: stakeLoading,
+  } = useStakeLPToken({
     amount: newStakeAmount,
-    isValidAmount: !isInvalidStakeAmount,
+    isValidAmount: !isInvalidStakeAmount && isApproved,
   });
 
-  const { config: approveConfig } = useApproveLPToken({
-    amount: newStakeAmount,
-    isValidAmount: !isInvalidStakeAmount,
-  });
+  if (stakeWillFail) () => setIsApproved(false);
 
-  const contractCallConfig = stakeWillFail ? approveConfig : stakeConfig;
+  const { config: approveConfig, isLoading: approveLoading } =
+    useApproveLPToken({
+      amount: newStakeAmount,
+      isValidAmount: !isInvalidStakeAmount && !isApproved,
+    });
 
-  const { isLoading, write } = useContractWrite(contractCallConfig as any);
+  const contractCallConfig = !isApproved ? approveConfig : stakeConfig;
+
+  const {
+    isLoading: txnLoading,
+    write,
+    data,
+    isSuccess,
+    isError,
+  } = useContractWrite(contractCallConfig as any);
+
+  const updateTxnHash = useCallback(
+    () => data?.hash && setTxnHash(data?.hash),
+    [data?.hash, setTxnHash],
+  );
+
+  useEffect(() => {
+    if (data?.hash && isSuccess) updateTxnHash();
+  }, [data?.hash, isSuccess, updateTxnHash]);
 
   const handleStakeButtonClick = () => {
     write?.();
@@ -54,7 +82,7 @@ export default function StakingWidget() {
   };
 
   const stakeText = () => {
-    if (userAddress && isClient) {
+    if (isConnected) {
       if (Number(newStakeAmount) < 0) return "Can't Input Negative number";
       else if (!isInvalidStakeAmount)
         return formatEther(newTotalStaked) + " LP";
@@ -66,19 +94,19 @@ export default function StakingWidget() {
       <Heading>Stake LP tokens</Heading>
       <HStack justify="space-between" maxWidth="80%">
         <Text>Amount to Stake:</Text>
-        {userAddress && isClient ? (
+        {isConnected ? (
           <Text>{formatEther(lpTokenBalance) + " LP Tokens in wallet"}</Text>
         ) : (
           <Text>No wallet connected</Text>
         )}
       </HStack>
-      {userAddress && isClient ? (
+      {isConnected ? (
         <StakeInput
           newStakeAmount={newStakeAmount}
           setNewStakeAmount={setNewStakeAmount}
           handleAllButtonClick={handleAllButtonClick}
           isInvalidStakeAmount={isInvalidStakeAmount}
-          isDisabled={isLoading}
+          isDisabled={approveLoading || stakeLoading || txnLoading}
         />
       ) : (
         <Center>
@@ -90,7 +118,7 @@ export default function StakingWidget() {
 
       <Center flexDirection="column">
         <Text>Currently Staked</Text>
-        {userAddress && isClient ? (
+        {isConnected ? (
           <Text>{formatEther(lpTokenStaked) + " LP"}</Text>
         ) : (
           <Text>No wallet connected</Text>
@@ -104,7 +132,7 @@ export default function StakingWidget() {
       </Center>
       <Center flexDirection="column">
         <Text>Estimated Gas Cost:</Text>
-        {userAddress && isClient ? (
+        {isConnected ? (
           <Text
             color={
               formatEther(ethBalance) <
@@ -116,7 +144,8 @@ export default function StakingWidget() {
             {formatEther(ethBalance) <
             formatEther(gasEstimates[0] + gasEstimates[1] || BigInt(0))
               ? "Not Enough ETH available for Gas"
-              : formatEther(gasEstimates[0] + gasEstimates[1] || BigInt("0"))}
+              : formatEther(gasEstimates[0] + gasEstimates[1] || BigInt("0")) +
+                " ETH"}
           </Text>
         ) : (
           <Text>No wallet connected</Text>
@@ -124,13 +153,15 @@ export default function StakingWidget() {
       </Center>
 
       <Center gap={2}>
-        {userAddress && isClient ? (
+        {isConnected ? (
           <StakeButton
             isInvalidStakeAmount={isInvalidStakeAmount}
             newStakeAmount={newStakeAmount}
             handleStakeButtonClick={handleStakeButtonClick}
             willFail={stakeWillFail}
-            isLoading={isLoading}
+            isLoading={
+              stakeLoading || approveLoading || txnLoading || data?.hash
+            }
           />
         ) : (
           <ConnectWalletButton />
