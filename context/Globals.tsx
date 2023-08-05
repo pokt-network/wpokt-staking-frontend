@@ -28,6 +28,7 @@ export interface GlobalContextProps {
   pendingRewards: bigint;
   chainId?: number;
   gasEstimates: Array<bigint>;
+  GasEstimator: () => void;
 }
 
 export const GlobalContext = createContext<GlobalContextProps>({
@@ -40,6 +41,7 @@ export const GlobalContext = createContext<GlobalContextProps>({
   pendingRewards: BigInt(0),
   chainId: sepolia.id,
   gasEstimates: [BigInt(1), BigInt(1), BigInt(1)],
+  GasEstimator: () => {},
 });
 
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -161,6 +163,7 @@ export function GlobalContextProvider({ children }: any) {
       chainId,
       pendingRewards,
       gasEstimates,
+      GasEstimator,
     }),
     [
       mobile,
@@ -172,6 +175,7 @@ export function GlobalContextProvider({ children }: any) {
       chainId,
       pendingRewards,
       gasEstimates,
+      GasEstimator,
     ],
   );
   console.log(contextValue);
