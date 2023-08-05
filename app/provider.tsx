@@ -28,7 +28,12 @@ export default function RootLayout({
             borderRadius: "small",
           })}
         >
-          <ChakraProvider theme={theme}>{children}</ChakraProvider>
+          <ChakraProvider
+            theme={theme}
+            toastOptions={{ defaultOptions: { position: "top-right" } }}
+          >
+            {children}
+          </ChakraProvider>
         </RainbowKitProvider>
       </WagmiConfig>
     </CacheProvider>

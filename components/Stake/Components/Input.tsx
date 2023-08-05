@@ -5,7 +5,6 @@ export default function StakeInput({
   setNewStakeAmount,
   handleAllButtonClick,
   isInvalidStakeAmount,
-  lpTokenBalance,
   isLoading,
 }: any) {
   return (
@@ -23,10 +22,9 @@ export default function StakeInput({
         height={"52px"}
         type="number"
         value={newStakeAmount}
-        onChange={(e) => setNewStakeAmount(Number(e.target.value))}
+        onChange={(e) => setNewStakeAmount(e.target.value)}
         isInvalid={isInvalidStakeAmount}
         min={0}
-        max={lpTokenBalance?.formatted}
         isDisabled={isLoading}
       />
       <Button

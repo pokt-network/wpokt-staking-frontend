@@ -11,12 +11,17 @@ import {
 import { useGlobalContext } from "@/context/Globals";
 import { useAccount, useContractWrite } from "wagmi";
 import ConnectWalletButton from "../Shared/ConnectButton";
-import { BlueDAIIcon, BlueEthIcon, PoktBlueIcon, SwitchIcon } from "../icons/eth";
+import {
+  BlueDAIIcon,
+  BlueEthIcon,
+  PoktBlueIcon,
+  SwitchIcon,
+} from "../icons/eth";
 import {
   useClaimReward,
   usePendingRewardBalance,
 } from "@/utils/contract/hooks";
-import { address } from "../../utils/contract/types";
+import { address } from "../../utils/types";
 import { formatEther } from "viem";
 import { ReactElement, useState } from "react";
 
@@ -131,7 +136,7 @@ export default function RewardsWidget() {
               <Text fontSize={16}>Your 24h earnings are worth:</Text>
               <VStack alignItems={"flex-start"}>
                 <HStack>
-                {refIcon[refTokenIndex]}
+                  {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
                     {isFetched && isClient && data
                       ? (

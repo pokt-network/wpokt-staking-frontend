@@ -1,7 +1,6 @@
 import { Button } from "@chakra-ui/react";
 
 export default function WithDrawButton({
-  newWithdrawAmount,
   isInvalidWithdrawAmount,
   handleWithdrawButtonClick,
   willFail,
@@ -13,9 +12,7 @@ export default function WithDrawButton({
       fontSize={"16px"}
       onClick={handleWithdrawButtonClick}
       bg={"poktLime"}
-      isDisabled={
-        isInvalidWithdrawAmount || Number(newWithdrawAmount) === 0 || willFail
-      }
+      isDisabled={isInvalidWithdrawAmount || willFail}
     >
       Withdraw
     </Button>

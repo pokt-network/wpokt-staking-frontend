@@ -13,9 +13,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  VStack,
 } from "@chakra-ui/react";
-import { useWindowSize } from "usehooks-ts";
 
 import RewardsWidget from "@/components/Rewards/RewardsWidget";
 import LPInfoBlock from "@/components/Shared/LPInfoBlock";
@@ -23,8 +21,8 @@ import StakingWidget from "@/components/Stake/StakingWidget";
 import UnstakeWidget from "@/components/Unstake/UnstakeWidget";
 
 export default function Page() {
-  const { isClient } = useGlobalContext();
-  const { width } = useWindowSize();
+  const { mobile } = useGlobalContext();
+
   return (
     <GlobalContextProvider>
       <Flex direction="column" minHeight="100vh" overflowX="hidden" gap={8}>
@@ -45,7 +43,7 @@ export default function Page() {
           id={"0"}
           variant="enclosed"
           isFitted={true}
-          width={width < 900 && isClient ? width : "900px"}
+          width={mobile ? "100%" : "900px"}
           alignSelf={"center"}
         >
           <TabList bg="transparent" border={"none"}>
@@ -96,7 +94,7 @@ export default function Page() {
         <Center
           bg="darkOverlay"
           alignSelf={"center"}
-          width={width > 900 ? "900px" : width}
+          width={mobile ? "100%" : "900px"}
         >
           <RewardsWidget />
         </Center>

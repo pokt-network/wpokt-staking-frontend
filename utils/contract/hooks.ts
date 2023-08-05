@@ -1,3 +1,4 @@
+"use client";
 import {
   sepolia,
   useBalance,
@@ -11,9 +12,9 @@ import {
   StakingRewardContract,
 } from "./contractAddress";
 // types and iterfaces
-import { StakingRewardsABI, StakeABI } from "./abi";
-import { address } from "./types";
-import { useGlobalContext } from "@/context/Globals";
+import { parseEther } from "viem";
+import { address } from "../types";
+import { StakeABI, StakingRewardsABI } from "./abi";
 
 export const useLPTokenBalance = (address: address) =>
   useBalance({
@@ -23,16 +24,16 @@ export const useLPTokenBalance = (address: address) =>
   });
 
 export const useApproveLPToken = (args: {
-  amount: bigint;
+  amount: string;
   isValidAmount: boolean;
 }) =>
   usePrepareContractWrite({
     abi: StakeABI,
     address: StakeContract,
     functionName: "approve",
-    args: [StakingRewardContract, args.amount],
+    args: [StakingRewardContract, parseEther(args.amount.toString())],
     chainId: sepolia.id,
-    enabled: args.isValidAmount && args.amount != BigInt(0),
+    enabled: args.isValidAmount,
   });
 
 export const useRewardTokenBalance = (address: address) =>
@@ -61,57 +62,30 @@ export const usePendingRewardBalance = (address: address) =>
   });
 
 export const useStakeLPToken = (args: {
-  amount: bigint;
+  amount: string;
   isValidAmount: boolean;
 }) =>
   usePrepareContractWrite({
     abi: StakingRewardsABI,
     address: StakingRewardContract,
     functionName: "stake",
-    args: [args.amount],
+    args: [parseEther(args.amount)],
     chainId: sepolia.id,
-    enabled: args.isValidAmount && args.amount != BigInt(0),
+    enabled: args.isValidAmount,
   });
 
 export const useUnstakeLPToken = (args: {
-  amount: bigint;
+  amount: string;
   isValidAmount: boolean;
 }) =>
   usePrepareContractWrite({
     abi: StakingRewardsABI,
     address: StakingRewardContract,
     functionName: "withdraw",
-    args: [args.amount],
+    args: [parseEther(String(args.amount))],
     chainId: sepolia.id,
-    enabled: args.isValidAmount && args.amount != BigInt(0),
+    enabled: args.isValidAmount && Number(args.amount) != 0,
   });
-
-export const useGasEstimate = (args: {
-  method: string;
-  amount: bigint;
-  address: address;
-}) =>
-  estimationClient.estimateContractGas({
-    abi: StakingRewardsABI,
-    address: StakingRewardContract,
-    functionName: args.method,
-    args: [args.amount],
-    account: args.address,
-  });
-
-export const useApprovalEstimate = (args: {
-  method: string;
-  amount: bigint;
-  address: address;
-}) =>
-  estimationClient.estimateContractGas({
-    abi: StakeABI,
-    address: StakeContract,
-    functionName: "approve",
-    args: [StakingRewardContract, args.amount],
-    account: args.address,
-  });
-
 export const useClaimReward = (pendingRewardBal: number) =>
   usePrepareContractWrite({
     abi: StakingRewardsABI,
@@ -120,4 +94,29 @@ export const useClaimReward = (pendingRewardBal: number) =>
     args: [],
     chainId: sepolia.id,
     enabled: Boolean(pendingRewardBal),
+  });
+
+export const GasEstimate = (args: {
+  method: string;
+  amount: string;
+  address: address;
+}) =>
+  estimationClient.estimateContractGas({
+    abi: StakingRewardsABI,
+    address: StakingRewardContract,
+    functionName: args.method,
+    args: [parseEther(String(args.amount))],
+    account: args.address,
+  });
+
+export const ApprovalGasEstimate = (args: {
+  amount: string;
+  address: address;
+}) =>
+  estimationClient.estimateContractGas({
+    abi: StakeABI,
+    address: StakeContract,
+    functionName: "approve",
+    args: [StakingRewardContract, parseEther(String(args.amount))],
+    account: args.address,
   });

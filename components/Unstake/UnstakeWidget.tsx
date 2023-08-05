@@ -1,12 +1,7 @@
 "use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
-import GasEstimator from "@/components/Shared/GasEstimator";
-import {
-  useStakedTokenBalance,
-  useUnstakeLPToken,
-} from "@/utils/contract/hooks";
-import { address } from "@/utils/contract/types";
+import { useUnstakeLPToken } from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
@@ -22,41 +17,52 @@ import WithDrawButton from "./Components/Button";
 import WithdrawInput from "./Components/Input";
 
 export default function UnstakeWidget() {
-  const { mobile, isClient } = useGlobalContext();
+  const { isClient, lpTokenStaked, gasEstimates, ethBalance } =
+    useGlobalContext();
   const { address: userAddress } = useAccount();
 
-  const [newWithdrawAmount, setNewWithdrawAmount] = useState(0);
-  const { data: lpTokenStaked } = useStakedTokenBalance(userAddress as address);
-  const lpTokenStakedFormatted =
-    userAddress && lpTokenStaked && isClient
-      ? formatEther((lpTokenStaked as bigint) || BigInt(0))
-      : "0";
+  const [newWithdrawAmount, setNewWithdrawAmount] = useState("0");
+
   const newTotalStaked =
-    Number(lpTokenStakedFormatted) - Number(newWithdrawAmount);
+    lpTokenStaked - parseEther(newWithdrawAmount) || BigInt("0");
 
   const isInvalidWithdrawAmount =
+    parseEther(newWithdrawAmount) > lpTokenStaked ||
     Number(newWithdrawAmount) < 0 ||
-    Number(newWithdrawAmount) > Number(lpTokenStakedFormatted);
+    newTotalStaked < 0;
 
   const { config, isError: willFail } = useUnstakeLPToken({
-    amount:
-      parseEther(Number(newWithdrawAmount).toFixed(18).toString()) || BigInt(0),
+    amount: newWithdrawAmount,
     isValidAmount: !isInvalidWithdrawAmount,
   });
 
   const { data, isLoading, isSuccess, write, isError } =
     useContractWrite(config);
 
-  console.log(data, isLoading, isSuccess, isError);
-
   const handleWithdrawButtonClick = () => {
     write?.();
   };
 
   const handleAllButtonClick = () => {
-    Number(lpTokenStakedFormatted) > 1e-8
-      ? setNewWithdrawAmount(Number(lpTokenStakedFormatted))
-      : setNewWithdrawAmount(0);
+    setNewWithdrawAmount(formatEther(lpTokenStaked));
+  };
+
+  // const [withdrawText, setWithdrawText] = useState("");
+
+  const withdrawText = () => {
+    if (userAddress && isClient) {
+      if (!isInvalidWithdrawAmount) {
+        return formatEther(newTotalStaked) + " LP";
+      } else {
+        if (Number(newWithdrawAmount) < 0) {
+          return "Can't Input Negative number";
+        } else {
+          return `Withdrawal amount can't be greater than staked amount`;
+        }
+      }
+    } else {
+      return "No wallet connected";
+    }
   };
 
   return (
@@ -65,7 +71,7 @@ export default function UnstakeWidget() {
       <HStack justify="space-between">
         <Text>Amount to Withdraw:</Text>
         {userAddress && isClient ? (
-          <Text>{lpTokenStakedFormatted} LP Staked</Text>
+          <Text>{formatEther(lpTokenStaked)} LP Staked</Text>
         ) : (
           <Text>No wallet connected</Text>
         )}
@@ -76,7 +82,6 @@ export default function UnstakeWidget() {
           setNewWithdrawAmount={setNewWithdrawAmount}
           handleAllButtonClick={handleAllButtonClick}
           isInvalidWithdrawAmount={isInvalidWithdrawAmount}
-          lpTokenStakedFormatted={lpTokenStakedFormatted}
           willFail={willFail}
         />
       ) : (
@@ -89,39 +94,35 @@ export default function UnstakeWidget() {
 
       <Center flexDirection="column">
         <Text>Currently Staked</Text>
-        <Text>
-          {userAddress && isClient
-            ? Number(
-                formatEther((lpTokenStaked as bigint) || BigInt(0)),
-              ).toFixed(18)
-            : "No wallet connected"}
-        </Text>
+        {userAddress && isClient ? (
+          <Text>{formatEther(lpTokenStaked)} LP</Text>
+        ) : (
+          <Text>No wallet connected</Text>
+        )}
       </Center>
       <Center flexDirection="column">
         <Text>New Total Staked:</Text>
         <Text color={!isInvalidWithdrawAmount ? "white" : "red"}>
-          {userAddress && isClient
-            ? newWithdrawAmount < 0
-              ? "Can't Input Negative number"
-              : !isInvalidWithdrawAmount
-              ? Number(newTotalStaked).toFixed(18)
-              : `Withdrawal amount can't be greater than staked amount`
-            : "No wallet connected"}
+          {withdrawText()}
         </Text>
       </Center>
       <Center flexDirection="column">
         <Text>Estimated Gas Cost:</Text>
-        {Number(formatEther((lpTokenStaked as bigint) || BigInt(0))) > 1e-13 ? (
-          <GasEstimator
-            amount={newWithdrawAmount}
-            method={"withdraw"}
-            willFail={willFail}
-            isInvalidAmount={isInvalidWithdrawAmount}
-          />
-        ) : userAddress ? (
-          <Text color={"red"}>{`You don't have enough LP Tokens staked`}</Text>
+        {userAddress && isClient ? (
+          <Text
+            color={
+              formatEther(ethBalance) <
+              formatEther(gasEstimates[2] || BigInt(0))
+                ? "red"
+                : "white"
+            }
+          >
+            {formatEther(ethBalance) < formatEther(gasEstimates[2] || BigInt(0))
+              ? "Not Enough ETH available for Gas"
+              : formatEther(gasEstimates[0] + gasEstimates[1] || BigInt("0"))}
+          </Text>
         ) : (
-          "No wallet connected"
+          <Text>No wallet connected</Text>
         )}
       </Center>
 
@@ -129,9 +130,7 @@ export default function UnstakeWidget() {
         {userAddress && isClient ? (
           <WithDrawButton
             isInvalidWithdrawAmount={isInvalidWithdrawAmount}
-            newWithdrawAmount={newWithdrawAmount}
             handleWithdrawButtonClick={handleWithdrawButtonClick}
-            willFail={willFail}
             isDisabled={isLoading}
           />
         ) : (

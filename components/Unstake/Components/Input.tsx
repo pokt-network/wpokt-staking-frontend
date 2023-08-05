@@ -5,7 +5,7 @@ export default function WithdrawInput({
   setNewWithdrawAmount,
   handleAllButtonClick,
   isInvalidWithdrawAmount,
-  lpTokenStakedFormatted,
+  lpTokenStaked,
   isLoading,
 }: any) {
   return (
@@ -23,10 +23,9 @@ export default function WithdrawInput({
         height={"52px"}
         type="number"
         value={newWithdrawAmount}
-        onChange={(e) => setNewWithdrawAmount(Number(e.target.value))}
+        onChange={(e) => setNewWithdrawAmount(e.target.value)}
         isInvalid={isInvalidWithdrawAmount}
         min={0}
-        max={Number(lpTokenStakedFormatted)}
         isDisabled={isLoading}
       />
       <Button
