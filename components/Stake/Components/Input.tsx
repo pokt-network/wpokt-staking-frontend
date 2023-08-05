@@ -22,7 +22,10 @@ export default function StakeInput({
         height={"52px"}
         type="number"
         value={newStakeAmount}
-        onChange={(e) => setNewStakeAmount(e.target.value)}
+        onChange={(e) => {
+          e.preventDefault();
+          if (/^\d*\.?\d*$/.test(e.target.value)) 
+            setNewStakeAmount(e.target.value)}}
         isInvalid={isInvalidStakeAmount}
         min={0}
         isDisabled={isLoading}
