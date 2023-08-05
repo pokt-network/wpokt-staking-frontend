@@ -1,7 +1,12 @@
 "use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
-import { useApproveLPToken, useStakeLPToken } from "@/utils/contract/hooks";
+import {
+  ApprovalGasEstimate,
+  GasEstimate,
+  useApproveLPToken,
+  useStakeLPToken,
+} from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
@@ -12,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { formatEther, parseEther } from "viem";
-import { useAccount, useContractWrite } from "wagmi";
+import { useAccount, useContractWrite, useFeeData } from "wagmi";
 import StakeButton from "./Components/Button";
 import StakeInput from "./Components/Input";
 
@@ -21,15 +26,17 @@ export default function StakingWidget() {
     isClient,
     lpTokenBalance,
     lpTokenStaked,
-    gasEstimates,
+    isConnected,
     ethBalance,
     setTxnHash,
+    address,
   } = useGlobalContext();
 
-  const { address, isConnected } = useAccount();
   const [isApproved, setIsApproved] = useState(true);
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState("0");
+
+  const {data: gas} = useFeeData();
 
   const newTotalStaked =
     lpTokenStaked + parseEther(newStakeAmount) || BigInt("0");
@@ -64,10 +71,35 @@ export default function StakingWidget() {
     isError,
   } = useContractWrite(contractCallConfig as any);
 
+  console.log(contractCallConfig);
+  const [gasEst, setGasEst] = useState([BigInt(0), BigInt(0)]);
+
   const updateTxnHash = useCallback(
     () => data?.hash && setTxnHash(data?.hash),
     [data?.hash, setTxnHash],
   );
+
+  const gasEstimate = useCallback(async () => {
+   
+
+    const stakingGasEstimate =  (Number(newStakeAmount) > 0) ? await GasEstimate({
+      method: "stake",
+      amount: Number(newStakeAmount),
+      address: address,
+    }) : [BigInt(0), BigInt(0)];
+
+    const approvalGasEstimate = (Number(newStakeAmount) > 0) ? await ApprovalGasEstimate({
+      address: address,
+      amount: Number(newStakeAmount),
+    }) : BigInt(0);
+
+    if (stakingGasEstimate != BigInt(0) || approvalGasEstimate != BigInt(0))
+      return [stakingGasEstimate, approvalGasEstimate];
+  }, [address, newStakeAmount]);
+
+  gasEstimate().then((gas:any) => {
+    setGasEst(gas);
+  });
 
   useEffect(() => {
     if (data?.hash && isSuccess) updateTxnHash();
@@ -135,17 +167,14 @@ export default function StakingWidget() {
         {isConnected ? (
           <Text
             color={
-              formatEther(ethBalance) <
-              formatEther(gasEstimates[0] + gasEstimates[1] || BigInt(0))
+              formatEther(ethBalance) < formatEther(gasEst[0] ?? gas?.gasPrice )
                 ? "red"
                 : "white"
             }
           >
-            {formatEther(ethBalance) <
-            formatEther(gasEstimates[0] + gasEstimates[1] || BigInt(0))
+            {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
-              : formatEther(gasEstimates[0] + gasEstimates[1] || BigInt("0")) +
-                " ETH"}
+              : formatEther(gasEst[0] ?? gas?.gasPrice) + " ETH"}
           </Text>
         ) : (
           <Text>No wallet connected</Text>

@@ -27,7 +27,6 @@ export interface GlobalContextProps {
   lpTokenStaked: bigint;
   pendingRewards: bigint;
   chainId?: number;
-  gasEstimates: Array<bigint>;
 
   setTxnHash: (hash: string) => void;
   address: address;
@@ -43,10 +42,9 @@ export const GlobalContext = createContext<GlobalContextProps>({
   lpTokenStaked: BigInt(0),
   pendingRewards: BigInt(0),
   chainId: sepolia.id,
-  gasEstimates: [BigInt(1), BigInt(1), BigInt(1)],
 
   setTxnHash: () => {},
-  address: "0x0000000",
+  address: "" as address,
   isConnected: false,
 });
 
@@ -56,34 +54,8 @@ export function GlobalContextProvider({ children }: any) {
   const [isClient, setIsClient] = useState(false);
   const [mobile, setMobile] = useState(false);
   const chainId = sepolia.id;
-  // using vitalik's address just for null-safety
-  const { address: userAddress, isConnected } = useAccount() ?? {
-    address: vitalik,
-    isConnected: false,
-  };
-  const [gasEstimates, setGasEstimates] = useState<bigint[]>([]);
-  const GasEstimator = useCallback(async () => {
-    const stakingGasEstimate = isConnected ? await GasEstimate({
-      method: "stake",
-      amount: "0.000001",
-      address: (userAddress as address) || vitalik,
-    }) : BigInt(0);
 
-    const withdrawGasEstimate = isConnected ? await GasEstimate({
-      method: "withdraw",
-      amount: "0.000001",
-      address: (userAddress as address) || vitalik,
-    }) : BigInt(0);
-
-    const approvalGasEstimate = isConnected ? await ApprovalGasEstimate({
-      amount: "0.000001",
-      address: (userAddress as address) || vitalik,
-    }) : BigInt(0);
-    
-    
-    return [stakingGasEstimate, withdrawGasEstimate, approvalGasEstimate]
-    
-  }, [isConnected, userAddress]);
+  const { address: userAddress, isConnected } = useAccount();
 
   const [txnHash, setTxnHash] = useState("");
 
@@ -97,13 +69,13 @@ export function GlobalContextProvider({ children }: any) {
 
   const lpTokenBalance = lpTokenBalanceRaw?.value ?? BigInt(0);
   const { data: lpTokenStakedRaw } = useStakedTokenBalance(
-    (userAddress as address) || vitalik
+    (userAddress as address) || vitalik,
   );
 
   const lpTokenStaked = (lpTokenStakedRaw as bigint) || BigInt(0);
 
   const { data: pendingRewardsRaw } = usePendingRewardBalance(
-    (userAddress as address) || vitalik
+    (userAddress as address) || vitalik,
   );
   const pendingRewards = (pendingRewardsRaw as bigint) ?? BigInt(0);
   const toast = useToast();
@@ -141,17 +113,16 @@ export function GlobalContextProvider({ children }: any) {
         ),
       });
     },
-    [toast]
+    [toast],
   );
 
   useEffect(() => {
     setIsClient(true);
-    GasEstimator().then((resp:any) => setGasEstimates(resp));
 
     toggleMobile();
     window.addEventListener("resize", toggleMobile);
     return () => window.removeEventListener("resize", toggleMobile);
-  }, [isConnected, GasEstimator]);
+  }, []);
 
   function toggleMobile() {
     if (window && window.innerWidth < 700) {
@@ -171,7 +142,6 @@ export function GlobalContextProvider({ children }: any) {
       lpTokenStaked,
       chainId,
       pendingRewards,
-      gasEstimates,
 
       setTxnHash,
       isConnected,
@@ -186,11 +156,10 @@ export function GlobalContextProvider({ children }: any) {
       lpTokenStaked,
       chainId,
       pendingRewards,
-      gasEstimates,
 
       isConnected,
       userAddress,
-    ]
+    ],
   );
   console.log(contextValue);
   return (

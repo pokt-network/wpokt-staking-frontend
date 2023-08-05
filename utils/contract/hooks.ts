@@ -4,7 +4,6 @@ import {
   useBalance,
   useContractRead,
   usePrepareContractWrite,
-  useWaitForTransaction,
 } from "wagmi";
 import { estimationClient } from "../config";
 import {
@@ -97,27 +96,20 @@ export const useClaimReward = (pendingRewardBal: number) =>
     enabled: Boolean(pendingRewardBal),
   });
 
-export const GasEstimate = (args: {
-  method: string;
-  amount: string;
-  address: address;
-}) =>
+export const GasEstimate = (args: { method: string; address: address, amount: number }) =>
   estimationClient.estimateContractGas({
     abi: StakingRewardsABI,
     address: StakingRewardContract,
     functionName: args.method,
-    args: [parseEther(String(args.amount))],
     account: args.address,
+    args: [parseEther(String(args.amount))],
   });
 
-export const ApprovalGasEstimate = (args: {
-  amount: string;
-  address: address;
-}) =>
+export const ApprovalGasEstimate = (args: { address: address, amount: number }) =>
   estimationClient.estimateContractGas({
     abi: StakeABI,
     address: StakeContract,
     functionName: "approve",
-    args: [StakingRewardContract, parseEther(String(args.amount))],
     account: args.address,
+    args: [StakingRewardContract, parseEther(String(args.amount))],
   });

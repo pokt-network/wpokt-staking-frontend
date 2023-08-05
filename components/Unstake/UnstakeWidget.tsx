@@ -1,7 +1,7 @@
 "use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
-import { useUnstakeLPToken } from "@/utils/contract/hooks";
+import { GasEstimate, useUnstakeLPToken } from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { formatEther, parseEther } from "viem";
-import { useContractWrite } from "wagmi";
+import { useContractWrite, useFeeData } from "wagmi";
 import WithDrawButton from "./Components/Button";
 import WithdrawInput from "./Components/Input";
 
@@ -20,16 +20,16 @@ export default function UnstakeWidget() {
   const {
     isClient,
     lpTokenStaked,
-    gasEstimates,
     ethBalance,
     setTxnHash,
     address,
-    isConnected
+    isConnected,
   } = useGlobalContext();
-  
 
   const [newWithdrawAmount, setNewWithdrawAmount] = useState("0");
 
+  const {data: gas} = useFeeData();
+  
   const newTotalStaked =
     lpTokenStaked - parseEther(newWithdrawAmount) || BigInt("0");
 
@@ -64,6 +64,21 @@ export default function UnstakeWidget() {
   useEffect(() => {
     if (data?.hash && isSuccess) updateTxnHash();
   }, [data?.hash, isSuccess, updateTxnHash]);
+
+
+
+  const gasEstimate = useCallback(async () => {
+    
+
+    const withdrawGasEstimate = Number(newWithdrawAmount) > 0 ? await GasEstimate({
+      method: "withdraw",
+      address: address,
+      amount: Number(newWithdrawAmount),
+    }) : BigInt(0);
+
+    if (withdrawGasEstimate != BigInt(0))
+      return [withdrawGasEstimate];
+  }, [address, newWithdrawAmount]);
 
   const handleWithdrawButtonClick = () => {
     write?.();
@@ -135,16 +150,14 @@ export default function UnstakeWidget() {
         {isConnected ? (
           <Text
             color={
-              formatEther(ethBalance) <
-              formatEther(gasEstimates[2] || BigInt(0))
+              formatEther(ethBalance) < formatEther(gas?.gasPrice || BigInt(0))
                 ? "red"
                 : "white"
             }
           >
-            {formatEther(ethBalance) < formatEther(gasEstimates[2] || BigInt(0))
+            {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
-              : formatEther(gasEstimates[0] + gasEstimates[1] || BigInt("0")) +
-                " ETH"}
+              : formatEther(gas?.gasPrice || BigInt("0")) + " ETH"}
           </Text>
         ) : (
           <Text>No wallet connected</Text>
