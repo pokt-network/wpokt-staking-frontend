@@ -36,7 +36,7 @@ export default function StakingWidget() {
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState("0");
 
-  const {data: gas} = useFeeData();
+  const { data: gas } = useFeeData();
 
   const newTotalStaked =
     lpTokenStaked + parseEther(newStakeAmount) || BigInt("0");
@@ -71,35 +71,32 @@ export default function StakingWidget() {
     isError,
   } = useContractWrite(contractCallConfig as any);
 
-  console.log(contractCallConfig);
-  const [gasEst, setGasEst] = useState([BigInt(0), BigInt(0)]);
-
   const updateTxnHash = useCallback(
     () => data?.hash && setTxnHash(data?.hash),
-    [data?.hash, setTxnHash],
+    [data?.hash, setTxnHash]
   );
 
   const gasEstimate = useCallback(async () => {
-   
+    const stakingGasEstimate =
+      Number(newStakeAmount) > 0
+        ? await GasEstimate({
+            method: "stake",
+            amount: Number(newStakeAmount),
+            address: address,
+          })
+        : [BigInt(0), BigInt(0)];
 
-    const stakingGasEstimate =  (Number(newStakeAmount) > 0) ? await GasEstimate({
-      method: "stake",
-      amount: Number(newStakeAmount),
-      address: address,
-    }) : [BigInt(0), BigInt(0)];
-
-    const approvalGasEstimate = (Number(newStakeAmount) > 0) ? await ApprovalGasEstimate({
-      address: address,
-      amount: Number(newStakeAmount),
-    }) : BigInt(0);
+    const approvalGasEstimate =
+      Number(newStakeAmount) > 0
+        ? await ApprovalGasEstimate({
+            address: address,
+            amount: Number(newStakeAmount),
+          })
+        : BigInt(0);
 
     if (stakingGasEstimate != BigInt(0) || approvalGasEstimate != BigInt(0))
       return [stakingGasEstimate, approvalGasEstimate];
   }, [address, newStakeAmount]);
-
-  gasEstimate().then((gas:any) => {
-    setGasEst(gas);
-  });
 
   useEffect(() => {
     if (data?.hash && isSuccess) updateTxnHash();
@@ -167,14 +164,14 @@ export default function StakingWidget() {
         {isConnected ? (
           <Text
             color={
-              formatEther(ethBalance) < formatEther(gasEst[0] ?? gas?.gasPrice )
+              formatEther(ethBalance) < formatEther(gas?.gasPrice || BigInt(0))
                 ? "red"
                 : "white"
             }
           >
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
-              : formatEther(gasEst[0] ?? gas?.gasPrice) + " ETH"}
+              : formatEther(gas?.gasPrice || BigInt("0")) + " ETH"}
           </Text>
         ) : (
           <Text>No wallet connected</Text>

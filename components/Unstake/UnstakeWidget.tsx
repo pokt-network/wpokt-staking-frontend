@@ -28,8 +28,8 @@ export default function UnstakeWidget() {
 
   const [newWithdrawAmount, setNewWithdrawAmount] = useState("0");
 
-  const {data: gas} = useFeeData();
-  
+  const { data: gas } = useFeeData();
+
   const newTotalStaked =
     lpTokenStaked - parseEther(newWithdrawAmount) || BigInt("0");
 
@@ -58,27 +58,12 @@ export default function UnstakeWidget() {
 
   const updateTxnHash = useCallback(
     () => data?.hash && setTxnHash(data?.hash),
-    [data?.hash, setTxnHash],
+    [data?.hash, setTxnHash]
   );
 
   useEffect(() => {
     if (data?.hash && isSuccess) updateTxnHash();
   }, [data?.hash, isSuccess, updateTxnHash]);
-
-
-
-  const gasEstimate = useCallback(async () => {
-    
-
-    const withdrawGasEstimate = Number(newWithdrawAmount) > 0 ? await GasEstimate({
-      method: "withdraw",
-      address: address,
-      amount: Number(newWithdrawAmount),
-    }) : BigInt(0);
-
-    if (withdrawGasEstimate != BigInt(0))
-      return [withdrawGasEstimate];
-  }, [address, newWithdrawAmount]);
 
   const handleWithdrawButtonClick = () => {
     write?.();
