@@ -16,33 +16,32 @@ import {
   useMemo,
   useState,
 } from "react";
-import { sepolia, useAccount, useBalance } from "wagmi";
+import { sepolia, useAccount, useBalance, useWaitForTransaction } from "wagmi";
 const vitalik: address = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
 export interface GlobalContextProps {
   mobile: boolean;
   isClient: boolean;
-  showToast: ({ type, icon, message }: any) => void;
   lpTokenBalance: bigint;
   ethBalance: bigint;
   lpTokenStaked: bigint;
   pendingRewards: bigint;
   chainId?: number;
-
+  txnHash: any;
   setTxnHash: (hash: string) => void;
   address: address;
+  
   isConnected: boolean;
 }
 
 export const GlobalContext = createContext<GlobalContextProps>({
   mobile: false,
   isClient: false,
-  showToast: () => {},
   lpTokenBalance: BigInt(0),
   ethBalance: BigInt(0),
   lpTokenStaked: BigInt(0),
   pendingRewards: BigInt(0),
   chainId: sepolia.id,
-
+  txnHash: "",
   setTxnHash: () => {},
   address: "" as address,
   isConnected: false,
@@ -69,23 +68,23 @@ export function GlobalContextProvider({ children }: any) {
 
   const lpTokenBalance = lpTokenBalanceRaw?.value ?? BigInt(0);
   const { data: lpTokenStakedRaw } = useStakedTokenBalance(
-    (userAddress as address) || vitalik,
+    (userAddress as address) || vitalik
   );
 
   const lpTokenStaked = (lpTokenStakedRaw as bigint) || BigInt(0);
 
   const { data: pendingRewardsRaw } = usePendingRewardBalance(
-    (userAddress as address) || vitalik,
+    (userAddress as address) || vitalik
   );
   const pendingRewards = (pendingRewardsRaw as bigint) ?? BigInt(0);
   const toast = useToast();
 
   const showToast = useCallback(
-    ({ type, icon, message }: any) => {
+    ({ type, icon, message, duration }: any) => {
       if (!toast) return;
       toast({
         isClosable: true,
-        duration: 10000,
+        duration: duration ?? 5000,
         render: () => (
           <Box
             height={"48px"}
@@ -113,16 +112,54 @@ export function GlobalContextProvider({ children }: any) {
         ),
       });
     },
-    [toast],
+    [toast]
   );
+
+  const { data: txStatus, isSuccess } = useWaitForTransaction({ hash: txnHash as any });
+
+
+    const toaster = useCallback( () => {
+      if(Boolean(txnHash))
+      { showToast({
+        id: 'awaiting-confirmation',
+        type: "info",
+        icon: "🎉",
+        message: "Awaiting Txn Confirmation",
+      });}
+
+     if (txnHash && txStatus?.status === "success" && !toast.isActive('txn-confirmed')) {
+        showToast({
+          id: 'txn-confirmed',
+          type: "success",
+          duration: 10000,
+          icon: "🎉",
+          message: "Txn Confirmed",
+        });
+      } 
+     if (txnHash && txStatus?.status === "reverted" && !toast.isActive('txn-failed')) {
+
+        showToast({
+          id: 'txn-failed',
+          type: "error",
+          duration: 10000,
+          icon: "🎉",
+          message: "Txn Failed",
+        });
+      
+    }
+  }, [showToast, toast, txStatus?.status, txnHash])
+
+
+  
+
 
   useEffect(() => {
     setIsClient(true);
-
     toggleMobile();
+    toaster();
     window.addEventListener("resize", toggleMobile);
     return () => window.removeEventListener("resize", toggleMobile);
-  }, []);
+  }, [showToast, toaster, txnHash]);
 
   function toggleMobile() {
     if (window && window.innerWidth < 700) {
@@ -136,13 +173,12 @@ export function GlobalContextProvider({ children }: any) {
     () => ({
       mobile,
       isClient,
-      showToast,
       lpTokenBalance,
       ethBalance,
       lpTokenStaked,
       chainId,
       pendingRewards,
-
+      txnHash,
       setTxnHash,
       isConnected,
       address: userAddress as address,
@@ -150,16 +186,17 @@ export function GlobalContextProvider({ children }: any) {
     [
       mobile,
       isClient,
-      showToast,
       lpTokenBalance,
       ethBalance,
       lpTokenStaked,
       chainId,
       pendingRewards,
-
+      txnHash,
+      setTxnHash,
       isConnected,
       userAddress,
-    ],
+
+    ]
   );
   console.log(contextValue);
   return (

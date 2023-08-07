@@ -22,7 +22,7 @@ export default function UnstakeWidget() {
     lpTokenStaked,
     ethBalance,
     setTxnHash,
-    address,
+    txnHash,
     isConnected,
   } = useGlobalContext();
 
@@ -154,7 +154,7 @@ export default function UnstakeWidget() {
           <WithDrawButton
             isInvalidWithdrawAmount={isInvalidWithdrawAmount}
             handleWithdrawButtonClick={handleWithdrawButtonClick}
-            isLoading={data?.hash || unStakeLoading || txnLoading || data?.hash}
+            isLoading={(unStakeLoading || txnLoading && !txnHash && !isSuccess)}  
           />
         ) : (
           <ConnectWalletButton />

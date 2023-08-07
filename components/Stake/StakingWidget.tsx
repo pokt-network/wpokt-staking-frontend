@@ -30,6 +30,7 @@ export default function StakingWidget() {
     ethBalance,
     setTxnHash,
     address,
+    txnHash,
   } = useGlobalContext();
 
   const [isApproved, setIsApproved] = useState(true);
@@ -73,7 +74,7 @@ export default function StakingWidget() {
     data,
     isSuccess,
     isError,
-  } = useContractWrite(contractCallConfig as any);
+  } = useContractWrite(contractCallConfig as any,);
 
   const updateTxnHash = useCallback(
     () => data?.hash && setTxnHash(data?.hash),
@@ -168,7 +169,7 @@ export default function StakingWidget() {
             handleStakeButtonClick={handleStakeButtonClick}
             willFail={stakeWillFail}
             isLoading={
-              stakeLoading || approveLoading || txnLoading || data?.hash
+              (stakeLoading || approveLoading || txnLoading && !txnHash && !isSuccess )
             }
           />
         ) : (
