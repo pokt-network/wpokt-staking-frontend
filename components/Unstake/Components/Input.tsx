@@ -5,7 +5,6 @@ export default function WithdrawInput({
   setNewWithdrawAmount,
   handleAllButtonClick,
   isInvalidWithdrawAmount,
-  lpTokenStaked,
   isLoading,
 }: any) {
   return (

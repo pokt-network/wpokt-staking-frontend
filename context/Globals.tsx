@@ -91,7 +91,7 @@ export function GlobalContextProvider({ children }: any) {
             borderWidth={2}
             borderRadius={"12px"}
             fontSize={"16px"}
-            borderColor="poktBlue"
+            borderColor={type == "error" ? "red" : "poktBlue"}
             border={"0px 0px 1px 0px"}
             bg="#182129"
             color="white"

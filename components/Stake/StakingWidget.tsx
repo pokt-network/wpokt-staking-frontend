@@ -2,10 +2,8 @@
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
 import {
-  ApprovalGasEstimate,
-  GasEstimate,
   useApproveLPToken,
-  useStakeLPToken,
+  useStakeLPToken
 } from "@/utils/contract/hooks";
 import {
   Center,
@@ -15,9 +13,9 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatEther, parseEther } from "viem";
-import { useAccount, useContractWrite, useFeeData } from "wagmi";
+import { useContractWrite, useFeeData } from "wagmi";
 import StakeButton from "./Components/Button";
 import StakeInput from "./Components/Input";
 
