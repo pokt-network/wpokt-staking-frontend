@@ -76,28 +76,6 @@ export default function StakingWidget() {
     [data?.hash, setTxnHash]
   );
 
-  const gasEstimate = useCallback(async () => {
-    const stakingGasEstimate =
-      Number(newStakeAmount) > 0
-        ? await GasEstimate({
-            method: "stake",
-            amount: Number(newStakeAmount),
-            address: address,
-          })
-        : [BigInt(0), BigInt(0)];
-
-    const approvalGasEstimate =
-      Number(newStakeAmount) > 0
-        ? await ApprovalGasEstimate({
-            address: address,
-            amount: Number(newStakeAmount),
-          })
-        : BigInt(0);
-
-    if (stakingGasEstimate != BigInt(0) || approvalGasEstimate != BigInt(0))
-      return [stakingGasEstimate, approvalGasEstimate];
-  }, [address, newStakeAmount]);
-
   useEffect(() => {
     if (data?.hash && isSuccess) updateTxnHash();
   }, [data?.hash, isSuccess, updateTxnHash]);

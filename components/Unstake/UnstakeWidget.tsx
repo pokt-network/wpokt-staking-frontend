@@ -1,7 +1,7 @@
 "use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
-import { GasEstimate, useUnstakeLPToken } from "@/utils/contract/hooks";
+import { useUnstakeLPToken } from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
