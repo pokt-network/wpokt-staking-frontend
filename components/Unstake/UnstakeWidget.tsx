@@ -63,7 +63,7 @@ export default function UnstakeWidget() {
 
   useEffect(() => {
     if (data?.hash && isSuccess) updateTxnHash();
-  }, [data?.hash, isSuccess, updateTxnHash]);
+  }, [data?.hash, isSuccess, updateTxnHash, lpTokenStaked, ethBalance]);
 
   const handleWithdrawButtonClick = () => {
     write?.();

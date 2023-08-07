@@ -79,7 +79,7 @@ export default function StakingWidget() {
 
   useEffect(() => {
     if (data?.hash && isSuccess) updateTxnHash();
-  }, [data?.hash, isSuccess, updateTxnHash]);
+  }, [data?.hash, isSuccess, updateTxnHash, lpTokenBalance, lpTokenStaked,ethBalance ]);
 
   const handleStakeButtonClick = () => {
     write?.();
