@@ -6,6 +6,7 @@ import {
   usePrepareContractWrite,
 } from "wagmi";
 import { estimationClient } from "../config";
+import useSWR from "swr";
 import {
   RewardContract,
   StakeContract,
@@ -15,6 +16,8 @@ import {
 import { parseEther } from "viem";
 import { address } from "../types";
 import { StakeABI, StakingRewardsABI } from "./abi";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export const useLPTokenBalance = (address: address) =>
   useBalance({
@@ -98,6 +101,12 @@ export const useClaimReward = (pendingRewardBal: number) =>
     enabled: Boolean(pendingRewardBal),
   });
 
+export const useSWRFetch = (url:string) =>  useSWR(
+  url,
+  fetcher,
+);
+
+
 export const GasEstimate = (args: {
   method: string;
   address: address;
@@ -122,3 +131,5 @@ export const ApprovalGasEstimate = (args: {
     account: args.address,
     args: [StakingRewardContract, parseEther(String(args.amount))],
   });
+
+

@@ -1,5 +1,5 @@
 "use client";
-import useSWR from "swr";
+
 import {
   HStack,
   Text,
@@ -24,17 +24,18 @@ import {
 import { address } from "../../utils/types";
 import { formatEther } from "viem";
 import { ReactElement, useState } from "react";
+import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
-const refToken = ["ETHUSDC", "USDCUSDT", "ETHBTC"];
+const refToken = ["ETH", "WPOKT", "DAI"];
 const refIcon: Array<ReactElement> = [
   <BlueEthIcon key="eth-icon" boxSize={6} />,
   <BlueDAIIcon key="dai-icon" boxSize={6} />,
   <PoktBlueIcon key="pokt-icon" boxSize={6} />,
 ];
 export default function RewardsWidget() {
-  const { isClient } = useGlobalContext();
-  const { address } = useAccount();
+  const { isClient, address, prices } = useGlobalContext();
+  
 
   const {
     data: rewardValue,
@@ -49,12 +50,8 @@ export default function RewardsWidget() {
   const { write } = useContractWrite(config);
 
   const [refTokenIndex, setRefTokenIndex] = useState(0);
-
-  const { data, error, isLoading } = useSWR(
-    "https://api.binance.us/api/v3/ticker/price?symbol=" +
-      refToken[refTokenIndex],
-    fetcher,
-  );
+  const refFactors = [prices?.eth, 1 ,  prices?.pokt]
+  
 
   return (
     <VStack
@@ -114,20 +111,19 @@ export default function RewardsWidget() {
                   right={3}
                   float="right"
                   zIndex={5}
-                  isDisabled={isLoading}
                   bg={"poktLime"}
                   leftIcon={<SwitchIcon boxSize={"21px"} />}
                 >
-                  {refToken[refTokenIndex].substring(3, 7)}
+                  {refToken[refTokenIndex]}
                 </Button>
                 <Text fontSize={16}>Your stake is worth:</Text>
                 <HStack>
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
-                    {isFetched && isClient && data
+                    {isFetched && isClient
                       ? (
                           Number(formatEther(rewardValue as bigint)) *
-                          Number(data?.price as unknown as string)
+                          Number(refFactors[refTokenIndex])
                         ).toFixed(18)
                       : "Calculating..."}
                   </Text>
@@ -138,10 +134,10 @@ export default function RewardsWidget() {
                 <HStack>
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
-                    {isFetched && isClient && data
+                    {isFetched && isClient
                       ? (
                           Number(formatEther(rewardValue as bigint)) *
-                          Number(data?.price as unknown as string)
+                          Number(refFactors[refTokenIndex])
                         ).toFixed(18)
                       : "Calculating..."}
                   </Text>

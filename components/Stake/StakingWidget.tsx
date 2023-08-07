@@ -29,6 +29,7 @@ export default function StakingWidget() {
     setTxnHash,
     address,
     txnHash,
+    prices
   } = useGlobalContext();
 
   const [isApproved, setIsApproved] = useState(true);
@@ -39,6 +40,8 @@ export default function StakingWidget() {
   const [newStakeAmount, setNewStakeAmount] = useState("0");
 
   const { data: gas } = useFeeData();
+
+  const formattedGas = formatEther(gas?.gasPrice || BigInt("0"));
 
   const newTotalStaked =
     lpTokenStaked + parseEther(newStakeAmount) || BigInt("0");
@@ -144,14 +147,14 @@ export default function StakingWidget() {
         {isConnected ? (
           <Text
             color={
-              formatEther(ethBalance) < formatEther(gas?.gasPrice || BigInt(0))
+              formatEther(ethBalance) < formattedGas
                 ? "red"
                 : "white"
             }
           >
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
-              : formatEther(gas?.gasPrice || BigInt("0")) + " ETH"}
+              : formattedGas + " ETH (~" +  ((Number(prices.eth) * Number(formattedGas)).toFixed(8) + " USD)")}
           </Text>
         ) : (
           <Text>No wallet connected</Text>
