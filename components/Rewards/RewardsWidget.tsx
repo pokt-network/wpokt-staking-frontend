@@ -35,7 +35,6 @@ const refIcon: Array<ReactElement> = [
 ];
 export default function RewardsWidget() {
   const { isClient, address, prices } = useGlobalContext();
-  
 
   const {
     data: rewardValue,
@@ -45,13 +44,12 @@ export default function RewardsWidget() {
   const {
     config,
     isError: notReadyToClaim,
-    isFetched: readToClaim,
+    isFetched: readyToClaim,
   } = useClaimReward(Number(rewardValue));
   const { write } = useContractWrite(config);
 
   const [refTokenIndex, setRefTokenIndex] = useState(0);
-  const refFactors = [prices?.eth, 1 ,  prices?.pokt]
-  
+  const refFactors = [prices?.eth, 1, prices?.pokt];
 
   return (
     <VStack
@@ -64,7 +62,7 @@ export default function RewardsWidget() {
       textAlign={"center"}
     >
       <Heading>wPOKT Rewards</Heading>
-      <VStack mt={8} >
+      <VStack mt={8}>
         <Text fontSize={14}>wPOKT to claim:</Text>
         {isClient && address ? (
           <>
@@ -112,8 +110,7 @@ export default function RewardsWidget() {
                   float="right"
                   zIndex={5}
                   bg={"poktLime"}
-                  leftIcon={<SwitchIcon boxSize={"21px"}/>}
-                  
+                  leftIcon={<SwitchIcon boxSize={"21px"} />}
                   m={8}
                 >
                   {refToken[refTokenIndex]}
@@ -131,9 +128,9 @@ export default function RewardsWidget() {
                   </Text>
                 </HStack>
               </VStack>
-              
+
               <VStack alignItems={"center"}>
-              <Text fontSize={16}>Your 24h earnings are worth:</Text>
+                <Text fontSize={16}>Your 24h earnings are worth:</Text>
                 <HStack>
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
@@ -146,7 +143,7 @@ export default function RewardsWidget() {
                   </Text>
                 </HStack>
               </VStack>
-              
+
               <VStack alignItems={"center"}>
                 <Text fontSize={16}>Your return per day is:</Text>
                 <Text

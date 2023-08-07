@@ -101,11 +101,7 @@ export const useClaimReward = (pendingRewardBal: number) =>
     enabled: Boolean(pendingRewardBal),
   });
 
-export const useSWRFetch = (url:string) =>  useSWR(
-  url,
-  fetcher,
-);
-
+export const useSWRFetch = (url: string) => useSWR(url, fetcher);
 
 export const GasEstimate = (args: {
   method: string;
@@ -131,5 +127,3 @@ export const ApprovalGasEstimate = (args: {
     account: args.address,
     args: [StakingRewardContract, parseEther(String(args.amount))],
   });
-
-

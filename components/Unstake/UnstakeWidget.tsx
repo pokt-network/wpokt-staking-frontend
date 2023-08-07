@@ -135,15 +135,13 @@ export default function UnstakeWidget() {
         <Text>Estimated Gas Cost:</Text>
         {isConnected ? (
           <Text
-            color={
-              formatEther(ethBalance) < formattedGas
-                ? "red"
-                : "white"
-            }
+            color={formatEther(ethBalance) < formattedGas ? "red" : "white"}
           >
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
-              : formattedGas + " ETH (" +  (Number(prices.eth) * Number(formattedGas) + " USD)")}
+              : formattedGas +
+                " ETH (" +
+                (Number(prices.eth) * Number(formattedGas) + " USD)")}
           </Text>
         ) : (
           <Text>No wallet connected</Text>

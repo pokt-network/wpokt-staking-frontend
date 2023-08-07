@@ -19,10 +19,10 @@ import {
 } from "react";
 import useSWR from "swr";
 import { sepolia, useAccount, useBalance, useWaitForTransaction } from "wagmi";
-import { memo } from 'react';
+import { memo } from "react";
 import { BluePoktIcon } from "@/components/icons/pokt";
 import { BlueCheckIcon } from "@/components/icons/misc";
-import { ErrorIcon } from '../components/icons/misc';
+import { ErrorIcon } from "../components/icons/misc";
 const vitalik: address = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
 export interface GlobalContextProps {
   mobile: boolean;
@@ -35,7 +35,7 @@ export interface GlobalContextProps {
   txnHash: any;
   setTxnHash: (hash: string) => void;
   address: address;
-  prices: {eth: string, pokt: string};
+  prices: { eth: string; pokt: string };
   isConnected: boolean;
 }
 
@@ -51,7 +51,7 @@ export const GlobalContext = createContext<GlobalContextProps>({
   setTxnHash: () => {},
   address: "" as address,
   isConnected: false,
-  prices: {eth: "0", pokt: "0"}
+  prices: { eth: "0", pokt: "0" },
 });
 
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -60,17 +60,17 @@ export function GlobalContextProvider({ children }: any) {
   const [isClient, setIsClient] = useState(false);
   const [mobile, setMobile] = useState(false);
   const chainId = sepolia.id;
-  
-  const [prices, setPrices] = useState({eth: "0", pokt: "0"})
 
-  const {data: ethPrice} = useSWRFetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd')
-  const {data: poktPrice} = useSWRFetch('https://api.coingecko.com/api/v3/simple/price?ids=pocket-network&vs_currencies=usd')
+  const [prices, setPrices] = useState({ eth: "0", pokt: "0" });
 
-  
+  const { data: ethPrice } = useSWRFetch(
+    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd",
+  );
+  const { data: poktPrice } = useSWRFetch(
+    "https://api.coingecko.com/api/v3/simple/price?ids=pocket-network&vs_currencies=usd",
+  );
 
-  
-  const memoizedPrices = useMemo(() => prices, [prices])
-  
+  const memoizedPrices = useMemo(() => prices, [prices]);
 
   const { address: userAddress, isConnected } = useAccount();
 
@@ -82,12 +82,12 @@ export function GlobalContextProvider({ children }: any) {
 
   const ethBalance = ethBalanceRaw?.value ?? BigInt(0);
 
-  const { data: lpTokenBalanceRaw, refetch: lptTokenRefetch } = useLPTokenBalance(userAddress as address);
+  const { data: lpTokenBalanceRaw, refetch: lptTokenRefetch } =
+    useLPTokenBalance(userAddress as address);
 
   const lpTokenBalance = lpTokenBalanceRaw?.value ?? BigInt(0);
-  const { data: lpTokenStakedRaw, refetch:stakedBalRefetch } = useStakedTokenBalance(
-    (userAddress as address) || vitalik,
-  );
+  const { data: lpTokenStakedRaw, refetch: stakedBalRefetch } =
+    useStakedTokenBalance((userAddress as address) || vitalik);
 
   const lpTokenStaked = (lpTokenStakedRaw as bigint) || BigInt(0);
 
@@ -151,7 +151,7 @@ export function GlobalContextProvider({ children }: any) {
         id: "awaiting-confirmation",
         type: "info",
         duration: 10000,
-        icon: <BluePoktIcon boxSize={"24px"}/>,
+        icon: <BluePoktIcon boxSize={"24px"} />,
         message: "Awaiting Txn Confirmation",
       });
     }
@@ -165,30 +165,37 @@ export function GlobalContextProvider({ children }: any) {
         id: "txn-confirmed",
         type: "success",
         duration: 10000,
-        icon: <BlueCheckIcon boxSize={"24px"}/>,
+        icon: <BlueCheckIcon boxSize={"24px"} />,
         message: "Txn Confirmed",
       });
     }
-    if (
-      txnHash &&
-      txStatus?.status === "reverted"
-    ) {
+    if (txnHash && txStatus?.status === "reverted") {
       showToast({
         id: "txn-failed",
         type: "error",
         duration: 10000,
-        icon: <ErrorIcon boxSize={"24px"}/>,
+        icon: <ErrorIcon boxSize={"24px"} />,
         message: "Txn Failed",
       });
     }
-  }, [lptTokenRefetch, showToast, stakedBalRefetch, toast, txStatus?.status, txnHash]);
+  }, [
+    lptTokenRefetch,
+    showToast,
+    stakedBalRefetch,
+    toast,
+    txStatus?.status,
+    txnHash,
+  ]);
 
   useEffect(() => {
     setIsClient(true);
     toggleMobile();
     toaster();
     window.addEventListener("resize", toggleMobile);
-    setPrices({eth: ethPrice?.ethereum.usd, pokt: poktPrice?.["pocket-network"].usd})
+    setPrices({
+      eth: ethPrice?.ethereum.usd,
+      pokt: poktPrice?.["pocket-network"].usd,
+    });
     return () => window.removeEventListener("resize", toggleMobile);
   }, [ethPrice?.ethereum.usd, poktPrice, showToast, toaster, txnHash]);
 
@@ -213,7 +220,7 @@ export function GlobalContextProvider({ children }: any) {
       setTxnHash,
       isConnected,
       address: userAddress as address,
-      prices: memoizedPrices
+      prices: memoizedPrices,
     }),
     [
       mobile,
@@ -227,7 +234,7 @@ export function GlobalContextProvider({ children }: any) {
       setTxnHash,
       isConnected,
       userAddress,
-      memoizedPrices
+      memoizedPrices,
     ],
   );
   console.log(contextValue);

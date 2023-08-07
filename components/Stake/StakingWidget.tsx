@@ -1,10 +1,7 @@
 "use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
-import {
-  useApproveLPToken,
-  useStakeLPToken
-} from "@/utils/contract/hooks";
+import { useApproveLPToken, useStakeLPToken } from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
@@ -29,7 +26,7 @@ export default function StakingWidget() {
     setTxnHash,
     address,
     txnHash,
-    prices
+    prices,
   } = useGlobalContext();
 
   const [isApproved, setIsApproved] = useState(true);
@@ -81,9 +78,17 @@ export default function StakingWidget() {
   );
 
   useEffect(() => {
-      updateTxnHash();
-  }, [data?.hash, isSuccess, updateTxnHash, lpTokenBalance, lpTokenStaked,ethBalance, isApproved, memoizedApprove ]);
-
+    updateTxnHash();
+  }, [
+    data?.hash,
+    isSuccess,
+    updateTxnHash,
+    lpTokenBalance,
+    lpTokenStaked,
+    ethBalance,
+    isApproved,
+    memoizedApprove,
+  ]);
 
   const handleStakeButtonClick = () => {
     write?.();
@@ -146,15 +151,14 @@ export default function StakingWidget() {
         <Text>Estimated Gas Cost:</Text>
         {isConnected ? (
           <Text
-            color={
-              formatEther(ethBalance) < formattedGas
-                ? "red"
-                : "white"
-            }
+            color={formatEther(ethBalance) < formattedGas ? "red" : "white"}
           >
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
-              : formattedGas + " ETH (~" +  ((Number(prices.eth) * Number(formattedGas)).toFixed(8) + " USD)")}
+              : formattedGas +
+                " ETH (~" +
+                ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
+                  " USD)")}
           </Text>
         ) : (
           <Text>No wallet connected</Text>
