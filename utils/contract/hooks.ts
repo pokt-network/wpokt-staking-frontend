@@ -64,6 +64,7 @@ export const usePendingRewardBalance = (address: address) =>
 export const useStakeLPToken = (args: {
   amount: string;
   isValidAmount: boolean;
+  onError?: (error: any) => void;
 }) =>
   usePrepareContractWrite({
     abi: StakingRewardsABI,
@@ -72,6 +73,7 @@ export const useStakeLPToken = (args: {
     args: [parseEther(args.amount)],
     chainId: sepolia.id,
     enabled: args.isValidAmount && Number(args.amount) != 0,
+    onError: args.onError,
   });
 
 export const useUnstakeLPToken = (args: {

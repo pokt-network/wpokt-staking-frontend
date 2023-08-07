@@ -15,7 +15,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useAccount, useContractWrite, useFeeData } from "wagmi";
 import StakeButton from "./Components/Button";
@@ -33,6 +33,9 @@ export default function StakingWidget() {
   } = useGlobalContext();
 
   const [isApproved, setIsApproved] = useState(true);
+
+  const memoizedApprove = useMemo(() => isApproved, [isApproved]);
+
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState("0");
 
@@ -50,10 +53,11 @@ export default function StakingWidget() {
     isLoading: stakeLoading,
   } = useStakeLPToken({
     amount: newStakeAmount,
-    isValidAmount: !isInvalidStakeAmount && isApproved,
+    isValidAmount: !isInvalidStakeAmount && memoizedApprove,
+    onError: () => setIsApproved(false),
   });
 
-  if (stakeWillFail) () => setIsApproved(false);
+  
 
   const { config: approveConfig, isLoading: approveLoading } =
     useApproveLPToken({
@@ -61,7 +65,7 @@ export default function StakingWidget() {
       isValidAmount: !isInvalidStakeAmount && !isApproved,
     });
 
-  const contractCallConfig = !isApproved ? approveConfig : stakeConfig;
+  const contractCallConfig = !memoizedApprove ? approveConfig : stakeConfig;
 
   const {
     isLoading: txnLoading,
