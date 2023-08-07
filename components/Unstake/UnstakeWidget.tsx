@@ -140,8 +140,9 @@ export default function UnstakeWidget() {
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
               : formattedGas +
-                " ETH (" +
-                (Number(prices.eth) * Number(formattedGas) + " USD)")}
+                " ETH (~" +
+                ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
+                  " USD)")}
           </Text>
         ) : (
           <Text>No wallet connected</Text>
