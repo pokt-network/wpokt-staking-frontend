@@ -64,10 +64,10 @@ export function GlobalContextProvider({ children }: any) {
 
   const ethBalance = ethBalanceRaw?.value ?? BigInt(0);
 
-  const { data: lpTokenBalanceRaw } = useLPTokenBalance(userAddress as address);
+  const { data: lpTokenBalanceRaw, refetch: lptTokenRefetch } = useLPTokenBalance(userAddress as address);
 
   const lpTokenBalance = lpTokenBalanceRaw?.value ?? BigInt(0);
-  const { data: lpTokenStakedRaw } = useStakedTokenBalance(
+  const { data: lpTokenStakedRaw, refetch:stakedBalRefetch } = useStakedTokenBalance(
     (userAddress as address) || vitalik,
   );
 
@@ -120,7 +120,15 @@ export function GlobalContextProvider({ children }: any) {
   });
 
   const toaster = useCallback(() => {
-    if (Boolean(txnHash) && txStatus?.status != "reverted" && txStatus?.status != "success") {
+    toast.closeAll();
+    lptTokenRefetch();
+    stakedBalRefetch();
+
+    if (
+      Boolean(txnHash) &&
+      txStatus?.status != "reverted" &&
+      txStatus?.status != "success"
+    ) {
       showToast({
         id: "awaiting-confirmation",
         type: "info",
