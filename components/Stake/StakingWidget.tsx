@@ -13,7 +13,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useContractWrite, useFeeData } from "wagmi";
 import StakeButton from "./Components/Button";
@@ -59,7 +59,7 @@ export default function StakingWidget() {
   const { config: approveConfig, isLoading: approveLoading } =
     useApproveLPToken({
       amount: newStakeAmount,
-      isValidAmount: !isInvalidStakeAmount && !isApproved,
+      isValidAmount: !isInvalidStakeAmount && !memoizedApprove,
     });
 
   const contractCallConfig = !memoizedApprove ? approveConfig : stakeConfig;
@@ -78,8 +78,9 @@ export default function StakingWidget() {
   );
 
   useEffect(() => {
-    if (data?.hash && isSuccess) updateTxnHash();
-  }, [data?.hash, isSuccess, updateTxnHash, lpTokenBalance, lpTokenStaked,ethBalance ]);
+      updateTxnHash();
+  }, [data?.hash, isSuccess, updateTxnHash, lpTokenBalance, lpTokenStaked,ethBalance, isApproved, memoizedApprove ]);
+
 
   const handleStakeButtonClick = () => {
     write?.();
@@ -163,7 +164,7 @@ export default function StakingWidget() {
             isInvalidStakeAmount={isInvalidStakeAmount}
             newStakeAmount={newStakeAmount}
             handleStakeButtonClick={handleStakeButtonClick}
-            willFail={stakeWillFail}
+            approved={memoizedApprove}
             isLoading={
               stakeLoading ||
               approveLoading ||

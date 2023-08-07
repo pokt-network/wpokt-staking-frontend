@@ -4,7 +4,7 @@ export default function StakeButton({
   isInvalidStakeAmount,
   newStakeAmount,
   handleStakeButtonClick,
-  willFail,
+  approved,
   isLoading,
 }: any) {
   return (
@@ -17,7 +17,7 @@ export default function StakeButton({
       isDisabled={isInvalidStakeAmount || Number(newStakeAmount) === 0}
       isLoading={isLoading}
     >
-      {willFail ? "Approve" : "Stake"}
+      {!approved ? "Approve" : "Stake"}
     </Button>
   );
 }
