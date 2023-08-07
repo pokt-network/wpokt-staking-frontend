@@ -98,7 +98,11 @@ export const useClaimReward = (pendingRewardBal: number) =>
     enabled: Boolean(pendingRewardBal),
   });
 
-export const GasEstimate = (args: { method: string; address: address, amount: number }) =>
+export const GasEstimate = (args: {
+  method: string;
+  address: address;
+  amount: number;
+}) =>
   estimationClient.estimateContractGas({
     abi: StakingRewardsABI,
     address: StakingRewardContract,
@@ -107,7 +111,10 @@ export const GasEstimate = (args: { method: string; address: address, amount: nu
     args: [parseEther(String(args.amount))],
   });
 
-export const ApprovalGasEstimate = (args: { address: address, amount: number }) =>
+export const ApprovalGasEstimate = (args: {
+  address: address;
+  amount: number;
+}) =>
   estimationClient.estimateContractGas({
     abi: StakeABI,
     address: StakeContract,

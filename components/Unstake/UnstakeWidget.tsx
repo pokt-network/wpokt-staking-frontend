@@ -58,7 +58,7 @@ export default function UnstakeWidget() {
 
   const updateTxnHash = useCallback(
     () => data?.hash && setTxnHash(data?.hash),
-    [data?.hash, setTxnHash]
+    [data?.hash, setTxnHash],
   );
 
   useEffect(() => {
@@ -154,7 +154,7 @@ export default function UnstakeWidget() {
           <WithDrawButton
             isInvalidWithdrawAmount={isInvalidWithdrawAmount}
             handleWithdrawButtonClick={handleWithdrawButtonClick}
-            isLoading={(unStakeLoading || txnLoading && !txnHash && !isSuccess)}  
+            isLoading={unStakeLoading || (txnLoading && !txnHash && !isSuccess)}
           />
         ) : (
           <ConnectWalletButton />

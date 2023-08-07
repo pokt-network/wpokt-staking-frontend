@@ -58,8 +58,6 @@ export default function StakingWidget() {
     onError: () => setIsApproved(false),
   });
 
-  
-
   const { config: approveConfig, isLoading: approveLoading } =
     useApproveLPToken({
       amount: newStakeAmount,
@@ -74,11 +72,11 @@ export default function StakingWidget() {
     data,
     isSuccess,
     isError,
-  } = useContractWrite(contractCallConfig as any,);
+  } = useContractWrite(contractCallConfig as any);
 
   const updateTxnHash = useCallback(
     () => data?.hash && setTxnHash(data?.hash),
-    [data?.hash, setTxnHash]
+    [data?.hash, setTxnHash],
   );
 
   useEffect(() => {
@@ -169,7 +167,9 @@ export default function StakingWidget() {
             handleStakeButtonClick={handleStakeButtonClick}
             willFail={stakeWillFail}
             isLoading={
-              (stakeLoading || approveLoading || txnLoading && !txnHash && !isSuccess )
+              stakeLoading ||
+              approveLoading ||
+              (txnLoading && !txnHash && !isSuccess)
             }
           />
         ) : (

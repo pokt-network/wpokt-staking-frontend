@@ -29,7 +29,7 @@ export interface GlobalContextProps {
   txnHash: any;
   setTxnHash: (hash: string) => void;
   address: address;
-  
+
   isConnected: boolean;
 }
 
@@ -68,13 +68,13 @@ export function GlobalContextProvider({ children }: any) {
 
   const lpTokenBalance = lpTokenBalanceRaw?.value ?? BigInt(0);
   const { data: lpTokenStakedRaw } = useStakedTokenBalance(
-    (userAddress as address) || vitalik
+    (userAddress as address) || vitalik,
   );
 
   const lpTokenStaked = (lpTokenStakedRaw as bigint) || BigInt(0);
 
   const { data: pendingRewardsRaw } = usePendingRewardBalance(
-    (userAddress as address) || vitalik
+    (userAddress as address) || vitalik,
   );
   const pendingRewards = (pendingRewardsRaw as bigint) ?? BigInt(0);
   const toast = useToast();
@@ -112,46 +112,50 @@ export function GlobalContextProvider({ children }: any) {
         ),
       });
     },
-    [toast]
+    [toast],
   );
 
-  const { data: txStatus, isSuccess } = useWaitForTransaction({ hash: txnHash as any });
+  const { data: txStatus, isSuccess } = useWaitForTransaction({
+    hash: txnHash as any,
+  });
 
-
-    const toaster = useCallback( () => {
-      if(Boolean(txnHash))
-      { showToast({
-        id: 'awaiting-confirmation',
+  const toaster = useCallback(() => {
+    if (Boolean(txnHash)) {
+      showToast({
+        id: "awaiting-confirmation",
         type: "info",
         icon: "🎉",
         message: "Awaiting Txn Confirmation",
-      });}
-
-     if (txnHash && txStatus?.status === "success" && !toast.isActive('txn-confirmed')) {
-        showToast({
-          id: 'txn-confirmed',
-          type: "success",
-          duration: 10000,
-          icon: "🎉",
-          message: "Txn Confirmed",
-        });
-      } 
-     if (txnHash && txStatus?.status === "reverted" && !toast.isActive('txn-failed')) {
-
-        showToast({
-          id: 'txn-failed',
-          type: "error",
-          duration: 10000,
-          icon: "🎉",
-          message: "Txn Failed",
-        });
-      
+      });
     }
-  }, [showToast, toast, txStatus?.status, txnHash])
 
-
-  
-
+    if (
+      txnHash &&
+      txStatus?.status === "success" &&
+      !toast.isActive("txn-confirmed")
+    ) {
+      showToast({
+        id: "txn-confirmed",
+        type: "success",
+        duration: 10000,
+        icon: "🎉",
+        message: "Txn Confirmed",
+      });
+    }
+    if (
+      txnHash &&
+      txStatus?.status === "reverted" &&
+      !toast.isActive("txn-failed")
+    ) {
+      showToast({
+        id: "txn-failed",
+        type: "error",
+        duration: 10000,
+        icon: "🎉",
+        message: "Txn Failed",
+      });
+    }
+  }, [showToast, toast, txStatus?.status, txnHash]);
 
   useEffect(() => {
     setIsClient(true);
@@ -195,8 +199,7 @@ export function GlobalContextProvider({ children }: any) {
       setTxnHash,
       isConnected,
       userAddress,
-
-    ]
+    ],
   );
   console.log(contextValue);
   return (
