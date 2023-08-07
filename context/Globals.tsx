@@ -120,10 +120,11 @@ export function GlobalContextProvider({ children }: any) {
   });
 
   const toaster = useCallback(() => {
-    if (Boolean(txnHash)) {
+    if (Boolean(txnHash) && txStatus?.status != "reverted" && txStatus?.status != "success") {
       showToast({
         id: "awaiting-confirmation",
         type: "info",
+        duration: 10000,
         icon: "🎉",
         message: "Awaiting Txn Confirmation",
       });
