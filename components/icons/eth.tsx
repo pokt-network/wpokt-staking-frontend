@@ -23,11 +23,12 @@ export const BlueEthIcon = (props: IconProps) => (
 );
 
 export const SwitchIcon = (props: IconProps) => (
-  <Icon viewBox="0 0 21 22" {...props}>
-    <path
-      d="M22 9L17 6.11325V11.8868L22 9ZM6 9.5H17.5V8.5H6V9.5Z M6 19L11 21.8868V16.1132L6 19ZM22 18.5H10.5V19.5H22V18.5Z"
-      fill="#182129"
-    />
+  <Icon viewBox="0 0 28 28" {...props}>
+    
+<path d="M22 9L17 6.11325V11.8868L22 9ZM6 9.5H17.5V8.5H6V9.5Z" fill="#182129"/>
+<path d="M6 19L11 21.8868V16.1132L6 19ZM22 18.5H10.5V19.5H22V18.5Z" fill="#182129"/>
+
+
   </Icon>
 );
 

@@ -64,7 +64,7 @@ export default function RewardsWidget() {
       textAlign={"center"}
     >
       <Heading>wPOKT Rewards</Heading>
-      <VStack mt={8}>
+      <VStack mt={8} >
         <Text fontSize={14}>wPOKT to claim:</Text>
         {isClient && address ? (
           <>
@@ -95,13 +95,13 @@ export default function RewardsWidget() {
           <Text
             fontWeight={"normal"}
             maxWidth={"80%"}
-            textAlign={"left"}
+            textAlign={"center"}
           >{`All figures are estimates provided for your convenience only, and by no means represent guaranteed returns.`}</Text>
         </VStack>
-        <VStack mt={8} maxW={"400px"} alignContent={"flex-start"}>
+        <VStack mt={8} maxW={"400px"} alignContent={"center"} gap={4}>
           {address && isClient ? (
-            <VStack alignItems={"flex-start"}>
-              <VStack alignItems={"flex-start"}>
+            <VStack alignItems={"center"} gap={8}>
+              <VStack alignItems={"center"}>
                 <Button
                   paddingX={"32px"}
                   paddingY={"16px"}
@@ -112,7 +112,9 @@ export default function RewardsWidget() {
                   float="right"
                   zIndex={5}
                   bg={"poktLime"}
-                  leftIcon={<SwitchIcon boxSize={"21px"} />}
+                  leftIcon={<SwitchIcon boxSize={"21px"}/>}
+                  
+                  m={8}
                 >
                   {refToken[refTokenIndex]}
                 </Button>
@@ -129,8 +131,9 @@ export default function RewardsWidget() {
                   </Text>
                 </HStack>
               </VStack>
+              
+              <VStack alignItems={"center"}>
               <Text fontSize={16}>Your 24h earnings are worth:</Text>
-              <VStack alignItems={"flex-start"}>
                 <HStack>
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
@@ -143,7 +146,8 @@ export default function RewardsWidget() {
                   </Text>
                 </HStack>
               </VStack>
-              <VStack>
+              
+              <VStack alignItems={"center"}>
                 <Text fontSize={16}>Your return per day is:</Text>
                 <Text
                   fontSize={16}
