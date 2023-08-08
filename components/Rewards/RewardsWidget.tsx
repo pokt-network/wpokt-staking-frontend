@@ -30,8 +30,8 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const refToken = ["ETH", "WPOKT", "DAI"];
 const refIcon: Array<ReactElement> = [
   <BlueEthIcon key="eth-icon" boxSize={6} />,
-  <BlueDAIIcon key="dai-icon" boxSize={6} />,
   <PoktBlueIcon key="pokt-icon" boxSize={6} />,
+  <BlueDAIIcon key="dai-icon" boxSize={6} />,
 ];
 export default function RewardsWidget() {
   const { isClient, address, prices } = useGlobalContext();
