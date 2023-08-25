@@ -1,21 +1,15 @@
 "use client";
 
-import { useGlobalContext } from "@/context/Globals";
 import {
-  useClaimReward,
-  usePendingRewardBalance,
-} from "@/utils/contract/hooks";
-import {
-  Button,
   HStack,
-  Heading,
   Text,
-  VStack
+  Heading,
+  VStack,
+  Button,
+  Switch,
 } from "@chakra-ui/react";
-import { ReactElement, useState } from "react";
-import { formatEther } from "viem";
-import { useContractWrite } from "wagmi";
-import { address } from "../../utils/types";
+import { useGlobalContext } from "@/context/Globals";
+import { useAccount, useContractWrite } from "wagmi";
 import ConnectWalletButton from "../Shared/ConnectButton";
 import {
   BlueDAIIcon,
@@ -23,6 +17,14 @@ import {
   PoktBlueIcon,
   SwitchIcon,
 } from "../icons/eth";
+import {
+  useClaimReward,
+  usePendingRewardBalance,
+} from "@/utils/contract/hooks";
+import { address } from "../../utils/types";
+import { formatEther } from "viem";
+import { ReactElement, useState } from "react";
+import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const refToken = ["ETH", "WPOKT", "DAI"];
@@ -32,14 +34,18 @@ const refIcon: Array<ReactElement> = [
   <BlueDAIIcon key="dai-icon" boxSize={6} />,
 ];
 export default function RewardsWidget() {
-  const { isClient, address, prices, pendingRewards } = useGlobalContext();
+  const { isClient, address, prices } = useGlobalContext();
 
-
+  const {
+    data: rewardValue,
+    isError,
+    isFetched,
+  } = usePendingRewardBalance(address as address);
   const {
     config,
     isError: notReadyToClaim,
     isFetched: readyToClaim,
-  } = useClaimReward(Number(pendingRewards));
+  } = useClaimReward(Number(rewardValue));
   const { write } = useContractWrite(config);
 
   const [refTokenIndex, setRefTokenIndex] = useState(0);
@@ -128,9 +134,9 @@ export default function RewardsWidget() {
                 <HStack>
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
-                    {readyToClaim && isClient
+                    {isFetched && isClient
                       ? (
-                          Number(formatEther(pendingRewards)) *
+                          Number(formatEther(rewardValue as bigint)) *
                           Number(refFactors[refTokenIndex])
                         ).toFixed(18)
                       : "Calculating..."}

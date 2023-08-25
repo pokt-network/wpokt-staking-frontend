@@ -1,12 +1,11 @@
 "use client";
-import { BlueCheckIcon } from "@/components/icons/misc";
-import { BluePoktIcon } from "@/components/icons/pokt";
 import {
+  ApprovalGasEstimate,
+  GasEstimate,
   useLPTokenBalance,
   usePendingRewardBalance,
-  usePriceData,
   useSWRFetch,
-  useStakedTokenBalance
+  useStakedTokenBalance,
 } from "@/utils/contract/hooks";
 import { address } from "@/utils/types";
 import { Box, Text, useToast } from "@chakra-ui/react";
@@ -18,7 +17,11 @@ import {
   useMemo,
   useState,
 } from "react";
+import useSWR from "swr";
 import { sepolia, useAccount, useBalance, useWaitForTransaction } from "wagmi";
+import { memo } from "react";
+import { BluePoktIcon } from "@/components/icons/pokt";
+import { BlueCheckIcon } from "@/components/icons/misc";
 import { ErrorIcon } from "../components/icons/misc";
 const vitalik: address = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
 export interface GlobalContextProps {
@@ -58,14 +61,16 @@ export function GlobalContextProvider({ children }: any) {
   const [mobile, setMobile] = useState(false);
   const chainId = sepolia.id;
 
-  const [poktPrice, setPoktPrice] = useState("0");
+  const [prices, setPrices] = useState({ eth: "0", pokt: "0" });
 
-  const ethPrice= usePriceData();
-  const { data: poktPriceData } = useSWRFetch(
+  const { data: ethPrice } = useSWRFetch(
+    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd",
+  );
+  const { data: poktPrice } = useSWRFetch(
     "https://api.coingecko.com/api/v3/simple/price?ids=pocket-network&vs_currencies=usd",
   );
 
-  const memoizedPrices = useMemo(() => poktPrice, [poktPrice]);
+  const memoizedPrices = useMemo(() => prices, [prices]);
 
   const { address: userAddress, isConnected } = useAccount();
 
@@ -187,9 +192,12 @@ export function GlobalContextProvider({ children }: any) {
     toggleMobile();
     toaster();
     window.addEventListener("resize", toggleMobile);
-    setPoktPrice(poktPriceData?.["pocket-network"]?.usd ?? "0");
+    setPrices({
+      eth: ethPrice?.ethereum.usd,
+      pokt: poktPrice?.["pocket-network"].usd,
+    });
     return () => window.removeEventListener("resize", toggleMobile);
-  }, [ethPrice, poktPrice, poktPriceData, showToast, toaster, txnHash]);
+  }, [ethPrice?.ethereum.usd, poktPrice, showToast, toaster, txnHash]);
 
   function toggleMobile() {
     if (window && window.innerWidth < 700) {

@@ -1,7 +1,7 @@
 "use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
-import { useEstimateGas, useUnstakeLPToken } from "@/utils/contract/hooks";
+import { useUnstakeLPToken } from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
@@ -25,14 +25,12 @@ export default function UnstakeWidget() {
     txnHash,
     isConnected,
     prices,
-    address
   } = useGlobalContext();
 
   const [newWithdrawAmount, setNewWithdrawAmount] = useState("0");
 
-  const gas = useEstimateGas({ method: "withdraw", address, amount: Number(newWithdrawAmount), isApproval: false });
-
-  const formattedGas = gas ? formatEther(gas) : "0";
+  const { data: gas } = useFeeData();
+  const formattedGas = formatEther(gas?.gasPrice || BigInt("0"));
   const newTotalStaked =
     lpTokenStaked - parseEther(newWithdrawAmount) || BigInt("0");
 
