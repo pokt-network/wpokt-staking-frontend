@@ -1,7 +1,7 @@
 "use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
-import { useApproveLPToken, useStakeLPToken } from "@/utils/contract/hooks";
+import { useApprovalGasEstimate, useApproveLPToken, useRegularGasEstimate, useStakeLPToken } from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
@@ -27,7 +27,6 @@ export default function StakingWidget() {
     address,
     txnHash,
     prices,
-    gasEstimates
   } = useGlobalContext();
 
   const [isApproved, setIsApproved] = useState(true);
@@ -36,11 +35,15 @@ export default function StakingWidget() {
 
   // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState("0");
-  const { data: baseGas } = useFeeData()
 
-  const gas = Number(gasEstimates?.[1]) > 0 ? gasEstimates?.[1] : gasEstimates?.[0] ?? baseGas
+  const { data: baseGas } = useFeeData();
 
-  const formattedGas = formatEther(gas?.gasPrice || BigInt("0"));
+  const { data: approvalGasEstimate } = useApprovalGasEstimate({ address, amount: Number(newStakeAmount) });
+  const { data: stakeGasEstimate } = useRegularGasEstimate({ method: 'stake', address, amount: Number(newStakeAmount) });
+
+  const gas = (stakeGasEstimate ?? approvalGasEstimate) as bigint;
+
+  const formattedGas = formatEther(gas ?? baseGas?.gasPrice);
 
   const newTotalStaked =
     lpTokenStaked + parseEther(newStakeAmount) || BigInt("0");

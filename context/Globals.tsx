@@ -1,8 +1,6 @@
 "use client";
 import { useEffectOnce } from "usehooks-ts";
 import {
-  useRegularGasEstimate,
-  useApprovalGasEstimate,
   useLPTokenBalance,
   usePendingRewardBalance,
   useSWRFetch,
@@ -38,7 +36,7 @@ export interface GlobalContextProps {
   address: address;
   prices: { eth: string; pokt: string };
   isConnected: boolean;
-  gasEstimates: Array<any>;
+
 }
 
 export const GlobalContext = createContext<GlobalContextProps>({
@@ -54,7 +52,6 @@ export const GlobalContext = createContext<GlobalContextProps>({
   address: "" as address,
   isConnected: false,
   prices: { eth: "0", pokt: "0" },
-  gasEstimates: []
 });
 
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -80,7 +77,7 @@ export function GlobalContextProvider({ children }: any) {
   const [txnHash, setTxnHash] = useState("");
 
   const { data: ethBalanceRaw } = useBalance({
-    address: (userAddress as address) || vitalik,
+    address: (userAddress as address),
   });
 
   const ethBalance = ethBalanceRaw?.value ?? BigInt(0);
@@ -90,12 +87,12 @@ export function GlobalContextProvider({ children }: any) {
 
   const lpTokenBalance = lpTokenBalanceRaw?.value ?? BigInt(0);
   const { data: lpTokenStakedRaw, refetch: stakedBalRefetch } =
-    useStakedTokenBalance((userAddress as address) || vitalik);
+    useStakedTokenBalance((userAddress as address));
 
   const lpTokenStaked = (lpTokenStakedRaw as bigint) || BigInt(0);
 
   const { data: pendingRewardsRaw } = usePendingRewardBalance(
-    (userAddress as address) || vitalik,
+    (userAddress as address),
   );
   const pendingRewards = (pendingRewardsRaw as bigint) ?? BigInt(0);
   const toast = useToast();
@@ -189,30 +186,20 @@ export function GlobalContextProvider({ children }: any) {
     txStatus?.status,
     txnHash,
   ]);
-  
-
-const userAddressMemo = useMemo(() => userAddress, [userAddress]);
-
-const {data: approvalGasEstimate} = useApprovalGasEstimate({ address: userAddressMemo as address, amount: 1 });
-const {data: stakeGasEstimate} = useRegularGasEstimate({ method: 'stake', address: userAddressMemo as address, amount: 1 });
-const {data: withdrawGasEstimate} = useRegularGasEstimate({ method: 'withdraw', address: userAddressMemo as address, amount: 1 });
-
-
-
 
 
 
   useEffect(() => {
-  setIsClient(true);
-  toaster();
-  setPrices({
-    eth: ethPrice?.ethereum.usd,
-    pokt: poktPrice?.["pocket-network"].usd,
-  });
-  toggleMobile();
-  window.addEventListener("resize", toggleMobile);
-  return () => window.removeEventListener("resize", toggleMobile);
-}, [ethPrice?.ethereum.usd, poktPrice, showToast, toaster, txnHash, userAddress]);
+    setIsClient(true);
+    toaster();
+    setPrices({
+      eth: ethPrice?.ethereum.usd,
+      pokt: poktPrice?.["pocket-network"].usd,
+    });
+    toggleMobile();
+    window.addEventListener("resize", toggleMobile);
+    return () => window.removeEventListener("resize", toggleMobile);
+  }, [ethPrice?.ethereum.usd, poktPrice, showToast, toaster, txnHash, userAddress]);
 
 
 
@@ -239,7 +226,6 @@ const {data: withdrawGasEstimate} = useRegularGasEstimate({ method: 'withdraw', 
       isConnected,
       address: userAddress as address,
       prices: memoizedPrices,
-      gasEstimates: [approvalGasEstimate, stakeGasEstimate, withdrawGasEstimate]
     }),
     [
       mobile,
@@ -254,9 +240,6 @@ const {data: withdrawGasEstimate} = useRegularGasEstimate({ method: 'withdraw', 
       isConnected,
       userAddress,
       memoizedPrices,
-      approvalGasEstimate,
-      stakeGasEstimate,
-      withdrawGasEstimate
     ],
   );
   console.log(contextValue);
