@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import Provider from "./provider";
 import Head from "next/head";

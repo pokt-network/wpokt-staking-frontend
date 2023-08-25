@@ -1,5 +1,8 @@
-"use client";
-import { useEffectOnce } from "usehooks-ts";
+"use client"
+
+
+import { BlueCheckIcon } from "@/components/icons/misc";
+import { BluePoktIcon } from "@/components/icons/pokt";
 import {
   useLPTokenBalance,
   usePendingRewardBalance,
@@ -16,13 +19,9 @@ import {
   useMemo,
   useState,
 } from "react";
-import useSWR from "swr";
 import { sepolia, useAccount, useBalance, useWaitForTransaction } from "wagmi";
-import { memo } from "react";
-import { BluePoktIcon } from "@/components/icons/pokt";
-import { BlueCheckIcon } from "@/components/icons/misc";
 import { ErrorIcon } from "../components/icons/misc";
-const vitalik: address = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
+
 export interface GlobalContextProps {
   mobile: boolean;
   isClient: boolean;

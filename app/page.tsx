@@ -1,4 +1,5 @@
-"use client";
+"use client"
+
 import { Footer } from "@/components/Shared/Footer";
 import { Header } from "@/components/Shared/Header";
 import { GlobalContextProvider, useGlobalContext } from "@/context/Globals";

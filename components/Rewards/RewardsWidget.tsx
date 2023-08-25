@@ -35,7 +35,7 @@ const refIcon: Array<ReactElement> = [
 ];
 export default function RewardsWidget() {
   const { isClient, address, prices } = useGlobalContext();
-
+  
   const {
     data: rewardValue,
     isError,
@@ -49,7 +49,9 @@ export default function RewardsWidget() {
   const { write } = useContractWrite(config);
 
   const [refTokenIndex, setRefTokenIndex] = useState(0);
-  const refFactors = [prices?.eth, 1, prices?.pokt];
+  const refFactors = [(Number(prices?.pokt) / Number(prices?.eth)), 1, prices?.pokt];
+
+  console.log(prices)
 
   return (
     <VStack

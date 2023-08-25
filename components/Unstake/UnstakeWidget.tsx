@@ -15,6 +15,7 @@ import { formatEther, parseEther } from "viem";
 import { useContractWrite, useFeeData } from "wagmi";
 import WithDrawButton from "./Components/Button";
 import WithdrawInput from "./Components/Input";
+import { errorToJSON } from "next/dist/server/render";
 
 export default function UnstakeWidget() {
   const {
@@ -143,7 +144,7 @@ export default function UnstakeWidget() {
         <Text>Estimated Gas Cost:</Text>
         {isConnected ? (
           <Text
-            color={formatEther(ethBalance) < formattedGas ? "red" : "white"}
+            color={Number(ethBalance) < Number(formattedGas) ? "red" : "white"}
           >
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
