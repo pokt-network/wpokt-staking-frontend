@@ -1,15 +1,21 @@
 "use client";
 
-import {
-  HStack,
-  Text,
-  Heading,
-  VStack,
-  Button,
-  Switch,
-} from "@chakra-ui/react";
 import { useGlobalContext } from "@/context/Globals";
-import { useAccount, useContractWrite } from "wagmi";
+import {
+  useClaimReward,
+  usePendingRewardBalance,
+} from "@/utils/contract/hooks";
+import {
+  Button,
+  HStack,
+  Heading,
+  Text,
+  VStack
+} from "@chakra-ui/react";
+import { ReactElement, useState } from "react";
+import { formatEther } from "viem";
+import { useContractWrite } from "wagmi";
+import { address } from "../../utils/types";
 import ConnectWalletButton from "../Shared/ConnectButton";
 import {
   BlueDAIIcon,
@@ -17,14 +23,6 @@ import {
   PoktBlueIcon,
   SwitchIcon,
 } from "../icons/eth";
-import {
-  useClaimReward,
-  usePendingRewardBalance,
-} from "@/utils/contract/hooks";
-import { address } from "../../utils/types";
-import { formatEther } from "viem";
-import { ReactElement, useState } from "react";
-import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const refToken = ["ETH", "WPOKT", "DAI"];

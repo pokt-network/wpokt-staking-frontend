@@ -1,7 +1,7 @@
 "use client";
 import ConnectWalletButton from "@/components/Shared/ConnectButton";
 import { useGlobalContext } from "@/context/Globals";
-import { useApproveLPToken, useStakeLPToken } from "@/utils/contract/hooks";
+import { useApproveLPToken, useEstimateGas, useStakeLPToken } from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
@@ -10,35 +10,30 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatEther, parseEther } from "viem";
-import { useContractWrite, useFeeData } from "wagmi";
+import { useContractWrite } from "wagmi";
 import StakeButton from "./Components/Button";
 import StakeInput from "./Components/Input";
+import { address } from '../../utils/types';
 
 export default function StakingWidget() {
   const {
-    isClient,
     lpTokenBalance,
     lpTokenStaked,
     isConnected,
     ethBalance,
     setTxnHash,
-    address,
     txnHash,
     prices,
+    address
   } = useGlobalContext();
 
   const [isApproved, setIsApproved] = useState(true);
 
   const memoizedApprove = useMemo(() => isApproved, [isApproved]);
 
-  // Setting initial balances
   const [newStakeAmount, setNewStakeAmount] = useState("0");
-
-  const { data: gas } = useFeeData();
-
-  const formattedGas = formatEther(gas?.gasPrice || BigInt("0"));
 
   const newTotalStaked =
     lpTokenStaked + parseEther(newStakeAmount) || BigInt("0");
@@ -62,20 +57,27 @@ export default function StakingWidget() {
       isValidAmount: !isInvalidStakeAmount && !memoizedApprove,
     });
 
+    
   const contractCallConfig = !memoizedApprove ? approveConfig : stakeConfig;
+  const method = !memoizedApprove ? "approve" : "stake";
+  const gas = useEstimateGas({ method, address, amount: Number(newStakeAmount), isApproval: stakeWillFail });
+
+  
+
+  const formattedGas = gas ? formatEther(gas) : "0";
 
   const {
     isLoading: txnLoading,
     write,
     data,
     isSuccess,
-    isError,
   } = useContractWrite(contractCallConfig as any);
 
-  const updateTxnHash = useCallback(
-    () => data?.hash && setTxnHash(data?.hash),
-    [data?.hash, setTxnHash],
-  );
+  const updateTxnHash = useCallback(() => {
+    if (data?.hash) {
+      setTxnHash(data?.hash);
+    }
+  }, [data?.hash, setTxnHash]);
 
   useEffect(() => {
     updateTxnHash();
@@ -100,12 +102,18 @@ export default function StakingWidget() {
 
   const stakeText = () => {
     if (isConnected) {
-      if (Number(newStakeAmount) < 0) return "Can't Input Negative number";
-      else if (!isInvalidStakeAmount)
+      if (Number(newStakeAmount) < 0) {
+        return "Can't Input Negative number";
+      } else if (!isInvalidStakeAmount) {
         return formatEther(newTotalStaked) + " LP";
-      else return "Not Enough LP tokens in Wallet!";
-    } else return "No wallet connected";
+      } else {
+        return "Not Enough LP tokens in Wallet!";
+      }
+    } else {
+      return "No wallet connected";
+    }
   };
+
   return (
     <VStack fontSize={16} gap={8} padding={"20px"}>
       <Heading>Stake LP tokens</Heading>
@@ -134,7 +142,7 @@ export default function StakingWidget() {
       <Divider borderColor="poktLime" marginX={20} />
 
       <Center flexDirection="column">
-        <Text>Currently Staked</Text>
+                <Text>Currently Staked</Text>
         {isConnected ? (
           <Text>{formatEther(lpTokenStaked) + " LP"}</Text>
         ) : (

@@ -1,12 +1,13 @@
-"use client";
+import { CHAINLINK_ETH_USD_ADDRESS } from "./contractAddress";
+import useSWR from "swr";
 import {
   sepolia,
   useBalance,
   useContractRead,
+  useFeeData,
   usePrepareContractWrite,
 } from "wagmi";
 import { estimationClient } from "../config";
-import useSWR from "swr";
 import {
   RewardContract,
   StakeContract,
@@ -15,9 +16,10 @@ import {
 // types and iterfaces
 import { parseEther } from "viem";
 import { address } from "../types";
-import { StakeABI, StakingRewardsABI } from "./abi";
-
+import { CHAINLINK_AGGREGATOR_V3_INTERFACE_ABI, StakeABI, StakingRewardsABI } from './abi';
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
+export const useSWRFetch = (url: string) => useSWR(url, fetcher);
+
 
 export const useLPTokenBalance = (address: address) =>
   useBalance({
@@ -101,29 +103,60 @@ export const useClaimReward = (pendingRewardBal: number) =>
     enabled: Boolean(pendingRewardBal),
   });
 
-export const useSWRFetch = (url: string) => useSWR(url, fetcher);
+export const useEstimateGas = (
+  args: {
+    method: string,
+    address: address,
+    amount: number,
+    isApproval: boolean,
+  }
+) => {
+  // Destructure the arguments
+  const { method, address, amount, isApproval } = args;
+  let estimatedGas = BigInt(0);
+  // Make a request for the current fee data.
+  const { data: gas } = useFeeData();
 
-export const GasEstimate = (args: {
-  method: string;
-  address: address;
-  amount: number;
-}) =>
-  estimationClient.estimateContractGas({
-    abi: StakingRewardsABI,
-    address: StakingRewardContract,
-    functionName: args.method,
-    account: args.address,
-    args: [parseEther(String(args.amount))],
+  const estimateGas = async () => {
+    const contractABI = isApproval ? StakeABI : StakingRewardsABI;
+    const contractAddress = isApproval ? StakeContract : StakingRewardContract;
+
+    // Return gas price if address or amount is empty
+    if (!address || !amount) {
+      return BigInt(gas?.gasPrice ?? 0);
+    }
+
+    // Begin estimation of gas
+    const gasEstimationResult = await estimationClient.estimateContractGas({
+      abi: contractABI as unknown as any,
+      address: contractAddress,
+      functionName: method,
+      account: address,
+      args: [parseEther(String(amount))],
+    });
+
+    // Handle estimation failure by falling back on gas price or return the estimation
+    if (!gasEstimationResult) {
+      estimatedGas = BigInt(gas?.gasPrice ?? 0);
+      
+    }
+    else {
+      estimatedGas = gasEstimationResult;
+    }
+
+    
+  };
+
+  return estimatedGas;
+};
+
+
+export const usePriceData = () => {
+  const { data: priceData } = useContractRead({
+    address: CHAINLINK_ETH_USD_ADDRESS,
+    abi: CHAINLINK_AGGREGATOR_V3_INTERFACE_ABI,
+    functionName: "latestRoundData",
   });
 
-export const ApprovalGasEstimate = (args: {
-  address: address;
-  amount: number;
-}) =>
-  estimationClient.estimateContractGas({
-    abi: StakeABI,
-    address: StakeContract,
-    functionName: "approve",
-    account: args.address,
-    args: [StakingRewardContract, parseEther(String(args.amount))],
-  });
+  return priceData as bigint[];
+};
