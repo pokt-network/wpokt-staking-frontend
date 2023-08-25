@@ -15,7 +15,6 @@ import { formatEther, parseEther } from "viem";
 import { useContractWrite, useFeeData } from "wagmi";
 import WithDrawButton from "./Components/Button";
 import WithdrawInput from "./Components/Input";
-import { errorToJSON } from "next/dist/server/render";
 
 export default function UnstakeWidget() {
   const {
@@ -38,7 +37,7 @@ export default function UnstakeWidget() {
 
   const gas = gasEstimates as bigint;
 
-  const formattedGas = formatEther(gas ?? baseGas?.gasPrice);
+  const formattedGas = formatEther(gas ?? baseGas?.gasPrice ?? 0);
 
   const newTotalStaked =
     lpTokenStaked - parseEther(newWithdrawAmount) || BigInt("0");

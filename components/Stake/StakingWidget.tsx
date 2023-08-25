@@ -43,13 +43,13 @@ export default function StakingWidget() {
 
   const gas = (stakeGasEstimate ?? approvalGasEstimate) as bigint;
 
-  const formattedGas = formatEther(gas ?? baseGas?.gasPrice);
+  const formattedGas = formatEther(gas ?? baseGas?.gasPrice ?? 0);
 
   const newTotalStaked =
     lpTokenStaked + parseEther(newStakeAmount) || BigInt("0");
 
   const isInvalidStakeAmount =
-    Number(newStakeAmount) < 0 || parseEther(newStakeAmount) > lpTokenBalance;
+  Number(newStakeAmount) < 0 || parseEther(newStakeAmount) > (lpTokenBalance ?? 0);
 
   const {
     config: stakeConfig,
