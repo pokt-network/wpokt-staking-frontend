@@ -1,7 +1,8 @@
 "use client";
+import { useEffectOnce } from "usehooks-ts";
 import {
-  ApprovalGasEstimate,
-  GasEstimate,
+  useRegularGasEstimate,
+  useApprovalGasEstimate,
   useLPTokenBalance,
   usePendingRewardBalance,
   useSWRFetch,
@@ -37,6 +38,7 @@ export interface GlobalContextProps {
   address: address;
   prices: { eth: string; pokt: string };
   isConnected: boolean;
+  gasEstimates: Array<any>;
 }
 
 export const GlobalContext = createContext<GlobalContextProps>({
@@ -48,10 +50,11 @@ export const GlobalContext = createContext<GlobalContextProps>({
   pendingRewards: BigInt(0),
   chainId: sepolia.id,
   txnHash: "",
-  setTxnHash: () => {},
+  setTxnHash: () => { },
   address: "" as address,
   isConnected: false,
   prices: { eth: "0", pokt: "0" },
+  gasEstimates: []
 });
 
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -186,18 +189,33 @@ export function GlobalContextProvider({ children }: any) {
     txStatus?.status,
     txnHash,
   ]);
+  
+
+const userAddressMemo = useMemo(() => userAddress, [userAddress]);
+
+const {data: approvalGasEstimate} = useApprovalGasEstimate({ address: userAddressMemo as address, amount: 1 });
+const {data: stakeGasEstimate} = useRegularGasEstimate({ method: 'stake', address: userAddressMemo as address, amount: 1 });
+const {data: withdrawGasEstimate} = useRegularGasEstimate({ method: 'withdraw', address: userAddressMemo as address, amount: 1 });
+
+
+
+
+
 
   useEffect(() => {
-    setIsClient(true);
-    toggleMobile();
-    toaster();
-    window.addEventListener("resize", toggleMobile);
-    setPrices({
-      eth: ethPrice?.ethereum.usd,
-      pokt: poktPrice?.["pocket-network"].usd,
-    });
-    return () => window.removeEventListener("resize", toggleMobile);
-  }, [ethPrice?.ethereum.usd, poktPrice, showToast, toaster, txnHash]);
+  setIsClient(true);
+  toaster();
+  setPrices({
+    eth: ethPrice?.ethereum.usd,
+    pokt: poktPrice?.["pocket-network"].usd,
+  });
+  toggleMobile();
+  window.addEventListener("resize", toggleMobile);
+  return () => window.removeEventListener("resize", toggleMobile);
+}, [ethPrice?.ethereum.usd, poktPrice, showToast, toaster, txnHash, userAddress]);
+
+
+
 
   function toggleMobile() {
     if (window && window.innerWidth < 700) {
@@ -221,6 +239,7 @@ export function GlobalContextProvider({ children }: any) {
       isConnected,
       address: userAddress as address,
       prices: memoizedPrices,
+      gasEstimates: [approvalGasEstimate, stakeGasEstimate, withdrawGasEstimate]
     }),
     [
       mobile,
@@ -235,6 +254,9 @@ export function GlobalContextProvider({ children }: any) {
       isConnected,
       userAddress,
       memoizedPrices,
+      approvalGasEstimate,
+      stakeGasEstimate,
+      withdrawGasEstimate
     ],
   );
   console.log(contextValue);

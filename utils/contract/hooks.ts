@@ -103,27 +103,51 @@ export const useClaimReward = (pendingRewardBal: number) =>
 
 export const useSWRFetch = (url: string) => useSWR(url, fetcher);
 
-export const GasEstimate = (args: {
+export const useRegularGasEstimate = (args: {
   method: string;
   address: address;
   amount: number;
-}) =>
-  estimationClient.estimateContractGas({
-    abi: StakingRewardsABI,
-    address: StakingRewardContract,
-    functionName: args.method,
-    account: args.address,
-    args: [parseEther(String(args.amount))],
-  });
+}) => {
+  const shouldFetch = args.method && args.address && typeof args.amount === 'number';
+  const key = shouldFetch ? ['estimateContractGas', args.method, args.address, args.amount] : null;
 
-export const ApprovalGasEstimate = (args: {
+  const { data, error } = useSWR(key, () =>
+    estimationClient.estimateContractGas({
+      abi: StakingRewardsABI,
+      address: StakingRewardContract,
+      functionName: args.method,
+      account: args.address,
+      args: [parseEther(String(args.amount))],
+    })
+  );
+
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+};
+
+export const useApprovalGasEstimate = (args: {
   address: address;
   amount: number;
-}) =>
-  estimationClient.estimateContractGas({
-    abi: StakeABI,
-    address: StakeContract,
-    functionName: "approve",
-    account: args.address,
-    args: [StakingRewardContract, parseEther(String(args.amount))],
-  });
+}) => {
+  const shouldFetch = args.address && typeof args.amount === 'number';
+  const key = shouldFetch ? ['estimateContractGas', 'approve', args.address, args.amount] : null;
+
+  const { data, error } = useSWR(key, () =>
+    estimationClient.estimateContractGas({
+      abi: StakeABI,
+      address: StakeContract,
+      functionName: "approve",
+      account: args.address,
+      args: [StakingRewardContract, parseEther(String(args.amount))],
+    })
+  );
+
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+};

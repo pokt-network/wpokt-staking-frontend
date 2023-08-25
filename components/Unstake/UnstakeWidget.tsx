@@ -25,11 +25,15 @@ export default function UnstakeWidget() {
     txnHash,
     isConnected,
     prices,
+    gasEstimates
   } = useGlobalContext();
 
   const [newWithdrawAmount, setNewWithdrawAmount] = useState("0");
 
-  const { data: gas } = useFeeData();
+  const { data: baseGas } = useFeeData();
+
+  const gas = Number(gasEstimates?.[1]) > 0 ? gasEstimates?.[1] : baseGas;
+
   const formattedGas = formatEther(gas?.gasPrice || BigInt("0"));
   const newTotalStaked =
     lpTokenStaked - parseEther(newWithdrawAmount) || BigInt("0");
@@ -140,9 +144,9 @@ export default function UnstakeWidget() {
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
               : formattedGas +
-                " ETH (~" +
-                ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
-                  " USD)")}
+              " ETH (~" +
+              ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
+                " USD)")}
           </Text>
         ) : (
           <Text>No wallet connected</Text>

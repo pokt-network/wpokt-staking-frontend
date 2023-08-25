@@ -68,7 +68,7 @@ export default function RewardsWidget() {
           <>
             <Text fontSize={16} fontWeight={"bold"}>
               {isFetched && isClient
-                ? formatEther(rewardValue as bigint) + ` wPokt`
+                ? formatEther(rewardValue as bigint ?? BigInt(0)) + ` wPokt`
                 : `Fetching`}
             </Text>
             <Button
@@ -121,9 +121,9 @@ export default function RewardsWidget() {
                   <Text fontSize={16} fontWeight={"bold"}>
                     {isFetched && isClient
                       ? (
-                          Number(formatEther(rewardValue as bigint)) *
-                          Number(refFactors[refTokenIndex])
-                        ).toFixed(18)
+                        Number(formatEther(rewardValue as bigint ?? BigInt(0))) *
+                        Number(refFactors[refTokenIndex])
+                      ).toFixed(18)
                       : "Calculating..."}
                   </Text>
                 </HStack>
@@ -136,9 +136,9 @@ export default function RewardsWidget() {
                   <Text fontSize={16} fontWeight={"bold"}>
                     {isFetched && isClient
                       ? (
-                          Number(formatEther(rewardValue as bigint)) *
-                          Number(refFactors[refTokenIndex])
-                        ).toFixed(18)
+                        Number(formatEther(rewardValue as bigint ?? BigInt(0))) *
+                        Number(refFactors[refTokenIndex])
+                      ).toFixed(18)
                       : "Calculating..."}
                   </Text>
                 </HStack>
