@@ -32,18 +32,14 @@ const refIcon: Array<ReactElement> = [
   <BlueDAIIcon key="dai-icon" boxSize={6} />,
 ];
 export default function RewardsWidget() {
-  const { isClient, address, prices } = useGlobalContext();
+  const { isClient, address, prices, pendingRewards } = useGlobalContext();
 
-  const {
-    data: rewardValue,
-    isError,
-    isFetched,
-  } = usePendingRewardBalance(address as address);
+
   const {
     config,
     isError: notReadyToClaim,
     isFetched: readyToClaim,
-  } = useClaimReward(Number(rewardValue));
+  } = useClaimReward(Number(pendingRewards));
   const { write } = useContractWrite(config);
 
   const [refTokenIndex, setRefTokenIndex] = useState(0);
@@ -132,9 +128,9 @@ export default function RewardsWidget() {
                 <HStack>
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
-                    {isFetched && isClient
+                    {readyToClaim && isClient
                       ? (
-                          Number(formatEther(rewardValue as bigint)) *
+                          Number(formatEther(pendingRewards)) *
                           Number(refFactors[refTokenIndex])
                         ).toFixed(18)
                       : "Calculating..."}
