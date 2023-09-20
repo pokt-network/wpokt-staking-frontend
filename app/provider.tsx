@@ -1,7 +1,4 @@
-"use client"
-
-import "@fontsource-variable/manrope";
-
+'use client'
 import config, { chains } from "@/utils/config";
 import { CacheProvider } from "@chakra-ui/next-js";
 import { ChakraProvider } from "@chakra-ui/react";

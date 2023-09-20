@@ -1,7 +1,7 @@
 "use client";
 import { BlueEthIcon, EthIcon } from "@/components/icons/eth";
 import { useGlobalContext } from "@/context/Globals";
-import logo from "@/public/logo/full_white.png";
+
 import { Button, ButtonGroup, HStack, useDisclosure } from "@chakra-ui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
@@ -18,7 +18,7 @@ export function Header() {
   const isHover = useHover(hoverRef);
   return (
     <HStack justify="space-between" align="center" paddingX={10} paddingY={5}>
-      <Image src={logo} alt="logo" width={122} height={36} />( address ?
+      <Image src={'/logo/full_white.png'} alt="logo" width={122} height={36} />( address ?
       <ButtonGroup>
         {address && isClient ? (
           <Button

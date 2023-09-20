@@ -43,16 +43,17 @@ export default function Page() {
         <Tabs
           id={"0"}
           variant="enclosed"
+          maxWidth={'90%'}
           isFitted={true}
           width={mobile ? "100%" : "900px"}
           alignSelf={"center"}
         >
-          <TabList bg="transparent" border={"none"}>
+          <TabList bg="transparent" border={"none"} width={'100%'} >
             <Tab
               color={"poktLime"}
               fontSize={16}
               fontWeight={"medium"}
-              padding={"16px 32px"}
+              padding={"16px 16px"}
               borderRadius={"12px 12px 0px 0px"}
               bg="darkOverlay"
               border="none"
@@ -68,10 +69,11 @@ export default function Page() {
               color={"poktLime"}
               fontSize={16}
               fontWeight={"medium"}
-              padding={"16px 32px"}
+              padding={"16px 16px"}
               borderRadius={"12px 12px 0px 0px"}
               bg="darkOverlay"
               border="none"
+              
               _selected={{
                 border: "2px",
                 borderColor: "poktLime",
@@ -95,6 +97,7 @@ export default function Page() {
         <Center
           bg="darkOverlay"
           alignSelf={"center"}
+          maxW={'90%'}
           width={mobile ? "100%" : "900px"}
         >
           <RewardsWidget />

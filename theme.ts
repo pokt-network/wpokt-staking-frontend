@@ -1,10 +1,11 @@
+import "@fontsource/manrope"
 import { extendTheme } from "@chakra-ui/react";
 import { modalTheme } from "./components/theme/modal";
 
 export const theme = extendTheme({
   fonts: {
-    heading: `'Manrope Variable', sans-serif`,
-    body: `'Manrope Variable', sans-serif`,
+    heading: `'manrope', sans-serif`,
+    body: `'manrope', sans-serif`,
   },
   colors: {
     poktBlue: "rgba(29, 138, 237, 1)",

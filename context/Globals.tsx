@@ -204,7 +204,7 @@ export function GlobalContextProvider({ children }: any) {
 
 
   function toggleMobile() {
-    if (window && window.innerWidth < 700) {
+    if (window && window.innerWidth < 500) {
       setMobile(true);
     } else {
       setMobile(false);

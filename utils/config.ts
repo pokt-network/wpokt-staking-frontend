@@ -3,14 +3,11 @@ import { configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { createPublicClient, http } from "viem";
 import { sepolia } from "viem/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
 
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [sepolia],
   [
-    alchemyProvider({
-      apiKey: String(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY),
-    }),
+    publicProvider(),
   ],
 );
 
