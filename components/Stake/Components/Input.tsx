@@ -34,9 +34,10 @@ export default function StakeInput({
       <Button
         paddingX={"32px"}
         paddingY={"16px"}
-        borderRadius={"12px"}
+        borderRadius={"4px"}
         fontSize={"16px"}
         onClick={handleAllButtonClick}
+        fontWeight={'normal'}
         position="absolute"
         right={3}
         float="right"

@@ -34,11 +34,12 @@ export default function WithdrawInput({
       <Button
         paddingX={"32px"}
         paddingY={"16px"}
-        borderRadius={"12px"}
+        borderRadius={"4px"}
         fontSize={"16px"}
         onClick={handleAllButtonClick}
         position="absolute"
         right={3}
+        fontWeight={'normal'}
         float="right"
         zIndex={5}
         isDisabled={isLoading}

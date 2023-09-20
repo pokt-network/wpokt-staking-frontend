@@ -28,9 +28,7 @@ export default function Page() {
     <GlobalContextProvider>
       <Flex direction="column" minHeight="100vh" overflowX="hidden" gap={8}>
         <Header />
-        <Heading size="lg" color="poktBlue" textAlign="center" padding={4}>
-          wPOKT-ETH Liquidity Pool Farm
-        </Heading>
+
 
         <Center paddingX={10} flexDirection={"column"} alignItems={"center"}>
           <Divider borderColor={"poktLime"} />

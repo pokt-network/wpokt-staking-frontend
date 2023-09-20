@@ -9,9 +9,10 @@ export default function WithDrawButton({
   return (
     <Button
       height={"52px"}
-      borderRadius={"12px"}
+      borderRadius={"4px"}
       fontSize={"16px"}
       onClick={handleWithdrawButtonClick}
+      fontWeight={'normal'}
       bg={"poktLime"}
       isDisabled={isInvalidWithdrawAmount || willFail || isLoading}
       isLoading={isLoading}

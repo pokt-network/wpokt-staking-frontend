@@ -9,11 +9,12 @@ export default function ConnectWalletButton() {
     <Button
       height={"52px"}
       borderWidth={2}
-      borderRadius={"12px"}
+      borderRadius={"4px"}
       fontSize={"16px"}
       borderColor="poktLime"
       bg="transparent"
       color="white"
+      fontWeight={'normal'}
       leftIcon={<EthIcon fill={"white"} />}
       onClick={openConnectModal}
       _hover={{ borderColor: "white", bg: "transparent" }}

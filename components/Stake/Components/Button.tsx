@@ -10,9 +10,10 @@ export default function StakeButton({
   return (
     <Button
       height={"52px"}
-      borderRadius={"12px"}
+      borderRadius={"4px"}
       fontSize={"16px"}
       bg={"poktLime"}
+      fontWeight={'normal'}
       onClick={handleStakeButtonClick}
       isDisabled={isInvalidStakeAmount || Number(newStakeAmount) === 0}
       isLoading={isLoading}

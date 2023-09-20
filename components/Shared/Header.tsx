@@ -25,7 +25,7 @@ export function Header() {
             height={"52px"}
             width={"160px"}
             borderWidth={2}
-            borderRadius={"12px"}
+            borderRadius={"4px"}
             fontSize={"16px"}
             color="white"
             background="darkOverlay"
@@ -48,7 +48,7 @@ export function Header() {
           <Button
             height={"52px"}
             borderWidth={2}
-            borderRadius={"12px"}
+            borderRadius={"4px"}
             fontSize={"16px"}
             color="darkBlue"
             background="poktLime"
