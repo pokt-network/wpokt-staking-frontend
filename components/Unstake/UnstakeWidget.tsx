@@ -101,14 +101,14 @@ export default function UnstakeWidget() {
   return (
     <VStack fontSize={16} gap={8} padding={"20px"}>
       <Heading>Withdraw LP tokens</Heading>
-      <HStack justify="space-between">
-        <Text>Amount to Withdraw:</Text>
+      <Center flexDirection="column">
+      <Text fontSize={14} fontWeight={400}>Amount to Withdraw:</Text>
         {isConnected ? (
           <Text>{formatEther(lpTokenStaked)} LP Staked</Text>
         ) : (
           <Text>No wallet connected</Text>
         )}
-      </HStack>
+      </Center>
       {isConnected ? (
         <WithdrawInput
           newWithdrawAmount={newWithdrawAmount}

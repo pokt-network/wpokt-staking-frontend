@@ -114,14 +114,15 @@ export default function StakingWidget() {
   return (
     <VStack fontSize={16} gap={8} padding={"20px"}>
       <Heading>Stake LP tokens</Heading>
-      <HStack justify="space-between" maxWidth="80%">
+      <Center flexDirection="column">
         <Text fontSize={14} fontWeight={400}>Amount to Stake:</Text>
         {isConnected ? (
           <Text>{formatEther(lpTokenBalance) + " LP Tokens in wallet"}</Text>
         ) : (
           <Text>No wallet connected</Text>
         )}
-      </HStack>
+      </Center>
+
       {isConnected ? (
         <StakeInput
           newStakeAmount={newStakeAmount}
