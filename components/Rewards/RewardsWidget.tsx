@@ -1,31 +1,28 @@
 "use client";
 
-import {
-  HStack,
-  Text,
-  Heading,
-  VStack,
-  Button,
-  Switch,
-  ButtonGroup,
-} from "@chakra-ui/react";
 import { useGlobalContext } from "@/context/Globals";
-import { useAccount, useContractWrite } from "wagmi";
-import ConnectWalletButton from "../Shared/ConnectButton";
-import {
-  BlueDAIIcon,
-  BlueEthIcon,
-  PoktBlueIcon,
-  SwitchIcon,
-} from "../icons/eth";
 import {
   useClaimReward,
   usePendingRewardBalance,
 } from "@/utils/contract/hooks";
-import { address } from "../../utils/types";
-import { formatEther } from "viem";
+import {
+  Button,
+  Center,
+  HStack,
+  Heading,
+  Text,
+  VStack
+} from "@chakra-ui/react";
 import { ReactElement, useState } from "react";
-import useSWR from "swr";
+import { formatEther } from "viem";
+import { useContractWrite } from "wagmi";
+import { address } from "../../utils/types";
+import ConnectWalletButton from "../Shared/ConnectButton";
+import {
+  BlueDAIIcon,
+  BlueEthIcon,
+  PoktBlueIcon
+} from "../icons/eth";
 import { ErrorIcon } from "../icons/misc";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -67,32 +64,40 @@ export default function RewardsWidget() {
     >
       <Heading>wPOKT Rewards</Heading>
       <VStack mt={8} gap={4}>
-        <Text fontSize={14}>wPOKT to claim:</Text>
-        {isClient && address ? (
-          <>
-            <Text fontSize={16} fontWeight={"bold"}>
+        
+      <Center flexDirection="column">
+        <Text fontSize={14} fontWeight={400}>wPOKT to claim:</Text>
+        {isClient && address ? <Text fontSize={18} fontWeight={"bold"}>
               {isFetched && isClient
                 ? formatEther(rewardValue as bigint ?? BigInt(0)) + ` wPokt`
                 : `Fetching`}
             </Text>
-            <Button
-              height={"52px"}
-              borderRadius={"4px"}
-              fontSize={"16px"}
-              onClick={() => write?.()}
-              isDisabled={notReadyToClaim}
-              bg={"poktLime"}
-              fontWeight={'normal'}
-            >
-              Claim wPOKT
-            </Button>
-          </>
+            : <Text fontSize={16}>No Wallet Connected</Text>}
+        </Center>
+        <VStack>
+        {isClient && address ? (
+          
+                <Button
+                  height={"52px"}
+                  mt={4}
+                  borderRadius={"4px"}
+                  fontSize={"16px"}
+                  onClick={() => write?.()}
+                  isDisabled={notReadyToClaim}
+                  bg={"poktLime"}
+                  fontWeight={'normal'}
+                >
+                  Claim wPOKT
+                </Button>
+          
         ) : (
-          <>
-            <Text fontSize={16}>No Wallet Connected</Text>
-            <ConnectWalletButton />
-          </>
+          
+            <ConnectWalletButton/>
+          
+          
         )}
+        </VStack>
+
         <VStack mt={8} maxW={"400px"}>
           <Text fontWeight={"semibold"}>Rewards Breakdown</Text>
           <HStack gap={4}>
@@ -111,7 +116,7 @@ export default function RewardsWidget() {
           {address && isClient ? (
             <VStack alignItems={"center"} gap={8}>
               <VStack alignItems={"center"}>
-              <HStack bg={'red.300'} padding={1} bgColor={'poktLime'} borderRadius={4} gap={1} fontWeight={'normal'}>
+              <HStack bg={'red.300'} padding={0.5} bgColor={'poktLime'} borderRadius={4} gap={1} fontWeight={'normal'}>
                 <Button
                   padding={'4px'}
                   borderRadius={'4px'}
@@ -165,7 +170,11 @@ export default function RewardsWidget() {
                   {refToken[2]}
                 </Button>
                 </HStack>
-                <Text fontSize={16}>Your stake is worth:</Text>
+                
+              </VStack>
+
+              <VStack alignItems={"center"}>
+              <Text fontSize={16}>Your stake is worth:</Text>
                 <HStack>
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
@@ -213,3 +222,5 @@ export default function RewardsWidget() {
     </VStack>
   );
 }
+
+

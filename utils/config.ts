@@ -12,7 +12,7 @@ export const { chains, publicClient, webSocketPublicClient } = configureChains(
 );
 
 const { connectors } = getDefaultWallets({
-  appName: "wPOKT Bridge",
+  appName: "wPOKT Staking",
   projectId: `${process.env.NEXT_PUBLIC_APP_PROJECT_ID}`,
   chains,
 });

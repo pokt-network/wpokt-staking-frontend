@@ -7,13 +7,12 @@ import {
   Center,
   Divider,
   Flex,
-  Heading,
   Spacer,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
-  Tabs,
+  Tabs
 } from "@chakra-ui/react";
 
 import RewardsWidget from "@/components/Rewards/RewardsWidget";

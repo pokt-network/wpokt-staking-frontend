@@ -115,7 +115,7 @@ export default function StakingWidget() {
     <VStack fontSize={16} gap={8} padding={"20px"}>
       <Heading>Stake LP tokens</Heading>
       <HStack justify="space-between" maxWidth="80%">
-        <Text fontSize={14}>Amount to Stake:</Text>
+        <Text fontSize={14} fontWeight={400}>Amount to Stake:</Text>
         {isConnected ? (
           <Text>{formatEther(lpTokenBalance) + " LP Tokens in wallet"}</Text>
         ) : (
@@ -139,7 +139,7 @@ export default function StakingWidget() {
       <Divider borderColor="poktLime" marginX={20} />
 
       <Center flexDirection="column">
-        <Text fontSize={14}>Currently Staked</Text>
+        <Text fontSize={14} fontWeight={400}>Currently Staked</Text>
         {isConnected ? (
           <Text>{formatEther(lpTokenStaked) + " LP"}</Text>
         ) : (
@@ -147,13 +147,13 @@ export default function StakingWidget() {
         )}
       </Center>
       <Center flexDirection="column">
-        <Text fontSize={14}>New Total Staked:</Text>
+        <Text fontSize={14} fontWeight={400}>New Total Staked:</Text>
         <Text color={!isInvalidStakeAmount ? "white" : "red"}>
           {stakeText()}
         </Text>
       </Center>
       <Center flexDirection="column">
-        <Text fontSize={14}>Estimated Gas Cost:</Text>
+        <Text fontSize={14} fontWeight={400}>Estimated Gas Cost:</Text>
         {isConnected ? (
           <Text
             color={formatEther(ethBalance) < formattedGas ? "red" : "white"}
