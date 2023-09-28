@@ -24,7 +24,7 @@ export const theme = extendTheme({
     colors,
     fonts: {
         body: `Manrope, system-ui, sans-serif`,
-        heading: `Manrope, system-ui, sans-serif`,
+        heading: "Georgia, serif",
         mono: "Menlo, monospace",
     },
     configs: {
