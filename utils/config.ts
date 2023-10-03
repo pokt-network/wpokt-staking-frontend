@@ -1,15 +1,19 @@
 import { getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
-import { createPublicClient, http } from "viem";
-import { sepolia } from "viem/chains";
+import { Chain, createPublicClient, http } from "viem";
+import { sepolia, mainnet, goerli } from "viem/chains";
+import { chainId } from "./contract/constants";
+
+const chain = [sepolia, mainnet, goerli].find((c) => c.id === Number(chainId))
 
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [sepolia],
+  [chain as Chain],
   [
     publicProvider(),
   ],
 );
+
 
 const { connectors } = getDefaultWallets({
   appName: "wPOKT Staking",
@@ -27,6 +31,6 @@ const config = createConfig({
 export default config;
 
 export const estimationClient = createPublicClient({
-  chain: sepolia,
+  chain,
   transport: http(),
 });

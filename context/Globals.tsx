@@ -19,8 +19,9 @@ import {
   useMemo,
   useState,
 } from "react";
-import { sepolia, useAccount, useBalance, useWaitForTransaction } from "wagmi";
+import { useAccount, useBalance, useWaitForTransaction } from "wagmi";
 import { ErrorIcon } from "../components/icons/misc";
+
 
 export interface GlobalContextProps {
   mobile: boolean;
@@ -29,7 +30,6 @@ export interface GlobalContextProps {
   ethBalance: bigint;
   lpTokenStaked: bigint;
   pendingRewards: bigint;
-  chainId?: number;
   txnHash: any;
   setTxnHash: (hash: string) => void;
   address: address;
@@ -45,7 +45,6 @@ export const GlobalContext = createContext<GlobalContextProps>({
   ethBalance: BigInt(0),
   lpTokenStaked: BigInt(0),
   pendingRewards: BigInt(0),
-  chainId: sepolia.id,
   txnHash: "",
   setTxnHash: () => { },
   address: "" as address,
@@ -58,7 +57,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 export function GlobalContextProvider({ children }: any) {
   const [isClient, setIsClient] = useState(false);
   const [mobile, setMobile] = useState(false);
-  const chainId = sepolia.id;
+  
 
   const [prices, setPrices] = useState({ eth: "0", pokt: "0" });
 
@@ -218,7 +217,6 @@ export function GlobalContextProvider({ children }: any) {
       lpTokenBalance,
       ethBalance,
       lpTokenStaked,
-      chainId,
       pendingRewards,
       txnHash,
       setTxnHash,
@@ -232,7 +230,6 @@ export function GlobalContextProvider({ children }: any) {
       lpTokenBalance,
       ethBalance,
       lpTokenStaked,
-      chainId,
       pendingRewards,
       txnHash,
       setTxnHash,

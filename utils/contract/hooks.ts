@@ -1,6 +1,5 @@
 "use client";
 import {
-  sepolia,
   useBalance,
   useContractRead,
   usePrepareContractWrite,
@@ -11,11 +10,13 @@ import {
   RewardContract,
   StakeContract,
   StakingRewardContract,
-} from "./contractAddress";
+  chainId
+} from "./constants";
+
 // types and iterfaces
 import { parseEther } from "viem";
 import { address } from "../types";
-import { StakeABI, StakingRewardsABI } from "./abi";
+import { StakingRewardsABI, StakeABI, RewardsABI } from "./abi";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -23,7 +24,7 @@ export const useLPTokenBalance = (address: address) =>
   useBalance({
     address,
     token: StakeContract,
-    chainId: sepolia.id,
+    chainId
   });
 
 export const useApproveLPToken = (args: {
@@ -35,7 +36,7 @@ export const useApproveLPToken = (args: {
     address: StakeContract,
     functionName: "approve",
     args: [StakingRewardContract, parseEther(args.amount.toString())],
-    chainId: sepolia.id,
+    chainId,
     enabled: args.isValidAmount && Number(args.amount) != 0,
   });
 
@@ -43,7 +44,7 @@ export const useRewardTokenBalance = (address: address) =>
   useBalance({
     address,
     token: RewardContract,
-    chainId: sepolia.id,
+    chainId,
   });
 
 export const useStakedTokenBalance = (address: address) =>
@@ -52,7 +53,7 @@ export const useStakedTokenBalance = (address: address) =>
     address: StakingRewardContract,
     functionName: "balanceOf",
     args: [address],
-    chainId: sepolia.id,
+    chainId,
   });
 
 export const usePendingRewardBalance = (address: address) =>
@@ -61,7 +62,7 @@ export const usePendingRewardBalance = (address: address) =>
     address: StakingRewardContract,
     functionName: "earned",
     args: [address],
-    chainId: sepolia.id,
+    chainId,
   });
 
 export const useStakeLPToken = (args: {
@@ -74,7 +75,7 @@ export const useStakeLPToken = (args: {
     address: StakingRewardContract,
     functionName: "stake",
     args: [parseEther(args.amount)],
-    chainId: sepolia.id,
+    chainId,
     enabled: args.isValidAmount && Number(args.amount) != 0,
     onError: args.onError,
   });
@@ -88,7 +89,7 @@ export const useUnstakeLPToken = (args: {
     address: StakingRewardContract,
     functionName: "withdraw",
     args: [parseEther(String(args.amount))],
-    chainId: sepolia.id,
+    chainId,
     enabled: args.isValidAmount && Number(args.amount) != 0,
   });
 export const useClaimReward = (pendingRewardBal: number) =>
@@ -97,7 +98,7 @@ export const useClaimReward = (pendingRewardBal: number) =>
     address: StakingRewardContract,
     functionName: "getReward",
     args: [],
-    chainId: sepolia.id,
+    chainId,
     enabled: Boolean(pendingRewardBal),
   });
 
