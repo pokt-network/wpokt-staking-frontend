@@ -13,7 +13,7 @@ export default function StakeButton({
       borderRadius={"4px"}
       fontSize={"16px"}
       bg={"poktLime"}
-      fontWeight={'normal'}
+      fontWeight={"normal"}
       onClick={handleStakeButtonClick}
       isDisabled={isInvalidStakeAmount || Number(newStakeAmount) === 0}
       isLoading={isLoading}

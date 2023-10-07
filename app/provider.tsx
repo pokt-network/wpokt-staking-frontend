@@ -1,12 +1,13 @@
-"use client"
-import config, { chains } from "@/utils/config";
+"use client";
+import "@rainbow-me/rainbowkit/styles.css";
+
 import { CacheProvider } from "@chakra-ui/next-js";
 import { ChakraProvider } from "@chakra-ui/react";
-import '@rainbow-me/rainbowkit/styles.css';
+import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiConfig } from "wagmi";
 
 import { theme } from "@/theme";
-import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import config, { chains } from "@/utils/config";
 
 export default function RootLayout({
   children,
@@ -14,9 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    
     <CacheProvider>
-      
       <WagmiConfig config={config}>
         <RainbowKitProvider
           chains={chains}
@@ -27,16 +26,14 @@ export default function RootLayout({
             borderRadius: "small",
           })}
         >
-    <ChakraProvider
+          <ChakraProvider
             theme={theme}
             toastOptions={{ defaultOptions: { position: "top-right" } }}
           >
             {children}
-            </ChakraProvider>      
+          </ChakraProvider>
         </RainbowKitProvider>
       </WagmiConfig>
-      
     </CacheProvider>
-    
   );
 }

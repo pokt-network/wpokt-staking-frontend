@@ -1,18 +1,25 @@
 "use client";
-import ConnectWalletButton from "@/components/Shared/ConnectButton";
-import { useGlobalContext } from "@/context/Globals";
-import { useApprovalGasEstimate, useApproveLPToken, useRegularGasEstimate, useStakeLPToken } from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
-  HStack,
   Heading,
+  HStack,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useContractWrite, useFeeData } from "wagmi";
+
+import ConnectWalletButton from "@/components/Shared/ConnectButton";
+import { useGlobalContext } from "@/context/Globals";
+import {
+  useApprovalGasEstimate,
+  useApproveLPToken,
+  useRegularGasEstimate,
+  useStakeLPToken,
+} from "@/utils/contract/hooks";
+
 import StakeButton from "./Components/Button";
 import StakeInput from "./Components/Input";
 
@@ -38,8 +45,15 @@ export default function StakingWidget() {
 
   const { data: baseGas } = useFeeData();
 
-  const { data: approvalGasEstimate } = useApprovalGasEstimate({ address, amount: Number(newStakeAmount) });
-  const { data: stakeGasEstimate } = useRegularGasEstimate({ method: 'stake', address, amount: Number(newStakeAmount) });
+  const { data: approvalGasEstimate } = useApprovalGasEstimate({
+    address,
+    amount: Number(newStakeAmount),
+  });
+  const { data: stakeGasEstimate } = useRegularGasEstimate({
+    method: "stake",
+    address,
+    amount: Number(newStakeAmount),
+  });
 
   const gas = (stakeGasEstimate ?? approvalGasEstimate) as bigint;
 
@@ -49,7 +63,8 @@ export default function StakingWidget() {
     lpTokenStaked + parseEther(newStakeAmount) || BigInt("0");
 
   const isInvalidStakeAmount =
-  Number(newStakeAmount) < 0 || parseEther(newStakeAmount) > (lpTokenBalance ?? 0);
+    Number(newStakeAmount) < 0 ||
+    parseEther(newStakeAmount) > (lpTokenBalance ?? 0);
 
   const {
     config: stakeConfig,
@@ -115,7 +130,9 @@ export default function StakingWidget() {
     <VStack fontSize={16} gap={8} padding={"20px"}>
       <Heading>Stake LP tokens</Heading>
       <Center flexDirection="column">
-        <Text fontSize={14} fontWeight={400}>Amount to Stake:</Text>
+        <Text fontSize={14} fontWeight={400}>
+          Amount to Stake:
+        </Text>
         {isConnected ? (
           <Text>{formatEther(lpTokenBalance) + " LP Tokens in wallet"}</Text>
         ) : (
@@ -140,7 +157,9 @@ export default function StakingWidget() {
       <Divider borderColor="poktLime" marginX={20} />
 
       <Center flexDirection="column">
-        <Text fontSize={14} fontWeight={400}>Currently Staked</Text>
+        <Text fontSize={14} fontWeight={400}>
+          Currently Staked
+        </Text>
         {isConnected ? (
           <Text>{formatEther(lpTokenStaked) + " LP"}</Text>
         ) : (
@@ -148,13 +167,17 @@ export default function StakingWidget() {
         )}
       </Center>
       <Center flexDirection="column">
-        <Text fontSize={14} fontWeight={400}>New Total Staked:</Text>
+        <Text fontSize={14} fontWeight={400}>
+          New Total Staked:
+        </Text>
         <Text color={!isInvalidStakeAmount ? "white" : "red"}>
           {stakeText()}
         </Text>
       </Center>
       <Center flexDirection="column">
-        <Text fontSize={14} fontWeight={400}>Estimated Gas Cost:</Text>
+        <Text fontSize={14} fontWeight={400}>
+          Estimated Gas Cost:
+        </Text>
         {isConnected ? (
           <Text
             color={formatEther(ethBalance) < formattedGas ? "red" : "white"}
@@ -162,9 +185,9 @@ export default function StakingWidget() {
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
               : formattedGas +
-              " ETH (~" +
-              ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
-                " USD)")}
+                " ETH (~" +
+                ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
+                  " USD)")}
           </Text>
         ) : (
           <Text>No wallet connected</Text>

@@ -1,4 +1,4 @@
-import { returnToastProps, getToastProps } from "./types";
+import { getToastProps, returnToastProps } from "./types";
 
 // Switch case for returning data for different txn stages
 

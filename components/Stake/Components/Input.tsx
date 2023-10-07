@@ -37,7 +37,7 @@ export default function StakeInput({
         borderRadius={"4px"}
         fontSize={"16px"}
         onClick={handleAllButtonClick}
-        fontWeight={'normal'}
+        fontWeight={"normal"}
         position="absolute"
         right={3}
         float="right"

@@ -1,15 +1,17 @@
 "use client";
-import { useGlobalContext } from "@/context/Globals";
 import {
   Box,
   Center,
   Flex,
-  HStack,
   Heading,
+  HStack,
   Link,
   Text,
   VStack,
 } from "@chakra-ui/react";
+
+import { useGlobalContext } from "@/context/Globals";
+
 import { DiscordIcon, GithubIcon, TwitterIcon } from "../icons/socials";
 
 export function Footer() {

@@ -1,15 +1,5 @@
-"use client"
+"use client";
 
-
-import { BlueCheckIcon } from "@/components/icons/misc";
-import { BluePoktIcon } from "@/components/icons/pokt";
-import {
-  useLPTokenBalance,
-  usePendingRewardBalance,
-  useSWRFetch,
-  useStakedTokenBalance,
-} from "@/utils/contract/hooks";
-import { address } from "@/utils/types";
 import { Box, Text, useToast } from "@chakra-ui/react";
 import {
   createContext,
@@ -20,8 +10,16 @@ import {
   useState,
 } from "react";
 import { useAccount, useBalance, useWaitForTransaction } from "wagmi";
-import { ErrorIcon } from "../components/icons/misc";
 
+import { BlueCheckIcon, ErrorIcon } from "@/components/icons/misc";
+import { BluePoktIcon } from "@/components/icons/pokt";
+import {
+  useLPTokenBalance,
+  usePendingRewardBalance,
+  useStakedTokenBalance,
+  useSWRFetch,
+} from "@/utils/contract/hooks";
+import { address } from "@/utils/types";
 
 export interface GlobalContextProps {
   mobile: boolean;
@@ -35,7 +33,6 @@ export interface GlobalContextProps {
   address: address;
   prices: { eth: string; pokt: string };
   isConnected: boolean;
-
 }
 
 export const GlobalContext = createContext<GlobalContextProps>({
@@ -46,7 +43,7 @@ export const GlobalContext = createContext<GlobalContextProps>({
   lpTokenStaked: BigInt(0),
   pendingRewards: BigInt(0),
   txnHash: "",
-  setTxnHash: () => { },
+  setTxnHash: () => {},
   address: "" as address,
   isConnected: false,
   prices: { eth: "0", pokt: "0" },
@@ -57,7 +54,6 @@ export const useGlobalContext = () => useContext(GlobalContext);
 export function GlobalContextProvider({ children }: any) {
   const [isClient, setIsClient] = useState(false);
   const [mobile, setMobile] = useState(false);
-  
 
   const [prices, setPrices] = useState({ eth: "0", pokt: "0" });
 
@@ -75,7 +71,7 @@ export function GlobalContextProvider({ children }: any) {
   const [txnHash, setTxnHash] = useState("");
 
   const { data: ethBalanceRaw } = useBalance({
-    address: (userAddress as address),
+    address: userAddress as address,
   });
 
   const ethBalance = ethBalanceRaw?.value ?? BigInt(0);
@@ -85,12 +81,12 @@ export function GlobalContextProvider({ children }: any) {
 
   const lpTokenBalance = lpTokenBalanceRaw?.value ?? BigInt(0);
   const { data: lpTokenStakedRaw, refetch: stakedBalRefetch } =
-    useStakedTokenBalance((userAddress as address));
+    useStakedTokenBalance(userAddress as address);
 
   const lpTokenStaked = (lpTokenStakedRaw as bigint) || BigInt(0);
 
   const { data: pendingRewardsRaw } = usePendingRewardBalance(
-    (userAddress as address),
+    userAddress as address,
   );
   const pendingRewards = (pendingRewardsRaw as bigint) ?? BigInt(0);
   const toast = useToast();
@@ -185,8 +181,6 @@ export function GlobalContextProvider({ children }: any) {
     txnHash,
   ]);
 
-
-
   useEffect(() => {
     setIsClient(true);
     toaster();
@@ -197,10 +191,14 @@ export function GlobalContextProvider({ children }: any) {
     toggleMobile();
     window.addEventListener("resize", toggleMobile);
     return () => window.removeEventListener("resize", toggleMobile);
-  }, [ethPrice?.ethereum.usd, poktPrice, showToast, toaster, txnHash, userAddress]);
-
-
-
+  }, [
+    ethPrice?.ethereum.usd,
+    poktPrice,
+    showToast,
+    toaster,
+    txnHash,
+    userAddress,
+  ]);
 
   function toggleMobile() {
     if (window && window.innerWidth < 500) {

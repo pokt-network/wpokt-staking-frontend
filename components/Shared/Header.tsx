@@ -1,6 +1,4 @@
 "use client";
-import { BlueEthIcon, EthIcon } from "@/components/icons/eth";
-import { useGlobalContext } from "@/context/Globals";
 import { Button, ButtonGroup, HStack, Text } from "@chakra-ui/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
@@ -8,6 +6,8 @@ import { useRef } from "react";
 import { useHover } from "usehooks-ts";
 import { useAccount, useDisconnect } from "wagmi";
 
+import { BlueEthIcon, EthIcon } from "@/components/icons/eth";
+import { useGlobalContext } from "@/context/Globals";
 
 export function Header() {
   const { mobile, isClient } = useGlobalContext();
@@ -17,26 +17,27 @@ export function Header() {
   const hoverRef = useRef(null);
   const isHover = useHover(hoverRef);
 
-
-
   return (
     <HStack justify="space-between" align="center" paddingX={10} paddingY={5}>
-      <HStack alignItems={'flex-end'}>
-      <Image src={'/logo/full_white.png'} alt="logo" width={122} height={36} />
-      <Text
-  color="white"
-  textAlign="center"
-  fontSize="18px"
-  fontStyle="normal"
-  fontWeight="700"
-  lineHeight="18px"
-  mb={1}
->
-  Stake
-</Text>
-</HStack>
-
-      
+      <HStack alignItems={"flex-end"}>
+        <Image
+          src={"/logo/full_white.png"}
+          alt="logo"
+          width={122}
+          height={36}
+        />
+        <Text
+          color="white"
+          textAlign="center"
+          fontSize="18px"
+          fontStyle="normal"
+          fontWeight="700"
+          lineHeight="18px"
+          mb={1}
+        >
+          Stake
+        </Text>
+      </HStack>
       ( address ?
       <ButtonGroup>
         {address && isClient ? (

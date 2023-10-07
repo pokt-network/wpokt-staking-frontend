@@ -1,18 +1,23 @@
 "use client";
-import ConnectWalletButton from "@/components/Shared/ConnectButton";
-import { useGlobalContext } from "@/context/Globals";
-import { useRegularGasEstimate, useUnstakeLPToken } from "@/utils/contract/hooks";
 import {
   Center,
   Divider,
-  HStack,
   Heading,
+  HStack,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
 import { formatEther, parseEther } from "viem";
 import { useContractWrite, useFeeData } from "wagmi";
+
+import ConnectWalletButton from "@/components/Shared/ConnectButton";
+import { useGlobalContext } from "@/context/Globals";
+import {
+  useRegularGasEstimate,
+  useUnstakeLPToken,
+} from "@/utils/contract/hooks";
+
 import WithDrawButton from "./Components/Button";
 import WithdrawInput from "./Components/Input";
 
@@ -25,15 +30,18 @@ export default function UnstakeWidget() {
     txnHash,
     isConnected,
     prices,
-    address
-
+    address,
   } = useGlobalContext();
 
   const [newWithdrawAmount, setNewWithdrawAmount] = useState("0");
 
   const { data: baseGas } = useFeeData();
 
-  const { data: gasEstimates } = useRegularGasEstimate({ method: 'withdraw', address, amount: Number(newWithdrawAmount) });
+  const { data: gasEstimates } = useRegularGasEstimate({
+    method: "withdraw",
+    address,
+    amount: Number(newWithdrawAmount),
+  });
 
   const gas = gasEstimates as bigint;
 
@@ -102,7 +110,9 @@ export default function UnstakeWidget() {
     <VStack fontSize={16} gap={8} padding={"20px"}>
       <Heading>Withdraw LP tokens</Heading>
       <Center flexDirection="column">
-      <Text fontSize={14} fontWeight={400}>Amount to Withdraw:</Text>
+        <Text fontSize={14} fontWeight={400}>
+          Amount to Withdraw:
+        </Text>
         {isConnected ? (
           <Text>{formatEther(lpTokenStaked)} LP Staked</Text>
         ) : (
@@ -148,9 +158,9 @@ export default function UnstakeWidget() {
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
               : formattedGas +
-              " ETH (~" +
-              ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
-                " USD)")}
+                " ETH (~" +
+                ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
+                  " USD)")}
           </Text>
         ) : (
           <Text>No wallet connected</Text>

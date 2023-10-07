@@ -1,9 +1,9 @@
-import { defineStyleConfig } from '@chakra-ui/react'
+import { defineStyleConfig } from "@chakra-ui/react";
 
 export const PoktButton = defineStyleConfig({
   baseStyle: {
     borderRadius: 4,
     fontWeight: 600,
-    fontSize: '16px',
-  }
-})
+    fontSize: "16px",
+  },
+});

@@ -2,6 +2,9 @@
 const withCSS = require("@zeit/next-css");
 module.exports = {
   reactStrictMode: true,
+  eslint: {
+    dirs: ["."],
+  },
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.externals.push(
@@ -9,11 +12,8 @@ module.exports = {
       "lokijs",
       "encoding",
       "style-loader",
-      "css-loader"
+      "css-loader",
     );
     return config;
   },
 };
-
-
-
