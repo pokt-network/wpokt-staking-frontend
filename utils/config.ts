@@ -1,23 +1,31 @@
 import { getDefaultWallets } from "@rainbow-me/rainbowkit";
+import { createPublicClient, http } from "viem";
+import { goerli, mainnet, sepolia } from "viem/chains";
 import { configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
-import { Chain, createPublicClient, http } from "viem";
-import { sepolia, mainnet, goerli } from "viem/chains";
+
 import { chainId } from "./contract/constants";
 
-const chain = [sepolia, mainnet, goerli].find((c) => c.id === Number(chainId))
+const chain = [sepolia, mainnet, goerli].find((c) => c.id === Number(chainId));
+
+if (!chain) {
+  throw new Error(`Chain with id ${chainId} not found`);
+}
 
 export const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [chain as Chain],
-  [
-    publicProvider(),
-  ],
+  [chain],
+  [publicProvider()],
 );
 
+const PROJECT_ID = process.env.NEXT_PUBLIC_APP_PROJECT_ID;
+
+if (!PROJECT_ID) {
+  throw new Error("Missing NEXT_PUBLIC_APP_PROJECT_ID");
+}
 
 const { connectors } = getDefaultWallets({
   appName: "wPOKT Staking",
-  projectId: `${process.env.NEXT_PUBLIC_APP_PROJECT_ID}`,
+  projectId: PROJECT_ID,
   chains,
 });
 

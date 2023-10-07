@@ -1,8 +1,5 @@
-"use client"
+"use client";
 
-import { Footer } from "@/components/Shared/Footer";
-import { Header } from "@/components/Shared/Header";
-import { GlobalContextProvider, useGlobalContext } from "@/context/Globals";
 import {
   Center,
   Divider,
@@ -12,13 +9,16 @@ import {
   TabList,
   TabPanel,
   TabPanels,
-  Tabs
+  Tabs,
 } from "@chakra-ui/react";
 
 import RewardsWidget from "@/components/Rewards/RewardsWidget";
+import { Footer } from "@/components/Shared/Footer";
+import { Header } from "@/components/Shared/Header";
 import LPInfoBlock from "@/components/Shared/LPInfoBlock";
 import StakingWidget from "@/components/Stake/StakingWidget";
 import UnstakeWidget from "@/components/Unstake/UnstakeWidget";
+import { GlobalContextProvider, useGlobalContext } from "@/context/Globals";
 
 export default function Page() {
   const { mobile } = useGlobalContext();
@@ -27,7 +27,6 @@ export default function Page() {
     <GlobalContextProvider>
       <Flex direction="column" minHeight="100vh" overflowX="hidden" gap={8}>
         <Header />
-
 
         <Center paddingX={10} flexDirection={"column"} alignItems={"center"}>
           <Divider borderColor={"poktLime"} />
@@ -40,12 +39,12 @@ export default function Page() {
         <Tabs
           id={"0"}
           variant="enclosed"
-          maxWidth={'90%'}
+          maxWidth={"90%"}
           isFitted={true}
           width={mobile ? "100%" : "900px"}
           alignSelf={"center"}
         >
-          <TabList bg="transparent" border={"none"} width={'100%'} >
+          <TabList bg="transparent" border={"none"} width={"100%"}>
             <Tab
               color={"poktLime"}
               fontSize={16}
@@ -70,7 +69,6 @@ export default function Page() {
               borderRadius={"12px 12px 0px 0px"}
               bg="darkOverlay"
               border="none"
-              
               _selected={{
                 border: "2px",
                 borderColor: "poktLime",
@@ -94,7 +92,7 @@ export default function Page() {
         <Center
           bg="darkOverlay"
           alignSelf={"center"}
-          maxW={'90%'}
+          maxW={"90%"}
           width={mobile ? "100%" : "900px"}
         >
           <RewardsWidget />

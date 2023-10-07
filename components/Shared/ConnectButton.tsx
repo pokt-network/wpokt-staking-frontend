@@ -1,8 +1,10 @@
 "use client";
 import { Button } from "@chakra-ui/react";
-import { EthIcon } from "../icons/eth";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+
 import { colors } from "@/theme";
+
+import { EthIcon } from "../icons/eth";
 
 export default function ConnectWalletButton() {
   const { openConnectModal } = useConnectModal();
@@ -15,10 +17,10 @@ export default function ConnectWalletButton() {
       borderColor="poktLime"
       bg="transparent"
       color="white"
-      fontWeight={'normal'}
+      fontWeight={"normal"}
       leftIcon={<EthIcon fill={"white"} />}
       onClick={openConnectModal}
-      _hover={{bg: `${colors.darkOverlay}`}}
+      _hover={{ bg: `${colors.darkOverlay}` }}
     >
       Connect Wallet
     </Button>

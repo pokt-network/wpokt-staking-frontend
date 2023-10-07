@@ -12,7 +12,7 @@ export default function WithDrawButton({
       borderRadius={"4px"}
       fontSize={"16px"}
       onClick={handleWithdrawButtonClick}
-      fontWeight={'normal'}
+      fontWeight={"normal"}
       bg={"poktLime"}
       isDisabled={isInvalidWithdrawAmount || willFail || isLoading}
       isLoading={isLoading}

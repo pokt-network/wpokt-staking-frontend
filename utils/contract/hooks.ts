@@ -1,22 +1,18 @@
 "use client";
-import {
-  useBalance,
-  useContractRead,
-  usePrepareContractWrite,
-} from "wagmi";
-import { estimationClient } from "../config";
 import useSWR from "swr";
+// types and iterfaces
+import { parseEther } from "viem";
+import { useBalance, useContractRead, usePrepareContractWrite } from "wagmi";
+
+import { estimationClient } from "../config";
+import { address } from "../types";
+import { RewardsABI, StakeABI, StakingRewardsABI } from "./abi";
 import {
+  chainId,
   RewardContract,
   StakeContract,
   StakingRewardContract,
-  chainId
 } from "./constants";
-
-// types and iterfaces
-import { parseEther } from "viem";
-import { address } from "../types";
-import { StakingRewardsABI, StakeABI, RewardsABI } from "./abi";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -24,7 +20,7 @@ export const useLPTokenBalance = (address: address) =>
   useBalance({
     address,
     token: StakeContract,
-    chainId
+    chainId,
   });
 
 export const useApproveLPToken = (args: {
@@ -109,8 +105,11 @@ export const useRegularGasEstimate = (args: {
   address: address;
   amount: number;
 }) => {
-  const shouldFetch = args.method && args.address && typeof args.amount === 'number';
-  const key = shouldFetch ? ['estimateContractGas', args.method, args.address, args.amount] : null;
+  const shouldFetch =
+    args.method && args.address && typeof args.amount === "number";
+  const key = shouldFetch
+    ? ["estimateContractGas", args.method, args.address, args.amount]
+    : null;
 
   const { data, error } = useSWR(key, () =>
     estimationClient.estimateContractGas({
@@ -119,7 +118,7 @@ export const useRegularGasEstimate = (args: {
       functionName: args.method,
       account: args.address,
       args: [parseEther(String(args.amount))],
-    })
+    }),
   );
 
   return {
@@ -133,8 +132,10 @@ export const useApprovalGasEstimate = (args: {
   address: address;
   amount: number;
 }) => {
-  const shouldFetch = args.address && typeof args.amount === 'number';
-  const key = shouldFetch ? ['estimateContractGas', 'approve', args.address, args.amount] : null;
+  const shouldFetch = args.address && typeof args.amount === "number";
+  const key = shouldFetch
+    ? ["estimateContractGas", "approve", args.address, args.amount]
+    : null;
 
   const { data, error } = useSWR(key, () =>
     estimationClient.estimateContractGas({
@@ -143,7 +144,7 @@ export const useApprovalGasEstimate = (args: {
       functionName: "approve",
       account: args.address,
       args: [StakingRewardContract, parseEther(String(args.amount))],
-    })
+    }),
   );
 
   return {

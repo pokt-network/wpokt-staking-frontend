@@ -39,7 +39,7 @@ export default function WithdrawInput({
         onClick={handleAllButtonClick}
         position="absolute"
         right={3}
-        fontWeight={'normal'}
+        fontWeight={"normal"}
         float="right"
         zIndex={5}
         isDisabled={isLoading}

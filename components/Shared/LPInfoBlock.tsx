@@ -1,15 +1,16 @@
 "use client";
+import { HStack, Link, Text, VStack } from "@chakra-ui/react";
+
 import {
+  chainId,
   StakeContract,
   StakingRewardContract,
-  chainId,
 } from "@/utils/contract/constants";
-import { Link, VStack, Text, HStack } from "@chakra-ui/react";
 
 const getPoolLink = () => `https://v2.info.uniswap.org/pair/${StakeContract}`;
 
 const getRewardsLink = () =>
-  chainId === "1"
+  chainId === 1
     ? `https://etherscan.io/address/${StakingRewardContract}#code`
     : `https://goerli.etherscan.io/address/${StakingRewardContract}#code`;
 
