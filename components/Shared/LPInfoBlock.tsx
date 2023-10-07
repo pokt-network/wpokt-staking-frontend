@@ -1,6 +1,18 @@
 "use client";
-import { Link } from "@chakra-ui/next-js";
-import { VStack, Text, HStack } from "@chakra-ui/react";
+import {
+  StakeContract,
+  StakingRewardContract,
+  chainId,
+} from "@/utils/contract/constants";
+import { Link, VStack, Text, HStack } from "@chakra-ui/react";
+
+const getPoolLink = () => `https://v2.info.uniswap.org/pair/${StakeContract}`;
+
+const getRewardsLink = () =>
+  chainId === "1"
+    ? `https://etherscan.io/address/${StakingRewardContract}#code`
+    : `https://goerli.etherscan.io/address/${StakingRewardContract}#code`;
+
 export default function LPInfoBlock() {
   return (
     <VStack
@@ -18,9 +30,10 @@ export default function LPInfoBlock() {
           You can get wPOKT-ETH LP tokens by providing liquidity on Uniswap{" "}
           <Link
             _hover={{ color: "white" }}
-            href={"/"}
+            href={getPoolLink()}
             textColor={"poktLime"}
             textDecoration={"underline"}
+            isExternal
           >
             here.
           </Link>
@@ -31,9 +44,10 @@ export default function LPInfoBlock() {
           Farming uses this SNX Rewards contract{" "}
           <Link
             _hover={{ color: "white" }}
-            href={"/"}
+            href={getRewardsLink()}
             textColor={"poktLime"}
             textDecoration={"underline"}
+            isExternal
           >
             here.
           </Link>
