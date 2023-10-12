@@ -9,7 +9,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ReactElement, useState } from "react";
-import { formatEther } from "viem";
+import { formatUnits } from "viem";
 import { useContractWrite } from "wagmi";
 
 import { useGlobalContext } from "@/context/Globals";
@@ -73,7 +73,8 @@ export default function RewardsWidget() {
           {isClient && address ? (
             <Text fontSize={18} fontWeight={"bold"}>
               {isFetched && isClient
-                ? formatEther((rewardValue as bigint) ?? BigInt(0)) + ` wPokt`
+                ? formatUnits((rewardValue as bigint) ?? BigInt(0), 6) +
+                  ` wPokt`
                 : `Fetching`}
             </Text>
           ) : (
@@ -187,9 +188,12 @@ export default function RewardsWidget() {
                     {isFetched && isClient
                       ? (
                           Number(
-                            formatEther((rewardValue as bigint) ?? BigInt(0)),
+                            formatUnits(
+                              (rewardValue as bigint) ?? BigInt(0),
+                              6,
+                            ),
                           ) * Number(refFactors[refTokenIndex])
-                        ).toFixed(18)
+                        ).toFixed(6)
                       : "Calculating..."}
                   </Text>
                 </HStack>
@@ -203,9 +207,12 @@ export default function RewardsWidget() {
                     {isFetched && isClient
                       ? (
                           Number(
-                            formatEther((rewardValue as bigint) ?? BigInt(0)),
+                            formatUnits(
+                              (rewardValue as bigint) ?? BigInt(0),
+                              6,
+                            ),
                           ) * Number(refFactors[refTokenIndex])
-                        ).toFixed(18)
+                        ).toFixed(6)
                       : "Calculating..."}
                   </Text>
                 </HStack>
