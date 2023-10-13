@@ -2,7 +2,7 @@
 import useSWR from "swr";
 // types and iterfaces
 import { parseEther } from "viem";
-import { useBalance, useContractRead, usePrepareContractWrite } from "wagmi";
+import { useBalance, useContractRead, useContractReads, usePrepareContractWrite } from "wagmi";
 
 import { estimationClient } from "../config";
 import { address } from "../types";
@@ -153,3 +153,40 @@ export const useApprovalGasEstimate = (args: {
     isError: error,
   };
 };
+
+
+const StakingRewardContractObj = {
+  address: StakingRewardContract,
+  abi: StakingRewardsABI,
+  chainId,
+
+}
+
+export const useRewardRate = () =>
+{
+  const { data:rewardRate} = useContractRead({
+    ...StakingRewardContractObj,
+    functionName: 'rewardRate'
+  });
+  const { data:rewardPerTokenStored} = useContractRead({
+    ...StakingRewardContractObj,
+    functionName: 'rewardPerTokenStored'
+  });
+
+  const { data:getRewardForDuration} = useContractRead({
+    ...StakingRewardContractObj,
+    functionName: 'getRewardForDuration'
+  });
+
+  const { data:rewardsDuration} = useContractRead({
+    ...StakingRewardContractObj,
+    functionName: 'rewardsDuration'
+  });
+
+
+
+  const rate =  (Number(rewardPerTokenStored) / Number(rewardsDuration) )  // reward per token per second
+
+  
+  return rate
+}

@@ -16,6 +16,7 @@ import { useGlobalContext } from "@/context/Globals";
 import {
   useClaimReward,
   usePendingRewardBalance,
+  useRewardRate,
 } from "@/utils/contract/hooks";
 
 import { address } from "../../utils/types";
@@ -52,6 +53,7 @@ export default function RewardsWidget() {
     prices?.pokt,
   ];
 
+  const rate = useRewardRate();
   console.log(prices);
 
   return (
