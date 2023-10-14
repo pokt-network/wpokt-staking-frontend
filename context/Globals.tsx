@@ -236,7 +236,10 @@ export function GlobalContextProvider({ children }: any) {
       memoizedPrices,
     ],
   );
+
+  // eslint-disable-next-line no-console
   console.log(contextValue);
+
   return (
     <GlobalContext.Provider value={contextValue}>
       {children}
