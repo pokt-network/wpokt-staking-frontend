@@ -8,9 +8,6 @@ export const WethContractAddress = process.env
   .NEXT_PUBLIC_WETH_CONTRACT_ADDRESS as `0x${string}`;
 export const chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID);
 
-
-
-
 if (
   !StakeContract ||
   !RewardContract ||
