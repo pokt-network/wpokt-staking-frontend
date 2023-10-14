@@ -32,7 +32,7 @@ const refIcon: Array<ReactElement> = [
   <BlueDAIIcon key="dai-icon" boxSize={6} />,
 ];
 export default function RewardsWidget() {
-  const { isClient, address, prices } = useGlobalContext();
+  const { isClient, address, prices, lpTokenStaked } = useGlobalContext();
 
   const {
     data: rewardValue,
@@ -48,14 +48,22 @@ export default function RewardsWidget() {
 
   const [refTokenIndex, setRefTokenIndex] = useState(0);
   const refFactors = [
-    Number(prices?.pokt) / Number(prices?.eth),
+    1 / Number(prices?.eth),
+    1 / Number(prices?.pokt),
     1,
-    prices?.pokt,
   ];
 
-  const rate = useRewardRate();
-  console.log(prices);
-
+  const {DPR, LPTokenValue, rewardPerSecondPerTokenStored} = useRewardRate();
+  
+  const stakeValueUSD = (
+    Number(
+      formatUnits(
+        (lpTokenStaked as bigint) ?? BigInt(0),
+        18,
+      ),
+    ) * LPTokenValue
+  ).toFixed(6)
+  
   return (
     <VStack
       flexDirection={"column"}
@@ -187,16 +195,9 @@ export default function RewardsWidget() {
                 <HStack>
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
-                    {isFetched && isClient
-                      ? (
-                          Number(
-                            formatUnits(
-                              (rewardValue as bigint) ?? BigInt(0),
-                              6,
-                            ),
-                          ) * Number(refFactors[refTokenIndex])
-                        ).toFixed(6)
-                      : "Calculating..."}
+                      { (
+                         Number(stakeValueUSD) * Number(refFactors[refTokenIndex])
+                        ).toFixed(6)}
                   </Text>
                 </HStack>
               </VStack>
@@ -208,13 +209,8 @@ export default function RewardsWidget() {
                   <Text fontSize={16} fontWeight={"bold"}>
                     {isFetched && isClient
                       ? (
-                          Number(
-                            formatUnits(
-                              (rewardValue as bigint) ?? BigInt(0),
-                              6,
-                            ),
-                          ) * Number(refFactors[refTokenIndex])
-                        ).toFixed(6)
+                        Number(stakeValueUSD) * Number(refFactors[refTokenIndex]) * Number(DPR)
+                       ).toFixed(6)
                       : "Calculating..."}
                   </Text>
                 </HStack>
@@ -226,7 +222,7 @@ export default function RewardsWidget() {
                   fontSize={16}
                   fontWeight={"bold"}
                   alignSelf={"center"}
-                >{`1%`}</Text>
+                >{Number(DPR) + `%`}</Text>
               </VStack>
             </VStack>
           ) : (

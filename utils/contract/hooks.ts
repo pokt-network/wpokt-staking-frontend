@@ -12,6 +12,7 @@ import {
   RewardContract,
   StakeContract,
   StakingRewardContract,
+  WethContractAddress,
 } from "./constants";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -184,9 +185,49 @@ export const useRewardRate = () =>
   });
 
 
+  const {data:MaxLPTokenSupply} = useContractRead({
+    address: StakeContract,
+    abi: StakeABI,
+    functionName: 'totalSupply'
+  })
 
-  const rate =  (Number(rewardPerTokenStored) / Number(rewardsDuration) )  // reward per token per second
+  const {data:wethBalance} = useBalance({
+    address: StakeContract,
+    token: WethContractAddress,
+    chainId,
+  });
 
+  const {data:wpoktBalance} = useBalance({
+    address: StakeContract,
+    token: RewardContract,
+    chainId,
+  });
+
+  const { data: ethPrice } = useSWRFetch(
+    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd",
+  );
+  const { data: poktPrice } = useSWRFetch(
+    "https://api.coingecko.com/api/v3/simple/price?ids=pocket-network&vs_currencies=usd",
+  );
+
+  const totalLiquidity = Number(wpoktBalance?.formatted) * poktPrice?.["pocket-network"].usd + Number(wethBalance?.formatted) * ethPrice?.ethereum.usd
+
+
+  // console.log(wpoktBalance, wethBalance, totalLiquidity)
+  const rewardPerSecondPerTokenStored =  (Number(rewardPerTokenStored) / Number(rewardsDuration) )  // reward per token per second (in gwei)?
+
+  const LPTokenValue = totalLiquidity * Number(MaxLPTokenSupply) * (10 ** -18) // in usd
+
+
+
+  const rewardPerYearPerToken = rewardPerSecondPerTokenStored * 31536000 * 10 ** -6
+
+
+  const APR = LPTokenValue / ( rewardPerYearPerToken  * Number(poktPrice?.["pocket-network"].usd) )
+
+  // console.log(LPTokenValue, rewardPerYearPerToken, poktPrice?.["pocket-network"].usd, APR)
+  const DPR = ((Math.pow(1 + APR / 100, 1 / 365) - 1) * 100).toFixed(5)
   
-  return rate
+
+  return {DPR, LPTokenValue, rewardPerSecondPerTokenStored}
 }
