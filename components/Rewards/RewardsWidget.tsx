@@ -19,7 +19,6 @@ import {
   useRewardRate,
 } from "@/utils/contract/hooks";
 
-import { address } from "../../utils/types";
 import { BlueDAIIcon, BlueEthIcon, PoktBlueIcon } from "../icons/eth";
 import { ErrorIcon } from "../icons/misc";
 import ConnectWalletButton from "../Shared/ConnectButton";
@@ -33,9 +32,7 @@ const refIcon: Array<ReactElement> = [
 export default function RewardsWidget() {
   const { isClient, address, prices, lpTokenStaked } = useGlobalContext();
 
-  const { data: rewardValue, isFetched } = usePendingRewardBalance(
-    address as address,
-  );
+  const { data: rewardValue, isFetched } = usePendingRewardBalance(address);
   const { config, isError: notReadyToClaim } = useClaimReward(
     Number(rewardValue),
   );

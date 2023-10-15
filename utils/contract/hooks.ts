@@ -1,18 +1,12 @@
 "use client";
 import useSWR from "swr";
 // types and iterfaces
-import { formatUnits, parseEther } from "viem";
-import {
-  useBalance,
-  useContractRead,
-  useContractReads,
-  usePrepareContractWrite,
-} from "wagmi";
+import { Address, formatUnits, parseEther } from "viem";
+import { useBalance, useContractRead, usePrepareContractWrite } from "wagmi";
 
 import { TokenUSDPrices } from "@/context/Globals";
 
 import { estimationClient } from "../config";
-import { address } from "../types";
 import { StakeABI, StakingRewardsABI } from "./abi";
 import {
   chainId,
@@ -24,7 +18,7 @@ import {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export const useLPTokenBalance = (address: address) =>
+export const useLPTokenBalance = (address: Address) =>
   useBalance({
     address,
     token: StakeContract,
@@ -44,14 +38,14 @@ export const useApproveLPToken = (args: {
     enabled: args.isValidAmount && Number(args.amount) != 0,
   });
 
-export const useRewardTokenBalance = (address: address) =>
+export const useRewardTokenBalance = (address: Address) =>
   useBalance({
     address,
     token: RewardContract,
     chainId,
   });
 
-export const useStakedTokenBalance = (address: address) =>
+export const useStakedTokenBalance = (address: Address) =>
   useContractRead({
     abi: StakingRewardsABI,
     address: StakingRewardContract,
@@ -60,7 +54,7 @@ export const useStakedTokenBalance = (address: address) =>
     chainId,
   });
 
-export const usePendingRewardBalance = (address: address) =>
+export const usePendingRewardBalance = (address: Address) =>
   useContractRead({
     abi: StakingRewardsABI,
     address: StakingRewardContract,
@@ -110,7 +104,7 @@ export const useSWRFetch = (url: string) => useSWR(url, fetcher);
 
 export const useRegularGasEstimate = (args: {
   method: string;
-  address: address;
+  address: Address;
   amount: number;
 }) => {
   const shouldFetch =
@@ -137,7 +131,7 @@ export const useRegularGasEstimate = (args: {
 };
 
 export const useApprovalGasEstimate = (args: {
-  address: address;
+  address: Address;
   amount: number;
 }) => {
   const shouldFetch = args.address && typeof args.amount === "number";

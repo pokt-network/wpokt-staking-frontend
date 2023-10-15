@@ -9,7 +9,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useAccount, useBalance, useWaitForTransaction } from "wagmi";
+import { zeroAddress } from "viem";
+import { Address, useAccount, useBalance, useWaitForTransaction } from "wagmi";
 
 import { BlueCheckIcon, ErrorIcon } from "@/components/icons/misc";
 import { BluePoktIcon } from "@/components/icons/pokt";
@@ -19,7 +20,6 @@ import {
   useStakedTokenBalance,
   useSWRFetch,
 } from "@/utils/contract/hooks";
-import { address } from "@/utils/types";
 
 export type TokenUSDPrices = {
   eth: string;
@@ -35,7 +35,7 @@ export interface GlobalContextProps {
   pendingRewards: bigint;
   txnHash: any;
   setTxnHash: (hash: string) => void;
-  address: address;
+  address: Address;
   prices: TokenUSDPrices;
   isConnected: boolean;
 }
@@ -49,7 +49,7 @@ export const GlobalContext = createContext<GlobalContextProps>({
   pendingRewards: BigInt(0),
   txnHash: "",
   setTxnHash: () => {},
-  address: "" as address,
+  address: zeroAddress,
   isConnected: false,
   prices: { eth: "0", pokt: "0" },
 });
@@ -75,28 +75,28 @@ export function GlobalContextProvider({ children }: any) {
     [ethPrice, poktPrice],
   );
 
-  const { address: userAddress, isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
+
+  const userAddress = address ?? zeroAddress;
 
   const [txnHash, setTxnHash] = useState("");
 
   const { data: ethBalanceRaw } = useBalance({
-    address: userAddress as address,
+    address: userAddress,
   });
 
   const ethBalance = ethBalanceRaw?.value ?? BigInt(0);
 
   const { data: lpTokenBalanceRaw, refetch: lptTokenRefetch } =
-    useLPTokenBalance(userAddress as address);
+    useLPTokenBalance(userAddress);
 
   const lpTokenBalance = lpTokenBalanceRaw?.value ?? BigInt(0);
   const { data: lpTokenStakedRaw, refetch: stakedBalRefetch } =
-    useStakedTokenBalance(userAddress as address);
+    useStakedTokenBalance(userAddress);
 
   const lpTokenStaked = (lpTokenStakedRaw as bigint) || BigInt(0);
 
-  const { data: pendingRewardsRaw } = usePendingRewardBalance(
-    userAddress as address,
-  );
+  const { data: pendingRewardsRaw } = usePendingRewardBalance(userAddress);
   const pendingRewards = (pendingRewardsRaw as bigint) ?? BigInt(0);
   const toast = useToast();
 
@@ -136,7 +136,7 @@ export function GlobalContextProvider({ children }: any) {
     [toast],
   );
 
-  const { data: txStatus, isSuccess } = useWaitForTransaction({
+  const { data: txStatus } = useWaitForTransaction({
     hash: txnHash as any,
   });
 
@@ -219,7 +219,7 @@ export function GlobalContextProvider({ children }: any) {
         txnHash,
         setTxnHash,
         isConnected,
-        address: userAddress as address,
+        address: userAddress,
         prices,
       }}
     >

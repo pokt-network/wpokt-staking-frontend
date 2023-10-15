@@ -1,6 +1,5 @@
 import { AbiTypeToPrimitiveType } from "abitype";
 
-export type address = AbiTypeToPrimitiveType<"address">;
 export type returnToastProps = {
   type: string;
   icon: string;
