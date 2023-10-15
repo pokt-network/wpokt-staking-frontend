@@ -165,21 +165,33 @@ const StakingRewardContractObj = {
 const NUM_SECONDS_IN_DAY = BigInt(86400);
 
 export const useRewardRate = (totalStaked: bigint, prices: TokenUSDPrices) => {
-  const { data: rewardRate } = useContractRead({
+  const { data: rewardRatePending } = useContractRead({
     ...StakingRewardContractObj,
     functionName: "rewardRate",
   });
 
-  const { data: totalStakeSupply } = useContractRead({
+  const rewardRate = rewardRatePending
+    ? (rewardRatePending as bigint)
+    : BigInt(0);
+
+  const { data: totalStakeSupplyPending } = useContractRead({
     ...StakingRewardContractObj,
     functionName: "totalSupply",
   });
 
-  const { data: totalLPTokenSupply } = useContractRead({
+  const totalStakeSupply = totalStakeSupplyPending
+    ? (totalStakeSupplyPending as bigint)
+    : BigInt(0);
+
+  const { data: totalLPTokenSupplyPending } = useContractRead({
     address: StakeContract,
     abi: StakeABI,
     functionName: "totalSupply",
   });
+
+  const totalLPTokenSupply = totalLPTokenSupplyPending
+    ? (totalLPTokenSupplyPending as bigint)
+    : BigInt(0);
 
   const { data: wethBalance } = useBalance({
     address: StakeContract,
@@ -198,20 +210,18 @@ export const useRewardRate = (totalStaked: bigint, prices: TokenUSDPrices) => {
     Number(wethBalance?.formatted) * Number(prices.eth);
 
   const singleLPTokenUSDValue =
-    totalLPUSDValue /
-    Number(formatUnits((totalLPTokenSupply as bigint) ?? BigInt(0), 18));
+    totalLPUSDValue / Number(formatUnits(totalLPTokenSupply, 18));
 
   const totalStakedLPTokenUSDValue = (
     Number(formatUnits(BigInt(totalStaked), 18)) * singleLPTokenUSDValue
   ).toFixed(6);
 
-  const rewardRatePerDay = (rewardRate as bigint) * NUM_SECONDS_IN_DAY;
+  const rewardRatePerDay = rewardRate * NUM_SECONDS_IN_DAY;
 
   const rewardPerTokenPerDay =
-    (totalStakeSupply as bigint) === BigInt(0)
+    totalStakeSupply === BigInt(0)
       ? Number(0)
-      : Number(rewardRatePerDay) /
-        Number(formatUnits(BigInt(totalStakeSupply as bigint), 18));
+      : Number(rewardRatePerDay) / Number(formatUnits(totalStakeSupply, 18));
 
   const totalRewardPerDay =
     rewardPerTokenPerDay *
