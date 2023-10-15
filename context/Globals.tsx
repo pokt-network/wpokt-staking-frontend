@@ -21,6 +21,11 @@ import {
 } from "@/utils/contract/hooks";
 import { address } from "@/utils/types";
 
+export type TokenUSDPrices = {
+  eth: string;
+  pokt: string;
+};
+
 export interface GlobalContextProps {
   mobile: boolean;
   isClient: boolean;
@@ -31,7 +36,7 @@ export interface GlobalContextProps {
   txnHash: any;
   setTxnHash: (hash: string) => void;
   address: address;
-  prices: { eth: string; pokt: string };
+  prices: TokenUSDPrices;
   isConnected: boolean;
 }
 
@@ -55,8 +60,6 @@ export function GlobalContextProvider({ children }: any) {
   const [isClient, setIsClient] = useState(false);
   const [mobile, setMobile] = useState(false);
 
-  const [prices, setPrices] = useState({ eth: "0", pokt: "0" });
-
   const { data: ethPrice } = useSWRFetch(
     "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd",
   );
@@ -64,7 +67,13 @@ export function GlobalContextProvider({ children }: any) {
     "https://api.coingecko.com/api/v3/simple/price?ids=pocket-network&vs_currencies=usd",
   );
 
-  const memoizedPrices = useMemo(() => prices, [prices]);
+  const prices: TokenUSDPrices = useMemo(
+    () => ({
+      eth: ethPrice?.ethereum.usd || "0",
+      pokt: poktPrice?.["pocket-network"].usd || "0",
+    }),
+    [ethPrice, poktPrice],
+  );
 
   const { address: userAddress, isConnected } = useAccount();
 
@@ -184,64 +193,36 @@ export function GlobalContextProvider({ children }: any) {
   useEffect(() => {
     setIsClient(true);
     toaster();
-    setPrices({
-      eth: ethPrice?.ethereum.usd,
-      pokt: poktPrice?.["pocket-network"].usd,
-    });
+
+    function toggleMobile() {
+      if (window && window.innerWidth < 500) {
+        setMobile(true);
+      } else {
+        setMobile(false);
+      }
+    }
+
     toggleMobile();
     window.addEventListener("resize", toggleMobile);
     return () => window.removeEventListener("resize", toggleMobile);
-  }, [
-    ethPrice?.ethereum.usd,
-    poktPrice,
-    showToast,
-    toaster,
-    txnHash,
-    userAddress,
-  ]);
-
-  function toggleMobile() {
-    if (window && window.innerWidth < 500) {
-      setMobile(true);
-    } else {
-      setMobile(false);
-    }
-  }
-
-  const contextValue: GlobalContextProps = useMemo(
-    () => ({
-      mobile,
-      isClient,
-      lpTokenBalance,
-      ethBalance,
-      lpTokenStaked,
-      pendingRewards,
-      txnHash,
-      setTxnHash,
-      isConnected,
-      address: userAddress as address,
-      prices: memoizedPrices,
-    }),
-    [
-      mobile,
-      isClient,
-      lpTokenBalance,
-      ethBalance,
-      lpTokenStaked,
-      pendingRewards,
-      txnHash,
-      setTxnHash,
-      isConnected,
-      userAddress,
-      memoizedPrices,
-    ],
-  );
-
-  // eslint-disable-next-line no-console
-  console.log(contextValue);
+  }, [toaster, txnHash, userAddress]);
 
   return (
-    <GlobalContext.Provider value={contextValue}>
+    <GlobalContext.Provider
+      value={{
+        mobile,
+        isClient,
+        lpTokenBalance,
+        ethBalance,
+        lpTokenStaked,
+        pendingRewards,
+        txnHash,
+        setTxnHash,
+        isConnected,
+        address: userAddress as address,
+        prices,
+      }}
+    >
       {children}
     </GlobalContext.Provider>
   );

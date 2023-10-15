@@ -24,7 +24,6 @@ import { BlueDAIIcon, BlueEthIcon, PoktBlueIcon } from "../icons/eth";
 import { ErrorIcon } from "../icons/misc";
 import ConnectWalletButton from "../Shared/ConnectButton";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const refToken = ["ETH", "WPOKT", "DAI"];
 const refIcon: Array<ReactElement> = [
   <BlueEthIcon key="eth-icon" boxSize={6} />,
@@ -34,22 +33,18 @@ const refIcon: Array<ReactElement> = [
 export default function RewardsWidget() {
   const { isClient, address, prices, lpTokenStaked } = useGlobalContext();
 
-  const {
-    data: rewardValue,
-    isError,
-    isFetched,
-  } = usePendingRewardBalance(address as address);
-  const {
-    config,
-    isError: notReadyToClaim,
-    isFetched: readyToClaim,
-  } = useClaimReward(Number(rewardValue));
+  const { data: rewardValue, isFetched } = usePendingRewardBalance(
+    address as address,
+  );
+  const { config, isError: notReadyToClaim } = useClaimReward(
+    Number(rewardValue),
+  );
   const { write } = useContractWrite(config);
 
   const [refTokenIndex, setRefTokenIndex] = useState(0);
   const refFactors = [1 / Number(prices?.eth), 1 / Number(prices?.pokt), 1];
 
-  const { DPR, LPTokenValue, rewardPerSecondPerTokenStored } = useRewardRate();
+  const { DPR, LPTokenValue } = useRewardRate(prices);
 
   const stakeValueUSD = (
     Number(formatUnits((lpTokenStaked as bigint) ?? BigInt(0), 18)) *

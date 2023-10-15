@@ -9,6 +9,8 @@ import {
   usePrepareContractWrite,
 } from "wagmi";
 
+import { TokenUSDPrices } from "@/context/Globals";
+
 import { estimationClient } from "../config";
 import { address } from "../types";
 import { RewardsABI, StakeABI, StakingRewardsABI } from "./abi";
@@ -166,20 +168,21 @@ const StakingRewardContractObj = {
   chainId,
 };
 
-export const useRewardRate = () => {
-  const { data: rewardRate } = useContractRead({
-    ...StakingRewardContractObj,
-    functionName: "rewardRate",
-  });
+export const useRewardRate = (prices: TokenUSDPrices) => {
+  // const { data: rewardRate } = useContractRead({
+  //   ...StakingRewardContractObj,
+  //   functionName: "rewardRate",
+  // });
+
   const { data: rewardPerTokenStored } = useContractRead({
     ...StakingRewardContractObj,
     functionName: "rewardPerTokenStored",
   });
 
-  const { data: getRewardForDuration } = useContractRead({
-    ...StakingRewardContractObj,
-    functionName: "getRewardForDuration",
-  });
+  // const { data: getRewardForDuration } = useContractRead({
+  //   ...StakingRewardContractObj,
+  //   functionName: "getRewardForDuration",
+  // });
 
   const { data: rewardsDuration } = useContractRead({
     ...StakingRewardContractObj,
@@ -204,16 +207,9 @@ export const useRewardRate = () => {
     chainId,
   });
 
-  const { data: ethPrice } = useSWRFetch(
-    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd",
-  );
-  const { data: poktPrice } = useSWRFetch(
-    "https://api.coingecko.com/api/v3/simple/price?ids=pocket-network&vs_currencies=usd",
-  );
-
   const totalLiquidity =
-    Number(wpoktBalance?.formatted) * poktPrice?.["pocket-network"].usd +
-    Number(wethBalance?.formatted) * ethPrice?.ethereum.usd;
+    Number(wpoktBalance?.formatted) * Number(prices.pokt) +
+    Number(wethBalance?.formatted) * Number(prices.eth);
 
   // console.log(wpoktBalance, wethBalance, totalLiquidity)
   const rewardPerSecondPerTokenStored =
@@ -224,9 +220,7 @@ export const useRewardRate = () => {
   const rewardPerYearPerToken =
     rewardPerSecondPerTokenStored * 31536000 * 10 ** -6;
 
-  const APR =
-    LPTokenValue /
-    (rewardPerYearPerToken * Number(poktPrice?.["pocket-network"].usd));
+  const APR = LPTokenValue / (rewardPerYearPerToken * Number(prices.pokt));
 
   // console.log(LPTokenValue, rewardPerYearPerToken, poktPrice?.["pocket-network"].usd, APR)
   const DPR = ((Math.pow(1 + APR / 100, 1 / 365) - 1) * 100).toFixed(5);
