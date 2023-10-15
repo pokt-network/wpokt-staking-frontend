@@ -19,12 +19,10 @@ import {
   useRewardRate,
 } from "@/utils/contract/hooks";
 
-import { address } from "../../utils/types";
 import { BlueDAIIcon, BlueEthIcon, PoktBlueIcon } from "../icons/eth";
 import { ErrorIcon } from "../icons/misc";
 import ConnectWalletButton from "../Shared/ConnectButton";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const refToken = ["ETH", "WPOKT", "DAI"];
 const refIcon: Array<ReactElement> = [
   <BlueEthIcon key="eth-icon" boxSize={6} />,
@@ -34,36 +32,18 @@ const refIcon: Array<ReactElement> = [
 export default function RewardsWidget() {
   const { isClient, address, prices, lpTokenStaked } = useGlobalContext();
 
-  const {
-    data: rewardValue,
-    isError,
-    isFetched,
-  } = usePendingRewardBalance(address as address);
-  const {
-    config,
-    isError: notReadyToClaim,
-    isFetched: readyToClaim,
-  } = useClaimReward(Number(rewardValue));
+  const { data: rewardValue, isFetched } = usePendingRewardBalance(address);
+  const { config, isError: notReadyToClaim } = useClaimReward(
+    Number(rewardValue),
+  );
   const { write } = useContractWrite(config);
 
   const [refTokenIndex, setRefTokenIndex] = useState(0);
-  const refFactors = [
-    1 / Number(prices?.eth),
-    1 / Number(prices?.pokt),
-    1,
-  ];
+  const refFactors = [1 / Number(prices?.eth), 1 / Number(prices?.pokt), 1];
 
-  const {DPR, LPTokenValue, rewardPerSecondPerTokenStored} = useRewardRate();
-  
-  const stakeValueUSD = (
-    Number(
-      formatUnits(
-        (lpTokenStaked as bigint) ?? BigInt(0),
-        18,
-      ),
-    ) * LPTokenValue
-  ).toFixed(6)
-  
+  const { DPR, totalStakedLPTokenUSDValue, totalRewardPerDayUSDValue } =
+    useRewardRate(lpTokenStaked, prices);
+
   return (
     <VStack
       flexDirection={"column"}
@@ -195,9 +175,10 @@ export default function RewardsWidget() {
                 <HStack>
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
-                      { (
-                         Number(stakeValueUSD) * Number(refFactors[refTokenIndex])
-                        ).toFixed(6)}
+                    {(
+                      Number(totalStakedLPTokenUSDValue) *
+                      Number(refFactors[refTokenIndex])
+                    ).toFixed(6)}
                   </Text>
                 </HStack>
               </VStack>
@@ -209,8 +190,9 @@ export default function RewardsWidget() {
                   <Text fontSize={16} fontWeight={"bold"}>
                     {isFetched && isClient
                       ? (
-                        Number(stakeValueUSD) * Number(refFactors[refTokenIndex]) * Number(DPR)
-                       ).toFixed(6)
+                          Number(totalRewardPerDayUSDValue) *
+                          Number(refFactors[refTokenIndex])
+                        ).toFixed(6)
                       : "Calculating..."}
                   </Text>
                 </HStack>
@@ -218,11 +200,9 @@ export default function RewardsWidget() {
 
               <VStack alignItems={"center"}>
                 <Text fontSize={16}>Your return per day is:</Text>
-                <Text
-                  fontSize={16}
-                  fontWeight={"bold"}
-                  alignSelf={"center"}
-                >{Number(DPR) + `%`}</Text>
+                <Text fontSize={16} fontWeight={"bold"} alignSelf={"center"}>
+                  {DPR + `%`}
+                </Text>
               </VStack>
             </VStack>
           ) : (
