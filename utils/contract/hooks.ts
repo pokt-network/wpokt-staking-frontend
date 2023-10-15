@@ -236,7 +236,8 @@ export const useRewardRate = (totalStaked: bigint, prices: TokenUSDPrices) => {
     totalStakedLPTokenUSDValue === (0).toFixed(6)
       ? (0).toFixed(2)
       : (
-          (Number(totalRewardPerDay) / Number(totalStakedLPTokenUSDValue)) *
+          (Number(totalRewardPerDayUSDValue) /
+            Number(totalStakedLPTokenUSDValue)) *
           100.0
         ).toFixed(2);
 
