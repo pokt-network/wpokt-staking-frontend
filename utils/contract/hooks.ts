@@ -1,7 +1,7 @@
 "use client";
 import useSWR from "swr";
 // types and iterfaces
-import { parseEther } from "viem";
+import { formatUnits, parseEther } from "viem";
 import {
   useBalance,
   useContractRead,
@@ -13,7 +13,7 @@ import { TokenUSDPrices } from "@/context/Globals";
 
 import { estimationClient } from "../config";
 import { address } from "../types";
-import { RewardsABI, StakeABI, StakingRewardsABI } from "./abi";
+import { StakeABI, StakingRewardsABI } from "./abi";
 import {
   chainId,
   RewardContract,
@@ -168,28 +168,20 @@ const StakingRewardContractObj = {
   chainId,
 };
 
-export const useRewardRate = (prices: TokenUSDPrices) => {
-  // const { data: rewardRate } = useContractRead({
-  //   ...StakingRewardContractObj,
-  //   functionName: "rewardRate",
-  // });
+const NUM_SECONDS_IN_DAY = BigInt(86400);
 
-  const { data: rewardPerTokenStored } = useContractRead({
+export const useRewardRate = (totalStaked: bigint, prices: TokenUSDPrices) => {
+  const { data: rewardRate } = useContractRead({
     ...StakingRewardContractObj,
-    functionName: "rewardPerTokenStored",
+    functionName: "rewardRate",
   });
 
-  // const { data: getRewardForDuration } = useContractRead({
-  //   ...StakingRewardContractObj,
-  //   functionName: "getRewardForDuration",
-  // });
-
-  const { data: rewardsDuration } = useContractRead({
+  const { data: totalStakeSupply } = useContractRead({
     ...StakingRewardContractObj,
-    functionName: "rewardsDuration",
+    functionName: "totalSupply",
   });
 
-  const { data: MaxLPTokenSupply } = useContractRead({
+  const { data: totalLPTokenSupply } = useContractRead({
     address: StakeContract,
     abi: StakeABI,
     functionName: "totalSupply",
@@ -207,23 +199,46 @@ export const useRewardRate = (prices: TokenUSDPrices) => {
     chainId,
   });
 
-  const totalLiquidity =
+  const totalLPUSDValue =
     Number(wpoktBalance?.formatted) * Number(prices.pokt) +
     Number(wethBalance?.formatted) * Number(prices.eth);
 
-  // console.log(wpoktBalance, wethBalance, totalLiquidity)
-  const rewardPerSecondPerTokenStored =
-    Number(rewardPerTokenStored) / Number(rewardsDuration); // reward per token per second (in gwei)?
+  const singleLPTokenUSDValue =
+    totalLPUSDValue /
+    Number(formatUnits((totalLPTokenSupply as bigint) ?? BigInt(0), 18));
 
-  const LPTokenValue = totalLiquidity * Number(MaxLPTokenSupply) * 10 ** -18; // in usd
+  const totalStakedLPTokenUSDValue = (
+    Number(formatUnits(BigInt(totalStaked), 18)) * singleLPTokenUSDValue
+  ).toFixed(6);
 
-  const rewardPerYearPerToken =
-    rewardPerSecondPerTokenStored * 31536000 * 10 ** -6;
+  const rewardRatePerDay = (rewardRate as bigint) * NUM_SECONDS_IN_DAY;
 
-  const APR = LPTokenValue / (rewardPerYearPerToken * Number(prices.pokt));
+  const rewardPerTokenPerDay =
+    (totalStakeSupply as bigint) === BigInt(0)
+      ? Number(0)
+      : Number(rewardRatePerDay) /
+        Number(formatUnits(BigInt(totalStakeSupply as bigint), 18));
 
-  // console.log(LPTokenValue, rewardPerYearPerToken, poktPrice?.["pocket-network"].usd, APR)
-  const DPR = ((Math.pow(1 + APR / 100, 1 / 365) - 1) * 100).toFixed(5);
+  const totalRewardPerDay =
+    rewardPerTokenPerDay *
+    Number(formatUnits(BigInt(totalStaked), 18)) *
+    10 ** -6;
 
-  return { DPR, LPTokenValue, rewardPerSecondPerTokenStored };
+  const totalRewardPerDayUSDValue = (
+    totalRewardPerDay * Number(prices.pokt)
+  ).toFixed(6);
+
+  const DPR =
+    totalStakedLPTokenUSDValue === (0).toFixed(6)
+      ? (0).toFixed(2)
+      : (
+          (Number(totalRewardPerDay) / Number(totalStakedLPTokenUSDValue)) *
+          100.0
+        ).toFixed(2);
+
+  return {
+    DPR,
+    totalStakedLPTokenUSDValue,
+    totalRewardPerDayUSDValue,
+  };
 };

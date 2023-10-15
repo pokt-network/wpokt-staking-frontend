@@ -44,12 +44,8 @@ export default function RewardsWidget() {
   const [refTokenIndex, setRefTokenIndex] = useState(0);
   const refFactors = [1 / Number(prices?.eth), 1 / Number(prices?.pokt), 1];
 
-  const { DPR, LPTokenValue } = useRewardRate(prices);
-
-  const stakeValueUSD = (
-    Number(formatUnits((lpTokenStaked as bigint) ?? BigInt(0), 18)) *
-    LPTokenValue
-  ).toFixed(6);
+  const { DPR, totalStakedLPTokenUSDValue, totalRewardPerDayUSDValue } =
+    useRewardRate(lpTokenStaked, prices);
 
   return (
     <VStack
@@ -183,7 +179,8 @@ export default function RewardsWidget() {
                   {refIcon[refTokenIndex]}
                   <Text fontSize={16} fontWeight={"bold"}>
                     {(
-                      Number(stakeValueUSD) * Number(refFactors[refTokenIndex])
+                      Number(totalStakedLPTokenUSDValue) *
+                      Number(refFactors[refTokenIndex])
                     ).toFixed(6)}
                   </Text>
                 </HStack>
@@ -196,9 +193,8 @@ export default function RewardsWidget() {
                   <Text fontSize={16} fontWeight={"bold"}>
                     {isFetched && isClient
                       ? (
-                          Number(stakeValueUSD) *
-                          Number(refFactors[refTokenIndex]) *
-                          Number(DPR)
+                          Number(totalRewardPerDayUSDValue) *
+                          Number(refFactors[refTokenIndex])
                         ).toFixed(6)
                       : "Calculating..."}
                   </Text>
@@ -208,7 +204,7 @@ export default function RewardsWidget() {
               <VStack alignItems={"center"}>
                 <Text fontSize={16}>Your return per day is:</Text>
                 <Text fontSize={16} fontWeight={"bold"} alignSelf={"center"}>
-                  {Number(DPR) + `%`}
+                  {DPR + `%`}
                 </Text>
               </VStack>
             </VStack>
