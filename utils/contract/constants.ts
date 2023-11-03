@@ -8,13 +8,23 @@ export const WethContractAddress = process.env
   .NEXT_PUBLIC_WETH_CONTRACT_ADDRESS as `0x${string}`;
 export const chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID);
 
+export const POKT_KEY = process.env.NEXT_PUBLIC_APP_POKT_KEY as string;
+
 if (
   !StakeContract ||
   !RewardContract ||
   !StakingRewardContract ||
-  !WethContractAddress ||
-  !chainId ||
-  isNaN(chainId)
+  !WethContractAddress
 ) {
   throw new Error("Missing contract addresses");
+}
+
+if (!chainId) {
+  throw new Error("Missing chain ID");
+}
+if (isNaN(chainId)) {
+  throw new Error("Chain ID is not a number ");
+}
+if (!POKT_KEY) {
+  throw new Error("Missing POKT_KEY");
 }
