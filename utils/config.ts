@@ -17,7 +17,7 @@ const chainName = () => {
   return chain?.network;
 };
 
-const chainString = chainName()
+const chainString = chainName();
 
 if (!chain) {
   throw new Error(`Chain with id ${chainId} not found`);
