@@ -14,10 +14,17 @@ if (
   !StakeContract ||
   !RewardContract ||
   !StakingRewardContract ||
-  !WethContractAddress ||
-  !chainId ||
-  !POKT_KEY ||
-  isNaN(chainId)
+  !WethContractAddress
 ) {
   throw new Error("Missing contract addresses");
+}
+
+if (!chainId) {
+  throw new Error("Missing chain ID");
+}
+if (isNaN(chainId)) {
+  throw new Error("Chain ID is not a number ");
+}
+if (!POKT_KEY) {
+  throw new Error("Missing POKT_KEY");
 }
