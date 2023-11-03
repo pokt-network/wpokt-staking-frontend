@@ -3,13 +3,21 @@ import { createPublicClient, http } from "viem";
 import { goerli, mainnet, sepolia } from "viem/chains";
 import { configureChains, createConfig } from "wagmi";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
-import { publicProvider } from "wagmi/providers/public";
 
 import { chainId } from "./contract/constants";
 
 const POKT_KEY = process.env.NEXT_PUBLIC_APP_POKT_KEY;
 
 const chain = [sepolia, mainnet, goerli].find((c) => c.id === Number(chainId));
+
+const chainName = () => {
+  if (chain?.id === 1) {
+    return "mainnet";
+  }
+  return chain?.network;
+};
+
+const chainString = chainName()
 
 if (!chain) {
   throw new Error(`Chain with id ${chainId} not found`);
@@ -20,10 +28,9 @@ export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     jsonRpcProvider({
       rpc: (chain) => ({
-        http: `https://eth-mainnet.gateway.pokt.network/v1/lb/${POKT_KEY}`,
+        http: `https://eth-${chainString}.gateway.pokt.network/v1/lb/${POKT_KEY}`,
       }),
     }),
-    publicProvider(),
   ],
 );
 
@@ -50,5 +57,7 @@ export default config;
 
 export const estimationClient = createPublicClient({
   chain,
-  transport: http(`https://eth-mainnet.gateway.pokt.network/v1/lb/${POKT_KEY}`),
+  transport: http(
+    `https://eth-${chainString}.gateway.pokt.network/v1/lb/${POKT_KEY}`,
+  ),
 });
