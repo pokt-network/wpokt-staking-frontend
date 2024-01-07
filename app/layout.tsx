@@ -13,7 +13,7 @@ export default function RootLayout({
         <title>wPOKT Staking</title>
         <meta name="description" content="wPokt Staking Rewards App" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.svg" />
+        <link rel="icon" href="/icons/pokt_white_rebrand.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

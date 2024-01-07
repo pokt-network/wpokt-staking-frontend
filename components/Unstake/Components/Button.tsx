@@ -14,6 +14,7 @@ export default function WithDrawButton({
       onClick={handleWithdrawButtonClick}
       fontWeight={"normal"}
       bg={"poktLime"}
+      _hover={{ bg: "hover.poktLime" }}
       isDisabled={isInvalidWithdrawAmount || willFail || isLoading}
       isLoading={isLoading}
     >

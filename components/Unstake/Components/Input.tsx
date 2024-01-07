@@ -44,6 +44,7 @@ export default function WithdrawInput({
         zIndex={5}
         isDisabled={isLoading}
         bg={"poktLime"}
+        _hover={{ bg: "hover.poktLime" }}
       >
         All
       </Button>

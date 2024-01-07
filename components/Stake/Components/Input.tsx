@@ -44,6 +44,7 @@ export default function StakeInput({
         zIndex={5}
         isDisabled={isLoading}
         bg={"poktLime"}
+        _hover={{ bg: "hover.poktLime" }}
       >
         All
       </Button>
