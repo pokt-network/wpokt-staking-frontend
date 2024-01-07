@@ -82,6 +82,7 @@ export default function RewardsWidget() {
               isDisabled={notReadyToClaim}
               bg={"poktLime"}
               fontWeight={"normal"}
+              _hover={{ bg: "hover.poktLime" }}
             >
               Claim wPOKT
             </Button>
@@ -125,11 +126,11 @@ export default function RewardsWidget() {
                     float="right"
                     fontWeight={"normal"}
                     zIndex={5}
-                    bg={"#172229"}
+                    bg={"darkBlue"}
                     color={"poktLime"}
-                    _hover={{ bg: "#172229", color: "poktLime" }}
+                    _hover={{ bg: "darkBlue", color: "poktBlue" }}
                     isActive={refTokenIndex === 0}
-                    _active={{ bg: "poktLime", color: "#172229" }}
+                    _active={{ bg: "poktLime", color: "darkBlue" }}
                   >
                     {refToken[0]}
                   </Button>
@@ -143,10 +144,10 @@ export default function RewardsWidget() {
                     zIndex={5}
                     fontWeight={"normal"}
                     isActive={refTokenIndex === 1}
-                    bg={"#172229"}
+                    bg={"darkBlue"}
                     color={"poktLime"}
-                    _hover={{ bg: "#172229", color: "poktLime" }}
-                    _active={{ bg: "poktLime", color: "#172229" }}
+                    _hover={{ bg: "darkBlue", color: "poktBlue" }}
+                    _active={{ bg: "poktLime", color: "darkBlue" }}
                   >
                     {refToken[1]}
                   </Button>
@@ -160,10 +161,10 @@ export default function RewardsWidget() {
                     float="right"
                     zIndex={5}
                     isActive={refTokenIndex === 2}
-                    bg={"#172229"}
+                    bg={"darkBlue"}
                     color={"poktLime"}
-                    _hover={{ bg: "#172229", color: "poktLime" }}
-                    _active={{ bg: "poktLime", color: "#172229" }}
+                    _hover={{ bg: "darkBlue", color: "poktBlue" }}
+                    _active={{ bg: "poktLime", color: "darkBlue" }}
                   >
                     {refToken[2]}
                   </Button>

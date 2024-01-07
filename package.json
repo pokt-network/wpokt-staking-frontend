@@ -6,8 +6,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc",
-    "lint": "next lint"
+    "type-check": "tsc"
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.1.5",
@@ -53,7 +52,6 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "lokijs": "^1.5.12",
     "node-fetch": "^2",
-    "prettier": "^3.0.3",
     "typescript": "5.2.2"
   }
 }

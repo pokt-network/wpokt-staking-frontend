@@ -13,6 +13,7 @@ export default function StakeButton({
       borderRadius={"4px"}
       fontSize={"16px"}
       bg={"poktLime"}
+      _hover={{ bg: "hover.poktLime" }}
       fontWeight={"normal"}
       onClick={handleStakeButtonClick}
       isDisabled={isInvalidStakeAmount || Number(newStakeAmount) === 0}

@@ -22,7 +22,7 @@ export function Footer() {
       direction="column"
       justify="center"
       paddingX={10}
-      background="darkOverlay"
+      // background="darkOverlay"
     >
       <Flex
         direction={isClient && mobile ? "column" : "row"}
@@ -36,7 +36,7 @@ export function Footer() {
           </Box>
           <Flex gap={8}>
             <Link
-              _hover={{ color: "white" }}
+              _hover={{ color: "poktBlue" }}
               href="https://discord.com/invite/pokt"
               isExternal
             >
@@ -47,7 +47,7 @@ export function Footer() {
               />
             </Link>
             <Link
-              _hover={{ color: "white" }}
+              _hover={{ color: "poktBlue" }}
               href="https://github.com/pokt-network/pocket"
               isExternal
             >
@@ -58,7 +58,7 @@ export function Footer() {
               />
             </Link>
             <Link
-              _hover={{ color: "white" }}
+              _hover={{ color: "poktBlue" }}
               href="https://twitter.com/POKTnetwork"
               isExternal
             >
@@ -73,28 +73,28 @@ export function Footer() {
         <VStack align="left" spacing={1}>
           <Heading size="sm">Resources</Heading>
           <Link
-            _hover={{ color: "white" }}
+            _hover={{ color: "poktBlue" }}
             href="https://docs.pokt.network"
             isExternal
           >
             Documentation
           </Link>
           <Link
-            _hover={{ color: "white" }}
+            _hover={{ color: "poktBlue" }}
             href="https://poktscan.com"
             isExternal
           >
             Explorer
           </Link>
           <Link
-            _hover={{ color: "white" }}
+            _hover={{ color: "poktBlue" }}
             href="https://forum.pokt.network"
             isExternal
           >
             Forum
           </Link>
           <Link
-            _hover={{ color: "white" }}
+            _hover={{ color: "poktBlue" }}
             href="https://v2.info.uniswap.org/pair/0xa7fd8ff8f4cada298286d3006ee8f9c11e2ff84e"
             isExternal
           >
@@ -107,7 +107,7 @@ export function Footer() {
         {!mobile && <Text>© 2023 Pocket Network</Text>}
         {!mobile && <Text>|</Text>}
         <Link
-          _hover={{ color: "white" }}
+          _hover={{ color: "poktBlue" }}
           href="https://www.pokt.network/privacy-policy"
           isExternal
         >
@@ -115,7 +115,7 @@ export function Footer() {
         </Link>
         <Text>|</Text>
         <Link
-          _hover={{ color: "white" }}
+          _hover={{ color: "poktBlue" }}
           href="https://www.pokt.network/terms-of-use"
           isExternal
         >
