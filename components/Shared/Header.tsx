@@ -19,7 +19,7 @@ export function Header() {
 
   return (
     <HStack justify="space-between" align="center" paddingX={10} paddingY={5}>
-      <HStack alignItems={"center"}>
+      <HStack alignItems={"center"} gap={1}>
         <Image
           src={"/logo/full_white_rebrand.png"}
           alt="logo"
@@ -28,12 +28,8 @@ export function Header() {
         />
         <Text
           color="white"
-          textAlign="center"
-          fontSize="20px"
-          fontStyle="normal"
+          fontSize="18px"
           fontWeight="700"
-          lineHeight="18px"
-          mt={1}
         >
           Stake
         </Text>
