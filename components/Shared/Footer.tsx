@@ -22,7 +22,6 @@ export function Footer() {
       direction="column"
       justify="center"
       paddingX={10}
-      // background="darkOverlay"
     >
       <Flex
         direction={isClient && mobile ? "column" : "row"}

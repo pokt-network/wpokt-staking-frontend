@@ -74,9 +74,11 @@ export default function RewardsWidget() {
         <VStack>
           {isClient && address ? (
             <Button
+              color="darkBlue"
               height={"52px"}
+              paddingX={"53px"}
               mt={4}
-              borderRadius={"4px"}
+              borderRadius={"30px"}
               fontSize={"16px"}
               onClick={() => write?.()}
               isDisabled={notReadyToClaim}

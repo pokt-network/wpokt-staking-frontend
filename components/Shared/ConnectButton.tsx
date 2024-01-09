@@ -11,8 +11,9 @@ export default function ConnectWalletButton() {
   return (
     <Button
       height={"52px"}
+      paddingX={"53px"}
       borderWidth={2}
-      borderRadius={"4px"}
+      borderRadius={"30px"}
       fontSize={"16px"}
       borderColor="poktLime"
       bg="transparent"

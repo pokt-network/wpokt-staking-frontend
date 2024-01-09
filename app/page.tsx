@@ -50,16 +50,13 @@ export default function Page() {
               fontSize={16}
               fontWeight={"medium"}
               padding={"16px 16px"}
-              // borderRadius={"12px 12px 0px 0px"}
               borderTopRadius={8}
               bg="darkBlue"
-              // border="none"
               borderWidth={1}
               borderBottomWidth={2}
               borderColor={"poktLime"}
               _selected={{
                 borderWidth: "2px",
-                // borderColor: "poktLime",
                 borderBottom: "none",
               }}
               _hover={{ color: "poktBlue" }}
@@ -71,16 +68,13 @@ export default function Page() {
               fontSize={16}
               fontWeight={"medium"}
               padding={"16px 16px"}
-              // borderRadius={"12px 12px 0px 0px"}
               borderTopRadius={8}
               bg="darkBlue"
-              // border="none"
               borderWidth={1}
               borderBottomWidth={2}
               borderColor={"poktLime"}
               _selected={{
                 borderWidth: "2px",
-                // borderColor: "poktLime",
                 borderBottom: "none",
               }}
               _hover={{ color: "poktBlue" }}
@@ -100,7 +94,6 @@ export default function Page() {
         </Tabs>
 
         <Center
-          // bg="darkOverlay"
           borderWidth={2}
           borderColor="white"
           alignSelf={"center"}

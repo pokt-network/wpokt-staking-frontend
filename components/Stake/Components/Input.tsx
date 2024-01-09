@@ -32,6 +32,7 @@ export default function StakeInput({
         isDisabled={isLoading}
       />
       <Button
+        color="darkBlue"
         paddingX={"32px"}
         paddingY={"16px"}
         borderRadius={"4px"}

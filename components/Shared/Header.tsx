@@ -45,7 +45,7 @@ export function Header() {
             height={"52px"}
             width={"160px"}
             borderWidth={2}
-            borderRadius={"4px"}
+            borderRadius={"30px"}
             fontSize={"16px"}
             color="white"
             background="darkBlue"
@@ -56,7 +56,6 @@ export function Header() {
             onClick={() => disconnect()}
             ref={hoverRef}
             flexDirection={"row"}
-            // _hover={{ bg: "darkOverlay" }}
             _hover={{ borderColor: "poktBlue", color: "poktBlue" }}
           >
             {!isHover
@@ -68,8 +67,9 @@ export function Header() {
         ) : (
           <Button
             height={"52px"}
+            width={"160px"}
             borderWidth={2}
-            borderRadius={"4px"}
+            borderRadius={"30px"}
             fontSize={"16px"}
             color="darkBlue"
             background="poktLime"
