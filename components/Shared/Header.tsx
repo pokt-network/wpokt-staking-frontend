@@ -19,21 +19,17 @@ export function Header() {
 
   return (
     <HStack justify="space-between" align="center" paddingX={10} paddingY={5}>
-      <HStack alignItems={"flex-end"}>
+      <HStack alignItems={"center"} gap={1}>
         <Image
-          src={"/logo/full_white.png"}
+          src={"/logo/full_white_rebrand.png"}
           alt="logo"
           width={122}
           height={36}
         />
         <Text
           color="white"
-          textAlign="center"
           fontSize="18px"
-          fontStyle="normal"
           fontWeight="700"
-          lineHeight="18px"
-          mb={1}
         >
           Stake
         </Text>
@@ -45,18 +41,18 @@ export function Header() {
             height={"52px"}
             width={"160px"}
             borderWidth={2}
-            borderRadius={"4px"}
+            borderRadius={"30px"}
             fontSize={"16px"}
             color="white"
-            background="darkOverlay"
+            background="darkBlue"
             leftIcon={
               !isHover ? <BlueEthIcon width="28px" height="28px" /> : <></>
             }
-            borderColor="darkOverlay"
+            borderColor="white"
             onClick={() => disconnect()}
             ref={hoverRef}
             flexDirection={"row"}
-            _hover={{ bg: "darkOverlay" }}
+            _hover={{ borderColor: "poktBlue", color: "poktBlue" }}
           >
             {!isHover
               ? address.substring(0, 4) +
@@ -67,12 +63,14 @@ export function Header() {
         ) : (
           <Button
             height={"52px"}
+            width={"160px"}
             borderWidth={2}
-            borderRadius={"4px"}
+            borderRadius={"30px"}
             fontSize={"16px"}
             color="darkBlue"
             background="poktLime"
             borderColor="poktLime"
+            _hover={{ bg: "hover.poktLime", borderColor: "hover.poktLime" }}
             leftIcon={<EthIcon />}
             onClick={openConnectModal}
           >

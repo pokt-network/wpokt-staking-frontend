@@ -20,7 +20,7 @@ export default function RootLayout({
         <RainbowKitProvider
           chains={chains}
           theme={darkTheme({
-            accentColor: "rgba(185, 240, 0, 1)",
+            accentColor: "rgba(105,141,255, 1)",
             fontStack: "system",
             overlayBlur: "small",
             borderRadius: "small",

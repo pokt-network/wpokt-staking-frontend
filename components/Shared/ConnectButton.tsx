@@ -11,16 +11,17 @@ export default function ConnectWalletButton() {
   return (
     <Button
       height={"52px"}
+      paddingX={"53px"}
       borderWidth={2}
-      borderRadius={"4px"}
+      borderRadius={"30px"}
       fontSize={"16px"}
       borderColor="poktLime"
       bg="transparent"
       color="white"
       fontWeight={"normal"}
-      leftIcon={<EthIcon fill={"white"} />}
+      leftIcon={<EthIcon />}
       onClick={openConnectModal}
-      _hover={{ bg: `${colors.darkOverlay}` }}
+      _hover={{ color: `poktBlue`, borderColor: `poktBlue` }}
     >
       Connect Wallet
     </Button>

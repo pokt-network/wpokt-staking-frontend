@@ -50,14 +50,16 @@ export default function Page() {
               fontSize={16}
               fontWeight={"medium"}
               padding={"16px 16px"}
-              borderRadius={"12px 12px 0px 0px"}
-              bg="darkOverlay"
-              border="none"
+              borderTopRadius={8}
+              bg="darkBlue"
+              borderWidth={1}
+              borderBottomWidth={2}
+              borderColor={"poktLime"}
               _selected={{
-                border: "2px",
-                borderColor: "poktLime",
+                borderWidth: "2px",
                 borderBottom: "none",
               }}
+              _hover={{ color: "poktBlue" }}
             >
               Stake
             </Tab>
@@ -66,20 +68,22 @@ export default function Page() {
               fontSize={16}
               fontWeight={"medium"}
               padding={"16px 16px"}
-              borderRadius={"12px 12px 0px 0px"}
-              bg="darkOverlay"
-              border="none"
+              borderTopRadius={8}
+              bg="darkBlue"
+              borderWidth={1}
+              borderBottomWidth={2}
+              borderColor={"poktLime"}
               _selected={{
-                border: "2px",
-                borderColor: "poktLime",
+                borderWidth: "2px",
                 borderBottom: "none",
               }}
+              _hover={{ color: "poktBlue" }}
             >
               Withdraw
             </Tab>
           </TabList>
 
-          <TabPanels bg="darkOverlay">
+          <TabPanels borderWidth={2} borderColor={"white"}>
             <TabPanel pt={4}>
               <StakingWidget />
             </TabPanel>
@@ -90,7 +94,8 @@ export default function Page() {
         </Tabs>
 
         <Center
-          bg="darkOverlay"
+          borderWidth={2}
+          borderColor="white"
           alignSelf={"center"}
           maxW={"90%"}
           width={mobile ? "100%" : "900px"}

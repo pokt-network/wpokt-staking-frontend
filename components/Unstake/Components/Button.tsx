@@ -8,12 +8,15 @@ export default function WithDrawButton({
 }: any) {
   return (
     <Button
+      color="darkBlue"
       height={"52px"}
-      borderRadius={"4px"}
+      paddingX={"53px"}
+      borderRadius={"30px"}
       fontSize={"16px"}
       onClick={handleWithdrawButtonClick}
       fontWeight={"normal"}
       bg={"poktLime"}
+      _hover={{ bg: "hover.poktLime" }}
       isDisabled={isInvalidWithdrawAmount || willFail || isLoading}
       isLoading={isLoading}
     >
