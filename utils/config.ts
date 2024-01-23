@@ -28,7 +28,7 @@ export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     jsonRpcProvider({
       rpc: (chain) => ({
-        http: `https://eth-${chainString}.gateway.pokt.network/v1/lb/${POKT_KEY}`,
+        http: `https://eth-${chainString}.rpc.grove.city/v1/lb/${POKT_KEY}`,
       }),
     }),
   ],
@@ -58,6 +58,6 @@ export default config;
 export const estimationClient = createPublicClient({
   chain,
   transport: http(
-    `https://eth-${chainString}.gateway.pokt.network/v1/lb/${POKT_KEY}`,
+    `https://eth-${chainString}.rpc.grove.city/v1/lb/${POKT_KEY}`,
   ),
 });
