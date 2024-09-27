@@ -33,7 +33,7 @@ export default function RewardsWidget() {
   const { isClient, address, prices, lpTokenStaked } = useGlobalContext();
 
   const { data: rewardValue, isFetched } = usePendingRewardBalance(address);
-  const { config, isError: notReadyToClaim } = useClaimReward(
+  const { config, isError: notReadyToClaim, error } = useClaimReward(
     Number(rewardValue),
   );
   const { write } = useContractWrite(config);
@@ -64,7 +64,7 @@ export default function RewardsWidget() {
             <Text fontSize={18} fontWeight={"bold"}>
               {isFetched && isClient
                 ? formatUnits((rewardValue as bigint) ?? BigInt(0), 6) +
-                  ` wPokt`
+                ` wPokt`
                 : `Fetching`}
             </Text>
           ) : (
@@ -73,21 +73,28 @@ export default function RewardsWidget() {
         </Center>
         <VStack>
           {isClient && address ? (
-            <Button
-              color="darkBlue"
-              height={"52px"}
-              paddingX={"53px"}
-              mt={4}
-              borderRadius={"30px"}
-              fontSize={"16px"}
-              onClick={() => write?.()}
-              isDisabled={notReadyToClaim}
-              bg={"poktLime"}
-              fontWeight={"normal"}
-              _hover={{ bg: "hover.poktLime" }}
-            >
-              Claim wPOKT
-            </Button>
+            <>
+              <Button
+                color="darkBlue"
+                height={"52px"}
+                paddingX={"53px"}
+                mt={4}
+                borderRadius={"30px"}
+                fontSize={"16px"}
+                onClick={() => write?.()}
+                isDisabled={notReadyToClaim}
+                bg={"poktLime"}
+                fontWeight={"normal"}
+                _hover={{ bg: "hover.poktLime" }}
+              >
+                Claim wPOKT
+              </Button>
+              {!!error && (
+                <Text fontSize={14} color={"red"}>
+                  {error.toString()}
+                </Text>
+              )}
+            </>
           ) : (
             <ConnectWalletButton />
           )}
@@ -193,9 +200,9 @@ export default function RewardsWidget() {
                   <Text fontSize={16} fontWeight={"bold"}>
                     {isFetched && isClient
                       ? (
-                          Number(totalRewardPerDayUSDValue) *
-                          Number(refFactors[refTokenIndex])
-                        ).toFixed(6)
+                        Number(totalRewardPerDayUSDValue) *
+                        Number(refFactors[refTokenIndex])
+                      ).toFixed(6)
                       : "Calculating..."}
                   </Text>
                 </HStack>

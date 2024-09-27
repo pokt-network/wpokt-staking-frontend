@@ -8,6 +8,10 @@ import { chainId } from "./contract/constants";
 
 const POKT_KEY = process.env.NEXT_PUBLIC_APP_POKT_KEY;
 
+if (!POKT_KEY) {
+  throw new Error("Missing NEXT_PUBLIC_APP_POKT_KEY");
+}
+
 const chain = [sepolia, mainnet, goerli].find((c) => c.id === Number(chainId));
 
 const chainName = () => {
