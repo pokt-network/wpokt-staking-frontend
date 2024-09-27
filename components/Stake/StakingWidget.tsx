@@ -69,12 +69,18 @@ export default function StakingWidget() {
   const {
     config: stakeConfig,
     isError: stakeWillFail,
+    error,
     isLoading: stakeLoading,
   } = useStakeLPToken({
     amount: newStakeAmount,
     isValidAmount: !isInvalidStakeAmount && memoizedApprove,
     onError: () => setIsApproved(false),
   });
+
+  if (stakeWillFail && error) {
+    console.error("Stake will fail:")
+    console.error(error);
+  }
 
   const { config: approveConfig, isLoading: approveLoading } =
     useApproveLPToken({
@@ -185,9 +191,9 @@ export default function StakingWidget() {
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
               : formattedGas +
-                " ETH (~" +
-                ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
-                  " USD)")}
+              " ETH (~" +
+              ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
+                " USD)")}
           </Text>
         ) : (
           <Text>No wallet connected</Text>
@@ -196,17 +202,24 @@ export default function StakingWidget() {
 
       <Center gap={2}>
         {isConnected ? (
-          <StakeButton
-            isInvalidStakeAmount={isInvalidStakeAmount}
-            newStakeAmount={newStakeAmount}
-            handleStakeButtonClick={handleStakeButtonClick}
-            approved={memoizedApprove}
-            isLoading={
-              stakeLoading ||
-              approveLoading ||
-              (txnLoading && !txnHash && !isSuccess)
-            }
-          />
+          <>
+            <StakeButton
+              isInvalidStakeAmount={isInvalidStakeAmount}
+              newStakeAmount={newStakeAmount}
+              handleStakeButtonClick={handleStakeButtonClick}
+              approved={memoizedApprove}
+              isLoading={
+                stakeLoading ||
+                approveLoading ||
+                (txnLoading && !txnHash && !isSuccess)
+              }
+            />
+            {!!error && (
+              <Text fontSize={14} color={"red"}>
+                {error.toString()}
+              </Text>
+            )}
+          </>
         ) : (
           <ConnectWalletButton />
         )}

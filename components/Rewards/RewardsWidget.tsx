@@ -30,19 +30,24 @@ const refIcon: Array<ReactElement> = [
   <BlueDAIIcon key="dai-icon" boxSize={6} />,
 ];
 export default function RewardsWidget() {
-  const { isClient, address, prices, lpTokenStaked } = useGlobalContext();
+  const { isClient, address, prices, lpTokenStaked, isConnected } = useGlobalContext();
 
   const { data: rewardValue, isFetched } = usePendingRewardBalance(address);
   const { config, isError: notReadyToClaim, error } = useClaimReward(
     Number(rewardValue),
   );
-  const { write } = useContractWrite(config);
+  const { write, isLoading } = useContractWrite(config);
 
   const [refTokenIndex, setRefTokenIndex] = useState(0);
   const refFactors = [1 / Number(prices?.eth), 1 / Number(prices?.pokt), 1];
 
   const { DPR, totalStakedLPTokenUSDValue, totalRewardPerDayUSDValue } =
     useRewardRate(lpTokenStaked, prices);
+
+  if (notReadyToClaim && error) {
+    console.error("GetRewards will fail:");
+    console.error(error);
+  }
 
   return (
     <VStack
@@ -72,7 +77,7 @@ export default function RewardsWidget() {
           )}
         </Center>
         <VStack>
-          {isClient && address ? (
+          {isClient && address && isConnected ? (
             <>
               <Button
                 color="darkBlue"
@@ -82,10 +87,10 @@ export default function RewardsWidget() {
                 borderRadius={"30px"}
                 fontSize={"16px"}
                 onClick={() => write?.()}
-                isDisabled={notReadyToClaim}
                 bg={"poktLime"}
                 fontWeight={"normal"}
                 _hover={{ bg: "hover.poktLime" }}
+                isLoading={isLoading}
               >
                 Claim wPOKT
               </Button>
@@ -115,7 +120,7 @@ export default function RewardsWidget() {
           </HStack>
         </VStack>
         <VStack mt={8} maxW={"400px"} alignContent={"center"} gap={4}>
-          {address && isClient ? (
+          {address && isClient && isConnected ? (
             <VStack alignItems={"center"} gap={8}>
               <VStack alignItems={"center"}>
                 <HStack

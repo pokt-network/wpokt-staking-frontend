@@ -23,7 +23,6 @@ import WithdrawInput from "./Components/Input";
 
 export default function UnstakeWidget() {
   const {
-    isClient,
     lpTokenStaked,
     ethBalance,
     setTxnHash,
@@ -59,6 +58,7 @@ export default function UnstakeWidget() {
     config,
     isError: willFail,
     isLoading: unStakeLoading,
+    error,
   } = useUnstakeLPToken({
     amount: newWithdrawAmount,
     isValidAmount: !isInvalidWithdrawAmount,
@@ -67,11 +67,14 @@ export default function UnstakeWidget() {
   const {
     data,
     isLoading: txnLoading,
-
     isSuccess,
     write,
-    isError,
   } = useContractWrite(config);
+
+  if (willFail && error) {
+    console.error("Unstake will fail:");
+    console.error(error);
+  }
 
   const updateTxnHash = useCallback(
     () => data?.hash && setTxnHash(data?.hash),
@@ -158,9 +161,9 @@ export default function UnstakeWidget() {
             {formatEther(ethBalance) < formatEther(0 || BigInt(0))
               ? "Not Enough ETH available for Gas"
               : formattedGas +
-                " ETH (~" +
-                ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
-                  " USD)")}
+              " ETH (~" +
+              ((Number(prices.eth) * Number(formattedGas)).toFixed(8) +
+                " USD)")}
           </Text>
         ) : (
           <Text>No wallet connected</Text>
@@ -169,11 +172,18 @@ export default function UnstakeWidget() {
 
       <Center gap={2}>
         {isConnected ? (
-          <WithDrawButton
-            isInvalidWithdrawAmount={isInvalidWithdrawAmount}
-            handleWithdrawButtonClick={handleWithdrawButtonClick}
-            isLoading={unStakeLoading || (txnLoading && !txnHash && !isSuccess)}
-          />
+          <>
+            <WithDrawButton
+              isInvalidWithdrawAmount={isInvalidWithdrawAmount}
+              handleWithdrawButtonClick={handleWithdrawButtonClick}
+              isLoading={unStakeLoading || (txnLoading && !txnHash && !isSuccess)}
+            />
+            {!!error && (
+              <Text fontSize={14} color={"red"}>
+                {error.toString()}
+              </Text>
+            )}
+          </>
         ) : (
           <ConnectWalletButton />
         )}
