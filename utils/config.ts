@@ -32,7 +32,7 @@ export const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     jsonRpcProvider({
       rpc: (chain) => ({
-        http: `https://eth-${chainString}.rpc.grove.city/v1/${POKT_KEY}`,
+        http: `https://eth-${chainString}.rpc.porters.xyz/${POKT_KEY}`,
       }),
     }),
   ],
@@ -54,7 +54,7 @@ const config = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
-  webSocketPublicClient,
+  // webSocketPublicClient,
 });
 
 export default config;
