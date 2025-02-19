@@ -62,6 +62,6 @@ export default config;
 export const estimationClient = createPublicClient({
   chain,
   transport: http(
-    `https://eth-${chainString}.rpc.grove.city/v1/${POKT_KEY}`,
+    `https://eth-${chainString}.rpc.porters.xyz/${POKT_KEY}`,
   ),
 });
